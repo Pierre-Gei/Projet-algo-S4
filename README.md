@@ -4,5 +4,5 @@
 ## Membres :
 ### - GEIGUER Pierre
 ### - LAMBALLAIS Hugo
-### - FERNADO Theo
+### - FERNANDO Théo
 ### - STA Mehdi
