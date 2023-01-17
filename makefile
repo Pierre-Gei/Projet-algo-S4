@@ -1,17 +1,12 @@
-main : main.o fonctions.o save.o affichage.o
-	gcc -o main main.o fonctions.o save.o affichage.o -g
+# Path: src/makefile
+CFLAGS := $(shell pkg-config --cflags sdl2)
+LDFLAGS := $(shell pkg-config --libs sdl2)
 
-main.o : main.c
-	gcc -c main.c -g
+main: main.o
+	$(CC) $(CFLAGS) -o main main.o $(LDFLAGS)
 
-fonctions.o : fonctions.c
-	gcc -c fonctions.c -g
+main.o: main.c
+	$(CC) $(CFLAGS) -c main.c
 
-save.o : save.c
-	gcc -c save.c -g
-
-affichage.o : affichage.c
-	gcc -c affichage.c -g
-
-clean :
-	rm -f *.o
+clean:
+	rm -f main main.o
