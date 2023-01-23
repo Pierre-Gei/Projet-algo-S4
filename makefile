@@ -1,21 +1,16 @@
-# Path: src/makefile
-CFLAGS := $(shell pkg-config --cflags sdl2)
-LDFLAGS := $(shell pkg-config --libs sdl2)
-
-main: main.o fonctions.o affichage.o save.o
-	$(CC) $(CFLAGS) -o main main.o fonctions.o affichage.o save.o -g $(LDFLAGS) 
+main: main.o affichage.o fonctions.o save.o
+	gcc -o main main.o affichage.o -lSDL2 -lSDL2_image
 
 main.o: main.c
-	$(CC) $(CFLAGS) -c main.c -g
+	gcc -c main.c -lSDL2 -lSDL2_image  
 
-fonctions.o: fonctions.c fonctions.h
-	$(CC) $(CFLAGS) -c fonctions.c -g
+affichage.o: affichage.c
+	gcc -c affichage.c -lSDL2 -lSDL2_image
 
-affichage.o: affichage.c affichage.h
-	$(CC) $(CFLAGS) -c affichage.c -g
+fonctions.o: fonctions.c
+	gcc -c fonctions.c -lSDL2 -lSDL2_image
 
-save.o: save.c save.h
-	$(CC) $(CFLAGS) -c save.c -g
-
+save.o: save.c
+	gcc -c save.c -lSDL2 -lSDL2_image
 clean:
 	rm -f main main.o

@@ -6,6 +6,7 @@
 #include "affichage.h"
 #include "fonctions.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 int main()
 {
@@ -19,11 +20,11 @@ int main()
     bool jeu = true;
     int statut = background(&window, &renderer, &image, &position);
     SDL_Surface *perso = NULL;
-    perso = SDL_LoadBMP("sprites/aventurier1.bmp");
+    perso = IMG_Load("sprites/aventurier1.png");
     SDL_Rect *position_perso;
     position_perso = malloc(sizeof(SDL_Rect));
     position_perso->x = position->w/2 - perso->w/2;
-    position_perso->y =  position->h/2 - perso->h/2;
+    position_perso->y =  850;
     SDL_Texture *texture = NULL;
     texture = SDL_CreateTextureFromSurface(renderer, perso);
     SDL_FreeSurface(perso);
