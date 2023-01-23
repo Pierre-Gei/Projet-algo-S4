@@ -16,22 +16,11 @@ int main()
     position = malloc(sizeof(SDL_Rect));
     position->x = 0;
     position->y = 0;
-    int statut = EXIT_FAILURE;
     bool jeu = true;
-    if(init(&window, &renderer) != 0)
-    {
+    int statut = background(&window, &renderer, &image, &position);
+    if(statut == -1)
         goto Quit;
-    }
-    image = loadTexture("background/background.bmp", renderer);
-    if(image == NULL)
-    {
-        goto Quit;
-    }
-    statut = EXIT_SUCCESS;
-    SDL_GetWindowSize(window, &position->x, &position->y);
-    position->x = position->x / 2 - 960;
-    position->y = position->y / 2 - 540;
-    SDL_QueryTexture(image, NULL, NULL, &position->w, &position->h);
+  
     while(jeu)
     {
         SDL_Event event;
@@ -56,13 +45,6 @@ int main()
         SDL_RenderCopy(renderer, image, NULL, position);
         SDL_RenderPresent(renderer);
     }
-
-
-
-
-
-
-
 
     Quit:
     if(image!=NULL)

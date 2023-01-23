@@ -41,34 +41,24 @@ SDL_Texture *loadTexture(const char *filename, SDL_Renderer *renderer)
 }
 
 
-int background ( SDL_Window *window, SDL_Renderer *renderer, SDL_Texture *image, SDL_Rect *position)
+int background ( SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect **position)
 {
     int statut = EXIT_FAILURE;
-    
-    if (init(&window, &renderer) != 0)
+    if (init(window, renderer) != 0)
     {
-        goto Quit;
+        return -1;
     }
-    image = loadTexture("background/background.bmp", renderer);
-    if (image == NULL)
+    *image = loadTexture("background/background.bmp", *renderer);
+    if (*image == NULL)
     {
-        goto Quit;
+        return -1;
     }
     statut = EXIT_SUCCESS;
-    SDL_GetWindowSize(window, &position->x, &position->y);
-    position->x = position->x / 2 - 640;
-    position->y = position->y / 2 - 360;
-    SDL_QueryTexture(image, NULL, NULL, &position->w, &position->h);
-    SDL_RenderCopy(renderer, image, NULL, position);
-    SDL_RenderPresent(renderer);
-    SDL_Delay(10000);
-Quit:
-    if (image != NULL)
-        SDL_DestroyTexture(image);
-    if (renderer != NULL)
-        SDL_DestroyRenderer(renderer);
-    if (window != NULL)
-        SDL_DestroyWindow(window);
-    SDL_Quit();
+    SDL_GetWindowSize(*window, &(*position)->x, &(*position)->y);
+    (*position)->x = (*position)->x / 2 - 960;
+    (*position)->y = (*position)->y / 2 - 540;
+    SDL_QueryTexture(*image, NULL, NULL, &(*position)->w, &(*position)->h);
+
+
     return statut;
 }
