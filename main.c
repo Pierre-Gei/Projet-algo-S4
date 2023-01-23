@@ -18,6 +18,21 @@ int main()
     position->y = 0;
     bool jeu = true;
     int statut = background(&window, &renderer, &image, &position);
+    SDL_Surface *perso = NULL;
+    perso = SDL_LoadBMP("sprites/aventurier1.bmp");
+    SDL_Rect *position_perso;
+    position_perso = malloc(sizeof(SDL_Rect));
+    position_perso->x = position->w/2 - perso->w/2;
+    position_perso->y =  position->h/2 - perso->h/2;
+    SDL_Texture *texture = NULL;
+    texture = SDL_CreateTextureFromSurface(renderer, perso);
+    SDL_FreeSurface(perso);
+    SDL_QueryTexture(texture, NULL, NULL, &position_perso->w, &position_perso->h);
+   
+
+
+
+
     if(statut == -1)
         goto Quit;
   
@@ -37,12 +52,13 @@ int main()
                         case SDLK_ESCAPE:
                             jeu = false;
                             break;
-
                     }
                     break;
             }
         }
         SDL_RenderCopy(renderer, image, NULL, position);
+        SDL_RenderCopy(renderer, texture, NULL, position_perso);
+        
         SDL_RenderPresent(renderer);
     }
 
@@ -54,5 +70,6 @@ int main()
     if(window!=NULL)
         SDL_DestroyWindow(window);
     SDL_Quit();
+    free(position);
     return statut;
 }

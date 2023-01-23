@@ -3,7 +3,7 @@ CFLAGS := $(shell pkg-config --cflags sdl2)
 LDFLAGS := $(shell pkg-config --libs sdl2)
 
 main: main.o fonctions.o affichage.o save.o
-	$(CC) $(CFLAGS) -o main main.o fonctions.o affichage.o save.o -g $(LDFLAGS)
+	$(CC) $(CFLAGS) -o main main.o fonctions.o affichage.o save.o -g $(LDFLAGS) 
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c -g

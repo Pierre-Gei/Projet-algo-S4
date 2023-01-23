@@ -54,9 +54,7 @@ int background ( SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **ima
         return -1;
     }
     statut = EXIT_SUCCESS;
-    SDL_GetWindowSize(*window, &(*position)->x, &(*position)->y);
-    (*position)->x = (*position)->x / 2 - 960;
-    (*position)->y = (*position)->y / 2 - 540;
+    SDL_GetWindowSize(*window, &(*position)->w, &(*position)->h);
     SDL_QueryTexture(*image, NULL, NULL, &(*position)->w, &(*position)->h);
 
 
