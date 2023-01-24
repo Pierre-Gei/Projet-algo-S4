@@ -1,5 +1,5 @@
 main: main.o affichage.o fonctions.o save.o
-	gcc -o main main.o affichage.o -lSDL2 -lSDL2_image
+	gcc -o main main.o affichage.o fonctions.o save.o -lSDL2 -lSDL2_image
 
 main.o: main.c
 	gcc -c main.c -lSDL2 -lSDL2_image  
