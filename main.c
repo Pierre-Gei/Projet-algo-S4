@@ -57,26 +57,25 @@ int main()
                     jeu = false;
                     break;
                 case SDLK_RIGHT:
-                    if (position_perso->x < position->w - position_perso->w)
-                        position_perso->x += 7;
-
-                    if (texture3 == texture)
-                    {
-                        texture3 = texture2;
-                    }
-                    else
-                    {
-                        texture3 = texture;
-                    }
+                    texture3 = deplacement_droit(position_perso, position, texture, texture2, texture3);
                     break;
                 case SDLK_LEFT:
-                    if (position_perso->x > 0)
-                        position_perso->x -= 7;
+                    texture3 = deplacement_gauche(position_perso, position, texture, texture2, texture3);   
                     break;
 
                 case SDLK_UP:
-                
-        
+
+                    break;
+                }
+                break;
+            case SDL_KEYUP:
+                switch (event.key.keysym.sym)
+                {
+                case SDLK_RIGHT:
+                    texture3 = texture;
+                    break;
+                case SDLK_LEFT:
+                    texture3 = texture;
                     break;
                 }
                 break;
