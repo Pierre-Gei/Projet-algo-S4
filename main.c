@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <math.h>
 #include "affichage.h"
 #include "fonctions.h"
 int main()
@@ -57,15 +58,28 @@ int main()
                     jeu = false;
                     break;
                 case SDLK_RIGHT:
+
                     texture3 = deplacement_droit(position_perso, position, texture, texture2, texture3);
                     break;
+
                 case SDLK_LEFT:
                     texture3 = deplacement_gauche(position_perso, position, texture, texture2, texture3);
                     break;
 
                 case SDLK_UP:
-                    saut(position_perso, position, texture, texture2, texture3, renderer, image);
-                    
+                    if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RIGHT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
+                    {
+                        saut_diagonal_droit(position_perso, position, texture, texture2, texture3, renderer, image);
+                    }
+                    else if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LEFT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
+                    {
+                        // texture3 = deplacement_gauche(position_perso, position, texture, texture2, texture3);
+                        // texture3 = deplacement_haut(position_perso, position, texture, texture2, texture3);
+                    }
+                    else
+                    {
+                        // texture3 = deplacement_haut(position_perso, position, texture, texture2, texture3);
+                    }
                     break;
                 }
                 break;

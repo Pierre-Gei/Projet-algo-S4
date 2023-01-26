@@ -33,14 +33,16 @@ SDL_Texture * deplacement_gauche(SDL_Rect *position_perso, SDL_Rect *position, S
     }
 }
 
-void saut (SDL_Rect *position_perso, SDL_Rect *position, SDL_Texture *texture, SDL_Texture *texture2, SDL_Texture *texture3, SDL_Renderer *renderer, SDL_Texture *image)
+void saut_diagonal_droit(SDL_Rect *position_perso, SDL_Rect *position, SDL_Texture *texture, SDL_Texture *texture2, SDL_Texture *texture3, SDL_Renderer *renderer, SDL_Texture *image)
 {
+
     int i = 0;
     while (i < 10)
     {
-        position_perso->y -= 50;
+        position_perso->y -= 25;
+        position_perso->x += 25;
         i++;
-        SDL_Delay(15);
+        SDL_Delay(30);
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, image, NULL, position);
         SDL_RenderCopy(renderer, texture2, NULL, position_perso);
@@ -48,13 +50,14 @@ void saut (SDL_Rect *position_perso, SDL_Rect *position, SDL_Texture *texture, S
     }
     while (i < 20)
     {
-        position_perso->y += 50;
+        position_perso->x += 25;
+        position_perso->y += 25;
+        
         i++;
-        SDL_Delay(15);
+        SDL_Delay(30);
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, image, NULL, position);
         SDL_RenderCopy(renderer, texture2, NULL, position_perso);
         SDL_RenderPresent(renderer);
     }
-
 }
