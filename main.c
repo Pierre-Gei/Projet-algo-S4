@@ -60,11 +60,12 @@ int main()
                     texture3 = deplacement_droit(position_perso, position, texture, texture2, texture3);
                     break;
                 case SDLK_LEFT:
-                    texture3 = deplacement_gauche(position_perso, position, texture, texture2, texture3);   
+                    texture3 = deplacement_gauche(position_perso, position, texture, texture2, texture3);
                     break;
 
                 case SDLK_UP:
-
+                    saut(position_perso, position, texture, texture2, texture3, renderer, image);
+                    
                     break;
                 }
                 break;
