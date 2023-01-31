@@ -13,27 +13,32 @@ int main()
     SDL_Window *window = NULL;
     SDL_Texture *image = NULL;
     SDL_Renderer *renderer = NULL;
-    SDL_Rect *position;
-    position = malloc(sizeof(SDL_Rect));
-    position->x = 0;
-    position->y = 0;
+    SDL_Rect position;
+    position.x = 0;
+    position.y = 0;
+    SDL_Rect rectangle;
     bool jeu = true;
     int statut = background(&window, &renderer, &image, &position);
     SDL_Surface *perso = NULL;
-    SDL_Rect *position_perso;
+    SDL_Rect position_perso;
     SDL_Texture *texture = NULL;
     SDL_Texture *texture2 = NULL;
     SDL_Texture *texture3 = NULL;
     perso = IMG_Load("sprites/aventurier1.png");
-    position_perso = malloc(sizeof(SDL_Rect));
-    position_perso->x = position->w / 2 - perso->w / 2;
-    position_perso->y = 850;
+    position_perso.x = position.w / 2 - perso->w / 2;
+    position_perso.y = 850;
+    rectangle. x= 0;
+    rectangle.y = 960 ;
+    rectangle.h = 100;
+    rectangle.w = position.w;
+    SDL_SetRenderDrawColor(renderer,0,255,255,255);
+
     texture = SDL_CreateTextureFromSurface(renderer, perso);
     SDL_FreeSurface(perso);
     perso = IMG_Load("sprites/aventurier2.png");
     texture2 = SDL_CreateTextureFromSurface(renderer, perso);
     SDL_FreeSurface(perso);
-    SDL_QueryTexture(texture, NULL, NULL, &position_perso->w, &position_perso->h);
+    SDL_QueryTexture(texture, NULL, NULL, &position_perso.w, &position_perso.h);
     texture3 = texture;
 
     if (statut == -1)
@@ -43,12 +48,13 @@ int main()
         SDL_Delay(39);
         SDL_Event event;
         SDL_RenderClear(renderer);
-        if(position->x>=position->w){position->x=0;}
-        SDL_RenderCopy(renderer, image, NULL, position);
-        position->x=position->x+1920;
+        if(position.x>=position.w){position.x=0;}
+        SDL_RenderCopy(renderer, image, NULL, &position);
+        position.x=position.x+1920;
         
-        SDL_RenderCopy(renderer, image, NULL, position);
-        position->x=position->x-1920;
+        SDL_RenderCopy(renderer, image, NULL, &position);
+        position.x=position.x-1920;
+        SDL_RenderDrawRect(renderer,&rectangle);
         while (SDL_PollEvent(&event))
         {
             switch (event.type)
@@ -64,17 +70,17 @@ int main()
                     break;
                 case SDLK_RIGHT:
 
-                    texture3 = deplacement_droit(position_perso, position, texture, texture2, texture3);
+                    texture3 = deplacement_droit(&position_perso, &position, texture, texture2, texture3);
                     break;
 
                 case SDLK_LEFT:
-                    texture3 = deplacement_gauche(position_perso, position, texture, texture2, texture3);
+                    texture3 = deplacement_gauche(&position_perso, &position, texture, texture2, texture3);
                     break;
 
                 case SDLK_UP:
                     if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RIGHT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
-                        saut_parabolique(position_perso, position, texture, texture2, texture3, renderer, image);
+                        saut_parabolique(&position_perso, &position, texture, texture2, texture3, renderer, image);
                     }
                     else if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LEFT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
@@ -101,7 +107,7 @@ int main()
                 break;
             }
         }
-        SDL_RenderCopy(renderer, texture3, NULL, position_perso);
+        SDL_RenderCopy(renderer, texture3, NULL, &position_perso);
         SDL_RenderPresent(renderer);
     }
 
@@ -113,6 +119,5 @@ Quit:
     if (window != NULL)
         SDL_DestroyWindow(window);
     SDL_Quit();
-    free(position);
     return statut;
 }

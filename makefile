@@ -1,5 +1,5 @@
-main: main.o affichage.o fonctions.o save.o
-	gcc -o main main.o affichage.o fonctions.o save.o -lSDL2 -lSDL2_image -lm
+main: main.o affichage.o fonctions.o save.o init.o
+	gcc -o main main.o affichage.o fonctions.o save.o init.o -lSDL2 -lSDL2_image -lm
 
 main.o: main.c
 	gcc -c main.c -lSDL2 -lSDL2_image -lm	
@@ -12,5 +12,8 @@ fonctions.o: fonctions.c
 
 save.o: save.c
 	gcc -c save.c -lSDL2 -lSDL2_image -lm
+
+init.o: init.c
+	gcc -c init.c -lSDL2 -lSDL2_image -lm
 clean:
 	rm -f main main.o

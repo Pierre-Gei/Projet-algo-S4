@@ -41,7 +41,7 @@ SDL_Texture *loadTexture(const char *filename, SDL_Renderer *renderer)
 }
 
 
-int background ( SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect **position)
+int background ( SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect *position)
 {
     int statut = EXIT_FAILURE;
     if (init(window, renderer) != 0)
@@ -54,8 +54,8 @@ int background ( SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **ima
         return -1;
     }
     statut = EXIT_SUCCESS;
-    SDL_GetWindowSize(*window, &(*position)->w, &(*position)->h);
-    SDL_QueryTexture(*image, NULL, NULL, &(*position)->w, &(*position)->h);
+    SDL_GetWindowSize(*window, &position->w, &position->h);
+    SDL_QueryTexture(*image, NULL, NULL, &position->w, &position->h);
 
 
     return statut;
