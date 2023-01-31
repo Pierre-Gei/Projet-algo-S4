@@ -69,7 +69,7 @@ int main()
                 case SDLK_UP:
                     if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RIGHT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
-                        saut_diagonal_droit(position_perso, position, texture, texture2, texture3, renderer, image);
+                        saut_parabolique(position_perso, position, texture, texture2, texture3, renderer, image);
                     }
                     else if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LEFT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
