@@ -40,8 +40,7 @@ SDL_Texture *loadTexture(const char *filename, SDL_Renderer *renderer)
     return texture;
 }
 
-
-int background ( SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect *position)
+int background(SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect *position)
 {
     int statut = EXIT_FAILURE;
     if (init(window, renderer) != 0)
@@ -57,6 +56,18 @@ int background ( SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **ima
     SDL_GetWindowSize(*window, &position->w, &position->h);
     SDL_QueryTexture(*image, NULL, NULL, &position->w, &position->h);
 
-
     return statut;
+}
+
+void affichage_background(SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect *position)
+{
+    SDL_RenderClear(*renderer);
+    if (position->x >= position->w)
+    {
+        position->x = 0;
+    }
+    SDL_RenderCopy(*renderer, *image, NULL, position);
+    position->x = position->x + 1920;
+    SDL_RenderCopy(*renderer, *image, NULL, position);
+    position->x = position->x - 1920;
 }
