@@ -5,8 +5,18 @@
 
 SDL_Texture * deplacement_droit(SDL_Rect *position_perso, SDL_Rect *position, SDL_Texture *texture, SDL_Texture *texture2, SDL_Texture *texture3)
 {
-    if (position_perso->x < position->w - position_perso->w)
+    if (position_perso->x>=(position->w/4)*3)
+    {
+        position->x-=10;
+    }
+    else
+    {
         position_perso->x += 7;
+    }
+    if(position->x==-(position->w))
+    {
+        position->x=0;
+    }
 
     if (texture3 == texture)
     {
