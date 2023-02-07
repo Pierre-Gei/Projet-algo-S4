@@ -62,7 +62,7 @@ int background(SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **image
 void affichage_background(SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect *position)
 {
     SDL_RenderClear(*renderer);
-    if (position->x >= position->w)
+    if (position->x <= -position->w)
     {
         position->x = 0;
     }

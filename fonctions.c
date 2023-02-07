@@ -55,7 +55,14 @@ void saut_parabolique(SDL_Rect *position_perso, SDL_Rect *position, SDL_Texture 
     //deplacement en x
     do
     {
-        position_perso->x += 25;
+        if (position_perso->x>=(position->w/4)*3)
+        {
+            position->x-=25;
+        }
+        else
+        {
+           position_perso->x += 25; 
+        }
         position_perso->y += a * (i) * (i) + b * (i) + c;
         i++;
         if(position_perso->y > position_initiale)
