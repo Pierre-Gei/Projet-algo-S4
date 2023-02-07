@@ -44,7 +44,7 @@ SDL_Texture * deplacement_gauche(SDL_Rect *position_perso, SDL_Rect *position, S
     }
 }
 
-void saut_parabolique(SDL_Rect *position_perso, SDL_Rect *position, SDL_Texture *texture, SDL_Texture *texture2, SDL_Texture *texture3, SDL_Renderer *renderer, SDL_Texture *image)
+void saut_parabolique(SDL_Rect *position_perso, SDL_Rect *position, SDL_Texture *texture, SDL_Texture *texture2, SDL_Texture *texture3, SDL_Renderer *renderer, SDL_Texture *image, int direction)
 {
     //deplacer le perso le long d'une trajectoire parabolique
     int i = 0;
@@ -55,13 +55,25 @@ void saut_parabolique(SDL_Rect *position_perso, SDL_Rect *position, SDL_Texture 
     //deplacement en x
     do
     {
-        if (position_perso->x>=(position->w/4)*3)
-        {
-            position->x-=25;
+        if(direction == 1){
+            if (position_perso->x>=(position->w/4)*3)
+            {
+                position->x -= 25;
+            }
+            else
+            {
+            position_perso->x += 25; 
+            }
         }
-        else
-        {
-           position_perso->x += 25; 
+        else if(direction == -1){
+            if (position_perso->x -25 < 0)
+            {
+                position_perso->x = 0;
+            }
+            else
+            {
+                position_perso->x -= 25;
+            }
         }
         position_perso->y += a * (i) * (i) + b * (i) + c;
         i++;
@@ -69,7 +81,7 @@ void saut_parabolique(SDL_Rect *position_perso, SDL_Rect *position, SDL_Texture 
         {
             position_perso->y = position_initiale;
         }
-        SDL_Delay(30);
+        SDL_Delay(39);
         affichage_background(&renderer,&image,position);
         SDL_RenderCopy(renderer, texture2, NULL, position_perso);
         SDL_RenderPresent(renderer);

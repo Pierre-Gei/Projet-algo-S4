@@ -69,16 +69,15 @@ int main()
                 case SDLK_UP:
                     if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RIGHT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
-                        saut_parabolique(&position_perso, &position, texture, texture2, texture3, renderer, image);
+                        saut_parabolique(&position_perso, &position, texture, texture2, texture3, renderer, image, 1);
                     }
                     else if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LEFT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
-                        // texture3 = deplacement_gauche(position_perso, position, texture, texture2, texture3);
-                        // texture3 = deplacement_haut(position_perso, position, texture, texture2, texture3);
+                        saut_parabolique(&position_perso, &position, texture, texture2, texture3, renderer, image, -1);
                     }
                     else
                     {
-                        // texture3 = deplacement_haut(position_perso, position, texture, texture2, texture3);
+                        saut_parabolique(&position_perso, &position, texture, texture2, texture3, renderer, image, 0);
                     }
                     break;
                 }
