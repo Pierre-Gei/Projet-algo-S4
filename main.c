@@ -42,13 +42,7 @@ int main()
     {
         SDL_Delay(39);
         SDL_Event event;
-        SDL_RenderClear(renderer);
-        if(position.x>=position.w){position.x=0;}
-        SDL_RenderCopy(renderer, image, NULL, &position);
-        position.x=position.x+1920;
-        
-        SDL_RenderCopy(renderer, image, NULL, &position);
-        position.x=position.x-1920;
+        affichage_background(&renderer,&image,&position);
         SDL_RenderDrawRect(renderer,&rectangle);
         while (SDL_PollEvent(&event))
         {
