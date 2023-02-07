@@ -8,31 +8,26 @@
 #include <math.h>
 #include "affichage.h"
 #include "fonctions.h"
+#include "init.h"
 int main()
 {
     SDL_Window *window = NULL;
     SDL_Texture *image = NULL;
     SDL_Renderer *renderer = NULL;
     SDL_Rect position;
-    position.x = 0;
-    position.y = 0;
     SDL_Rect rectangle;
-    bool jeu = true;
-    int statut = background(&window, &renderer, &image, &position);
-    SDL_Surface *perso = NULL;
+    SDL_Surface *perso = IMG_Load("sprites/aventurier1.png");
     SDL_Rect position_perso;
     SDL_Texture *texture = NULL;
     SDL_Texture *texture2 = NULL;
     SDL_Texture *texture3 = NULL;
-    perso = IMG_Load("sprites/aventurier1.png");
-    position_perso.x = position.w / 2 - perso->w / 2;
-    position_perso.y = 850;
-    rectangle. x= 0;
-    rectangle.y = 960 ;
-    rectangle.h = 100;
-    rectangle.w = position.w;
-    SDL_SetRenderDrawColor(renderer,0,255,255,255);
 
+   
+    
+    bool jeu = true;
+    int statut = background(&window, &renderer, &image, &position);
+    initVariable(&position, &rectangle, &position_perso, perso);
+    SDL_SetRenderDrawColor(renderer,0,255,255,255);                 //A supprimer
     texture = SDL_CreateTextureFromSurface(renderer, perso);
     SDL_FreeSurface(perso);
     perso = IMG_Load("sprites/aventurier2.png");
