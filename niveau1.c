@@ -12,7 +12,7 @@
 
 int niveau1 ()
 {
-     SDL_Window *window = NULL;
+    SDL_Window *window = NULL;
     SDL_Texture *image = NULL;
     SDL_Renderer *renderer = NULL;
     SDL_Rect position;
