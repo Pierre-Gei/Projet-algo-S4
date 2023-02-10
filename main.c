@@ -88,6 +88,32 @@ int main()
                     break;
                 }
                 break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_LEFT)
+                {
+                    if (event.button.x >= rect1.x && event.button.x <= rect1.x + rect1.w && event.button.y >= rect1.y && event.button.y <= rect1.y + rect1.h)
+                    {
+                        printf("Jouer ! \n");
+                    }
+                    if (event.button.x >= rect2.x && event.button.x <= rect2.x + rect2.w && event.button.y >= rect2.y && event.button.y <= rect2.y + rect2.h)
+                    {
+                        printf("Charger ! \n");
+                    }
+                    if (event.button.x >= rect3.x && event.button.x <= rect3.x + rect3.w && event.button.y >= rect3.y && event.button.y <= rect3.y + rect3.h)
+                    {
+                        printf("Parametres ! \n");
+                    }
+                    if (event.button.x >= rect4.x && event.button.x <= rect4.x + rect4.w && event.button.y >= rect4.y && event.button.y <= rect4.y + rect4.h)
+                    {
+                        printf("Sauvegarder ! \n");
+                    }
+                    if (event.button.x >= rect5.x && event.button.x <= rect5.x + rect5.w && event.button.y >= rect5.y && event.button.y <= rect5.y + rect5.h)
+                    {
+                        printf("Quitter ! \n");
+                        jeu = false;
+                    }
+                }
+                break;
             }
         }
         SDL_RenderPresent(renderer);
