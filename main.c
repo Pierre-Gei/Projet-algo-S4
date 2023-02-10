@@ -10,6 +10,7 @@
 #include "affichage.h"
 #include "fonctions.h"
 #include "init.h"
+#include "niveau1.h"
 
 #define TAILLE_POLICE 75
 #define INTERLIGNE 20
@@ -29,6 +30,7 @@ int main()
     int window_width = 0;
     int window_height = 0;
     bool jeu = true;
+    int statut = 0;
 
     SDL_Color couleurBlanche = {255, 255, 255, 255};
     init(&window, &renderer);
@@ -55,6 +57,8 @@ int main()
     SDL_Rect rect5 = {x, ( window_height - 4*texte_Surface->h -3*INTERLIGNE) /2 + 4*texte_Surface->h + 4*INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
+    // TTF_CloseFont(police); je sais pas ou le mettre
+
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
 
@@ -62,11 +66,6 @@ int main()
     {
         SDL_Delay(39);
         SDL_Event event;
-        // SDL_RenderDrawRect(renderer, &rect1);
-        // SDL_RenderDrawRect(renderer, &rect2);
-        // SDL_RenderDrawRect(renderer, &rect3);
-        // SDL_RenderDrawRect(renderer, &rect4);
-        // SDL_RenderDrawRect(renderer, &rect5);
         SDL_RenderCopy(renderer, tJouer, NULL, &rect1);
         SDL_RenderCopy(renderer, tCharger, NULL, &rect2);
         SDL_RenderCopy(renderer, tParametres, NULL, &rect3);
@@ -94,6 +93,7 @@ int main()
                     if (event.button.x >= rect1.x && event.button.x <= rect1.x + rect1.w && event.button.y >= rect1.y && event.button.y <= rect1.y + rect1.h)
                     {
                         printf("Jouer ! \n");
+
                     }
                     if (event.button.x >= rect2.x && event.button.x <= rect2.x + rect2.w && event.button.y >= rect2.y && event.button.y <= rect2.y + rect2.h)
                     {
@@ -122,10 +122,23 @@ int main()
 Quit:
     if (image != NULL)
         SDL_DestroyTexture(image);
+    if(police != NULL)
+        TTF_CloseFont(police);
+    if (tJouer != NULL)
+        SDL_DestroyTexture(tJouer);
+    if (tCharger != NULL)
+        SDL_DestroyTexture(tCharger);
+    if (tParametres != NULL)
+        SDL_DestroyTexture(tParametres);
+    if (tSauvegarder != NULL)
+        SDL_DestroyTexture(tSauvegarder);
+    if (tQuitter != NULL)
+        SDL_DestroyTexture(tQuitter);
     if (renderer != NULL)
         SDL_DestroyRenderer(renderer);
     if (window != NULL)
         SDL_DestroyWindow(window);
+    
     SDL_Quit();
     return 0;
     
