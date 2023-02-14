@@ -1,1 +1,1 @@
-int niveau1();
+int niveau1(SDL_Window *window, SDL_Renderer *renderer);

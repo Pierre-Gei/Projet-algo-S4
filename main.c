@@ -27,6 +27,9 @@ int main()
     SDL_Texture *tParametres = NULL;
     SDL_Texture *tSauvegarder = NULL;
     SDL_Texture *tQuitter = NULL;
+    SDL_Texture *fond = NULL;
+    SDL_Rect position_fond;
+    int fondtest= 0;
     int window_width = 0;
     int window_height = 0;
     bool jeu = true;
@@ -57,6 +60,8 @@ int main()
     SDL_Rect rect5 = {x, ( window_height - 4*texte_Surface->h -3*INTERLIGNE) /2 + 4*texte_Surface->h + 4*INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
+    fondtest = background(&window, &renderer, &fond,&position_fond);
+
     // TTF_CloseFont(police); je sais pas ou le mettre
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -66,6 +71,7 @@ int main()
     {
         SDL_Delay(39);
         SDL_Event event;
+        SDL_RenderCopy(renderer, fond, NULL, &position_fond);
         SDL_RenderCopy(renderer, tJouer, NULL, &rect1);
         SDL_RenderCopy(renderer, tCharger, NULL, &rect2);
         SDL_RenderCopy(renderer, tParametres, NULL, &rect3);
@@ -93,6 +99,9 @@ int main()
                     if (event.button.x >= rect1.x && event.button.x <= rect1.x + rect1.w && event.button.y >= rect1.y && event.button.y <= rect1.y + rect1.h)
                     {
                         printf("Jouer ! \n");
+                        niveau1(window, renderer);
+                        printf ("niveau1 fini ! \n");
+                        SDL_RenderPresent(renderer);
 
                     }
                     if (event.button.x >= rect2.x && event.button.x <= rect2.x + rect2.w && event.button.y >= rect2.y && event.button.y <= rect2.y + rect2.h)

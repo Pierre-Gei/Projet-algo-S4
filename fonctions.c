@@ -87,3 +87,4 @@ void saut_parabolique(SDL_Rect *position_perso, SDL_Rect *position, SDL_Texture 
         SDL_RenderPresent(renderer);
     }while (position_perso->y < position_initiale && i>0);
 }
+

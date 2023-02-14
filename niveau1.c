@@ -5,16 +5,16 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <math.h>
 #include "affichage.h"
 #include "fonctions.h"
 #include "init.h"
 
-int niveau1 ()
+int niveau1 (SDL_Window *window, SDL_Renderer *renderer)
 {
-    SDL_Window *window = NULL;
+
     SDL_Texture *image = NULL;
-    SDL_Renderer *renderer = NULL;
     SDL_Rect position;
     SDL_Rect rectangle;
     SDL_Surface *perso = IMG_Load("sprites/aventurier1.png");
@@ -46,14 +46,22 @@ int niveau1 ()
         {
             switch (event.type)
             {
-            case SDL_QUIT:
-                jeu = false;
-                break;
+            // case SDL_QUIT:
+            //     jeu = false;
+            //     break;
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym)
                 {
                 case SDLK_ESCAPE:
-                    jeu = false;
+                    statut = menu_jeu(window, renderer, 75, 20);
+                    if (statut == -1)
+                        goto Quit;
+                    else if(statut == 0)
+                    {
+                        printf("continue");
+                    }
+                   
+
                     break;
                 case SDLK_RIGHT:
 
@@ -98,12 +106,23 @@ int niveau1 ()
     }
 
 Quit:
+
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, image, NULL, &position);
     if (image != NULL)
         SDL_DestroyTexture(image);
-    if (renderer != NULL)
-        SDL_DestroyRenderer(renderer);
-    if (window != NULL)
-        SDL_DestroyWindow(window);
-    SDL_Quit();
+    if (texture != NULL)
+        SDL_DestroyTexture(texture);
+    if (texture2 != NULL)
+        SDL_DestroyTexture(texture2);
+    if (texture3 != NULL)
+        SDL_DestroyTexture(texture3);
+    
+
+    // if (renderer != NULL)
+    //     SDL_DestroyRenderer(renderer);
+    // if (window != NULL)
+    //     SDL_DestroyWindow(window);
+    // SDL_Quit();
     return statut;
 }
