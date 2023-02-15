@@ -17,6 +17,11 @@ int niveau1 ()
     SDL_Renderer *renderer = NULL;
     SDL_Rect position;
     SDL_Rect rectangle;
+    SDL_Rect rectangle2;
+    rectangle2.x = 1100;
+    rectangle2.y = 800;
+    rectangle2.w = 100;
+    rectangle2.h = 100;
     SDL_Surface *perso = IMG_Load("sprites/aventurier1.png");
     SDL_Rect position_perso;
     SDL_Texture *texture = NULL;
@@ -42,6 +47,7 @@ int niveau1 ()
         SDL_Event event;
         affichage_background(&renderer,&image,&position);
         SDL_RenderDrawRect(renderer,&rectangle);
+        SDL_RenderDrawRect(renderer,&rectangle2);
         while (SDL_PollEvent(&event))
         {
             switch (event.type)
@@ -58,10 +64,12 @@ int niveau1 ()
                 case SDLK_RIGHT:
 
                     texture3 = deplacement_droit(&position_perso, &position, texture, texture2, texture3);
+                    collision(&position_perso, &rectangle2);
                     break;
 
                 case SDLK_LEFT:
                     texture3 = deplacement_gauche(&position_perso, &position, texture, texture2, texture3);
+                    collision(&position_perso, &rectangle2);
                     break;
 
                 case SDLK_UP:
@@ -100,6 +108,12 @@ int niveau1 ()
 Quit:
     if (image != NULL)
         SDL_DestroyTexture(image);
+    if (texture != NULL)
+        SDL_DestroyTexture(texture);
+    if (texture2 != NULL)
+        SDL_DestroyTexture(texture2);
+    if (texture3 != NULL)
+        SDL_DestroyTexture(texture3);
     if (renderer != NULL)
         SDL_DestroyRenderer(renderer);
     if (window != NULL)

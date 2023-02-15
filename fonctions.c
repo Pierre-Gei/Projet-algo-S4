@@ -4,6 +4,21 @@
 #include <SDL2/SDL.h>
 #include "affichage.h"
 
+void collision(SDL_Rect * position_perso, SDL_Rect * rectangle)
+{
+    if ( (position_perso->x + position_perso->w) > rectangle->x && position_perso->x < (rectangle->x + rectangle->w) && (position_perso->y + position_perso->h) > rectangle->y && position_perso->y < (rectangle->y + rectangle->h) )
+    {
+        if (position_perso->x < rectangle->x)
+        {
+            position_perso->x = rectangle->x - position_perso->w;
+        }
+        else if (position_perso->x > rectangle->x)
+        {
+            position_perso->x = rectangle->x + rectangle->w;
+        }
+    }
+}
+
 SDL_Texture * deplacement_droit(SDL_Rect *position_perso, SDL_Rect *position, SDL_Texture *texture, SDL_Texture *texture2, SDL_Texture *texture3)
 {
     if (position_perso->x>=(position->w/4)*3)
@@ -87,3 +102,4 @@ void saut_parabolique(SDL_Rect *position_perso, SDL_Rect *position, SDL_Texture 
         SDL_RenderPresent(renderer);
     }while (position_perso->y < position_initiale && i>0);
 }
+
