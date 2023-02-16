@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <math.h>
 
 void initVariable(SDL_Rect *position, SDL_Rect *rectangle, SDL_Rect *position_perso, SDL_Surface *perso)

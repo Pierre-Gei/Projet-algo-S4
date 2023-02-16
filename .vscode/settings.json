@@ -2,6 +2,7 @@
     "files.associations": {
         "sdl_image.h": "c",
         "unistd.h": "c",
-        "math.h": "c"
+        "math.h": "c",
+        "sdl_ttf.h": "c"
     }
 }

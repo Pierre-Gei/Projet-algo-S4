@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <math.h>
 #include "affichage.h"
 #include "fonctions.h"
@@ -39,20 +40,19 @@ int niveau1()
     SDL_QueryTexture(texture, NULL, NULL, &position_perso.w, &position_perso.h);
     texture3 = texture;
 
-    int gravite = 6;
-    int vitesse_saut = 15;
-    int vitesse_max = 7;
+    int gravite = 5;
+    int vitesse_saut = 10;
+    int vitesse_max = 5;
     int saut_dir = 0;
     int saut_duree = 0;
     int dernier_saut = 0;
     int vx = 0;
+    int texture_temps = 0;
     SDL_Event event;
     if (statut == -1)
         goto Quit;
     while (jeu)
     {
-        // SDL_Delay(39);
-
         affichage_background(&renderer, &image, &position);
         SDL_RenderDrawRect(renderer, &rectangle);
         SDL_RenderDrawRect(renderer, &rectangle2);
@@ -70,53 +70,40 @@ int niveau1()
                     jeu = false;
                     break;
                 case SDLK_RIGHT:
-
                     vx = vitesse_max;
-                    // saut_dir = 1;
-
-                    texture3 = deplacement_droit(&position_perso, &position, texture, texture2, texture3);
-                    // collision(&position_perso, &rectangle2);
                     break;
 
                 case SDLK_LEFT:
-                    // texture3 = deplacement_gauche(&position_perso, &position, texture, texture2, texture3);
-                    // collision(&position_perso, &rectangle2);
                     vx = -vitesse_max;
-                    // saut_dir = -1;
                     break;
 
                 case SDLK_UP:
                     if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RIGHT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
-                        // saut_parabolique(&position_perso, &position, texture, texture2, texture3, renderer, image, 1);
                         saut_dir = 1;
                         if (SDL_GetTicks() - dernier_saut > 1500)
                         {
-                            saut_duree = 20;
+                            saut_duree = 25;
                             dernier_saut = SDL_GetTicks();
                         }
                     }
                     else if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LEFT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
-                        // saut_parabolique(&position_perso, &position, texture, texture2, texture3, renderer, image, -1);
                         saut_dir = -1;
                         if (SDL_GetTicks() - dernier_saut > 1500)
                         {
-                            saut_duree = 20;
+                            saut_duree = 25;
                             dernier_saut = SDL_GetTicks();
                         }
                     }
                     else
                     {
-                        // saut_parabolique(&position_perso, &position, texture, texture2, texture3, renderer, image, 0);
-                        // saut_dir = 0;
                         if (SDL_GetTicks() - dernier_saut > 1500)
                         {
-                            saut_duree = 20;
+                            saut_duree = 25;
                             dernier_saut = SDL_GetTicks();
                         }
                     }
-
                     break;
                 }
                 break;
@@ -124,11 +111,9 @@ int niveau1()
                 switch (event.key.keysym.sym)
                 {
                 case SDLK_RIGHT:
-                    // texture3 = texture;
                     vx = 0;
                     break;
                 case SDLK_LEFT:
-                    // texture3 = texture;
                     vx = 0;
                     break;
                 case SDLK_UP:
@@ -137,16 +122,14 @@ int niveau1()
                 }
                 break;
             }
-
-            //  saut_duree--;
         }
         position_perso.x += vx;
         if (position_perso.x >= (position.w / 4) * 3)
         {
-            position.x -= 10;
+            position.x -= 7;
             position_perso.x -= vx;
         }
-        
+
         if (position.x == -(position.w))
         {
             position.x = 0;
@@ -168,7 +151,32 @@ int niveau1()
             position_perso.y = 800;
         }
 
-        SDL_RenderCopy(renderer, texture3, NULL, &position_perso);
+        if (SDL_GetTicks() - texture_temps > 100)
+        {
+            if (texture3 == texture)
+            {
+                texture3 = texture2;
+            }
+            else
+            {
+                texture3 = texture;
+            }
+            texture_temps = SDL_GetTicks();
+        }
+
+        if (vx > 0)
+        {
+            SDL_RenderCopy(renderer, texture3, NULL, &position_perso);
+        }
+        else if (vx < 0)
+        {
+            SDL_RenderCopyEx(renderer, texture3, NULL, &position_perso, 0, NULL, SDL_FLIP_HORIZONTAL);
+        }
+        else
+        {
+            SDL_RenderCopy(renderer, texture, NULL, &position_perso);
+        }
+
         SDL_RenderPresent(renderer);
     }
 

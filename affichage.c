@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <unistd.h>
 #include "fonctions.h"
 
@@ -71,3 +72,4 @@ void affichage_background(SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect
     SDL_RenderCopy(*renderer, *image, NULL, position);
     position->x = position->x - 1920;
 }
+
