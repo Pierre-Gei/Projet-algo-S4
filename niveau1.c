@@ -11,11 +11,9 @@
 #include "fonctions.h"
 #include "init.h"
 
-int niveau1()
+int niveau1(SDL_Window *window, SDL_Renderer *renderer)
 {
-    SDL_Window *window = NULL;
     SDL_Texture *image = NULL;
-    SDL_Renderer *renderer = NULL;
     SDL_Rect position;
     SDL_Rect rectangle;
     SDL_Rect rectangle2;
@@ -67,7 +65,13 @@ int niveau1()
                 switch (event.key.keysym.sym)
                 {
                 case SDLK_ESCAPE:
-                    jeu = false;
+                    statut = menu_jeu(window, renderer, 75, 20);
+                    if (statut == -1)
+                        goto Quit;
+                    else if(statut == 0)
+                    {
+                        printf("continue");
+                    }
                     break;
                 case SDLK_RIGHT:
                     vx = vitesse_max;
@@ -189,10 +193,5 @@ Quit:
         SDL_DestroyTexture(texture2);
     if (texture3 != NULL)
         SDL_DestroyTexture(texture3);
-    if (renderer != NULL)
-        SDL_DestroyRenderer(renderer);
-    if (window != NULL)
-        SDL_DestroyWindow(window);
-    SDL_Quit();
     return statut;
 }

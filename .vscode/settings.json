@@ -3,6 +3,7 @@
         "sdl_image.h": "c",
         "unistd.h": "c",
         "math.h": "c",
-        "sdl_ttf.h": "c"
+        "sdl_ttf.h": "c",
+        "niveau1.h": "c"
     }
 }
