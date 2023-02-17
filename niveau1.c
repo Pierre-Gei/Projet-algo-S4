@@ -18,7 +18,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer)
     SDL_Rect rectangle;
     SDL_Rect rectangle2;
     rectangle2.x = 1100;
-    rectangle2.y = 800;
+    rectangle2.y = 550;
     rectangle2.w = 100;
     rectangle2.h = 100;
     SDL_Surface *perso = IMG_Load("sprites/aventurier1.png");
@@ -138,7 +138,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer)
         {
             position.x = 0;
         }
-        collision(&position_perso, &rectangle2);
+        
         if (saut_duree > 0)
         {
             position_perso.y -= vitesse_saut;
@@ -149,6 +149,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer)
         {
             position_perso.y += gravite;
         }
+        collision(&position_perso, &rectangle2);
 
         if (position_perso.y >= 800)
         {
@@ -167,6 +168,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer)
             }
             texture_temps = SDL_GetTicks();
         }
+        SDL_Delay(10);
 
         if (vx > 0)
         {

@@ -4,17 +4,33 @@
 #include <SDL2/SDL.h>
 #include "affichage.h"
 
-void collision(SDL_Rect * position_perso, SDL_Rect * rectangle)
+void collision(SDL_Rect *position_perso, SDL_Rect *rectangle)
 {
-    if ( (position_perso->x + position_perso->w) > rectangle->x && position_perso->x < (rectangle->x + rectangle->w) && (position_perso->y + position_perso->h) > rectangle->y && position_perso->y < (rectangle->y + rectangle->h) )
+    SDL_Rect intersection;
+    if (SDL_IntersectRect(position_perso, rectangle, &intersection))
     {
-        if (position_perso->x < rectangle->x)
-        {
-            position_perso->x = rectangle->x - position_perso->w;
-        }
-        else if (position_perso->x > rectangle->x)
-        {
-            position_perso->x = rectangle->x + rectangle->w;
-        }
+       printf("x = %d, y = %d, w = %d, h = %d\n", intersection.x, intersection.y, intersection.w, intersection.h);
+       if(intersection.w > intersection.h)
+       {
+           if(position_perso->y < intersection.y)
+           {
+               position_perso->y = intersection.y - position_perso->h;
+           }
+           else
+           {
+               position_perso->y = intersection.y + intersection.h;
+           }
+       }
+       else
+       {
+           if(position_perso->x < intersection.x)
+           {
+               position_perso->x = intersection.x - position_perso->w;
+           }
+           else
+           {
+               position_perso->x = intersection.x + intersection.w;
+           }
+       }
     }
 }
