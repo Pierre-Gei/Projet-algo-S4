@@ -20,7 +20,7 @@ int main()
     SDL_Window *window = NULL;
     SDL_Texture *image = NULL;
     SDL_Renderer *renderer = NULL;
-    TTF_Font * police = NULL;
+    TTF_Font *police = NULL;
     SDL_Surface *texte_Surface = NULL;
     SDL_Texture *tJouer = NULL;
     SDL_Texture *tCharger = NULL;
@@ -29,7 +29,7 @@ int main()
     SDL_Texture *tQuitter = NULL;
     SDL_Texture *fond = NULL;
     SDL_Rect position_fond;
-    int fondtest= 0;
+    int fondtest = 0;
     int window_width = 0;
     int window_height = 0;
     bool jeu = true;
@@ -39,45 +39,44 @@ int main()
     init(&window, &renderer);
     SDL_GetWindowSize(window, &window_width, &window_height);
 
-    initText(&police,couleurBlanche, &texte_Surface, &tJouer, &renderer, TAILLE_POLICE, "Jouer");
-    int x = (window_width - texte_Surface->w)/2;
-    SDL_Rect rect1 = {x , ( window_height - 4*texte_Surface->h -3*INTERLIGNE) /2 , texte_Surface->w, texte_Surface->h};
+    initText(&police, couleurBlanche, &texte_Surface, &tJouer, &renderer, TAILLE_POLICE, "Jouer");
+    int x = (window_width - texte_Surface->w) / 2;
+    SDL_Rect rectJouer = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
-    initText(&police,couleurBlanche, &texte_Surface, &tCharger, &renderer, TAILLE_POLICE, "Charger");
-    SDL_Rect rect2 = {x, ( window_height - 4*texte_Surface->h -3*INTERLIGNE) /2 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    initText(&police, couleurBlanche, &texte_Surface, &tCharger, &renderer, TAILLE_POLICE, "Charger");
+    SDL_Rect rectCharger = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
-    initText(&police,couleurBlanche, &texte_Surface, &tParametres, &renderer, TAILLE_POLICE, "Parametres");
-    SDL_Rect rect3 = {x, ( window_height - 4*texte_Surface->h -3*INTERLIGNE) /2 + 2*texte_Surface->h + 2*INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    initText(&police, couleurBlanche, &texte_Surface, &tParametres, &renderer, TAILLE_POLICE, "Parametres");
+    SDL_Rect rectParam = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
-    initText(&police,couleurBlanche, &texte_Surface, &tSauvegarder, &renderer, TAILLE_POLICE, "Sauvegarder");
-    SDL_Rect rect4 = {x, ( window_height - 4*texte_Surface->h -3*INTERLIGNE) /2 + 3*texte_Surface->h + 3*INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    initText(&police, couleurBlanche, &texte_Surface, &tSauvegarder, &renderer, TAILLE_POLICE, "Sauvegarder");
+    SDL_Rect rectSauv = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 3 * texte_Surface->h + 3 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
-    initText(&police,couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
-    SDL_Rect rect5 = {x, ( window_height - 4*texte_Surface->h -3*INTERLIGNE) /2 + 4*texte_Surface->h + 4*INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    initText(&police, couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
+    SDL_Rect rectQuit = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 4 * texte_Surface->h + 4 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
-    fondtest = background(&window, &renderer, &fond,&position_fond);
+    fondtest = background(&window, &renderer, &fond, &position_fond);
 
     // TTF_CloseFont(police); je sais pas ou le mettre
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
 
     while (jeu)
     {
         SDL_Delay(39);
         SDL_Event event;
         SDL_RenderCopy(renderer, fond, NULL, &position_fond);
-        SDL_RenderCopy(renderer, tJouer, NULL, &rect1);
-        SDL_RenderCopy(renderer, tCharger, NULL, &rect2);
-        SDL_RenderCopy(renderer, tParametres, NULL, &rect3);
-        SDL_RenderCopy(renderer, tSauvegarder, NULL, &rect4);
-        SDL_RenderCopy(renderer, tQuitter, NULL, &rect5);
-      
+        SDL_RenderCopy(renderer, tJouer, NULL, &rectJouer);
+        SDL_RenderCopy(renderer, tCharger, NULL, &rectCharger);
+        SDL_RenderCopy(renderer, tParametres, NULL, &rectParam);
+        SDL_RenderCopy(renderer, tSauvegarder, NULL, &rectSauv);
+        SDL_RenderCopy(renderer, tQuitter, NULL, &rectQuit);
+
         while (SDL_PollEvent(&event))
         {
             switch (event.type)
@@ -96,27 +95,26 @@ int main()
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT)
                 {
-                    if (event.button.x >= rect1.x && event.button.x <= rect1.x + rect1.w && event.button.y >= rect1.y && event.button.y <= rect1.y + rect1.h)
+                    if (event.button.x >= rectJouer.x && event.button.x <= rectJouer.x + rectJouer.w && event.button.y >= rectJouer.y && event.button.y <= rectJouer.y + rectJouer.h)
                     {
                         printf("Jouer ! \n");
-                        niveau1(window, renderer);
-                        printf ("niveau1 fini ! \n");
+                        niveau1(window, renderer, police);
+                        printf("niveau1 fini ! \n");
                         SDL_RenderPresent(renderer);
-
                     }
-                    if (event.button.x >= rect2.x && event.button.x <= rect2.x + rect2.w && event.button.y >= rect2.y && event.button.y <= rect2.y + rect2.h)
+                    if (event.button.x >= rectCharger.x && event.button.x <= rectCharger.x + rectCharger.w && event.button.y >= rectCharger.y && event.button.y <= rectCharger.y + rectCharger.h)
                     {
                         printf("Charger ! \n");
                     }
-                    if (event.button.x >= rect3.x && event.button.x <= rect3.x + rect3.w && event.button.y >= rect3.y && event.button.y <= rect3.y + rect3.h)
+                    if (event.button.x >= rectParam.x && event.button.x <= rectParam.x + rectParam.w && event.button.y >= rectParam.y && event.button.y <= rectParam.y + rectParam.h)
                     {
                         printf("Parametres ! \n");
                     }
-                    if (event.button.x >= rect4.x && event.button.x <= rect4.x + rect4.w && event.button.y >= rect4.y && event.button.y <= rect4.y + rect4.h)
+                    if (event.button.x >= rectSauv.x && event.button.x <= rectSauv.x + rectSauv.w && event.button.y >= rectSauv.y && event.button.y <= rectSauv.y + rectSauv.h)
                     {
                         printf("Sauvegarder ! \n");
                     }
-                    if (event.button.x >= rect5.x && event.button.x <= rect5.x + rect5.w && event.button.y >= rect5.y && event.button.y <= rect5.y + rect5.h)
+                    if (event.button.x >= rectQuit.x && event.button.x <= rectQuit.x + rectQuit.w && event.button.y >= rectQuit.y && event.button.y <= rectQuit.y + rectQuit.h)
                     {
                         printf("Quitter ! \n");
                         jeu = false;
@@ -131,7 +129,7 @@ int main()
 Quit:
     if (image != NULL)
         SDL_DestroyTexture(image);
-    if(police != NULL)
+    if (police != NULL)
         TTF_CloseFont(police);
     if (tJouer != NULL)
         SDL_DestroyTexture(tJouer);
@@ -147,9 +145,9 @@ Quit:
         SDL_DestroyRenderer(renderer);
     if (window != NULL)
         SDL_DestroyWindow(window);
-    
+
     SDL_Quit();
     return 0;
-    
+
     return 0;
 }

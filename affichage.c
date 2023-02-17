@@ -9,7 +9,6 @@
 #include "fonctions.h"
 #include "init.h"
 
-
 int init(SDL_Window **window, SDL_Renderer **renderer)
 {
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -176,8 +175,40 @@ Quit:
         SDL_DestroyTexture(tQuitter);
     if (fond != NULL)
         SDL_DestroyTexture(fond);
-    
+
     return statut;
 }
 
+void affichage_text_niveau(SDL_Texture **texture, TTF_Font *police, SDL_Rect *position, int x, int y, SDL_Renderer **renderer, char *texte, SDL_Color couleur)
+{
+    SDL_Surface *surface = TTF_RenderText_Blended(police, texte, couleur);
+    if (!surface)
+    {
+        fprintf(stderr, "Erreur d'initialisation de TTF_RenderText_Blended : %s\n", TTF_GetError());
+        exit(EXIT_FAILURE);
+    }
+    *texture = SDL_CreateTextureFromSurface(*renderer, surface);
+    if (!(*texture))
+    {
+        fprintf(stderr, "Erreur d'initialisation de SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
+        exit(EXIT_FAILURE);
+    }
+    position->x = x;
+    position->y = y;
+    position->w = surface->w;
+    position->h = surface->h;
+    SDL_FreeSurface(surface);
+}
+
+void changement_sprites(SDL_Texture **rendu, SDL_Texture *texture1, SDL_Texture *texture2)
+{
+    if (*rendu == texture1)
+    {
+        *rendu = texture2;
+    }
+    else
+    {
+        *rendu = texture1;
+    }
+}
 

@@ -11,12 +11,15 @@
 #include "fonctions.h"
 #include "init.h"
 
-int niveau1(SDL_Window *window, SDL_Renderer *renderer)
+#define TAILLE_POLICE 60
+
+int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police)
 {
     SDL_Texture *image = NULL;
     SDL_Rect position;
     SDL_Rect rectangle;
     SDL_Rect rectangle2;
+    SDL_Rect position_chrono;
     rectangle2.x = 1100;
     rectangle2.y = 550;
     rectangle2.w = 100;
@@ -26,6 +29,8 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer)
     SDL_Texture *texture = NULL;
     SDL_Texture *texture2 = NULL;
     SDL_Texture *texture3 = NULL;
+    SDL_Texture *tChrono = NULL;
+    SDL_Color couleur = {255, 255, 255, 255};
     bool jeu = true;
     int statut = background(&window, &renderer, &image, &position);
     initVariable(&position, &rectangle, &position_perso, perso);
@@ -38,10 +43,14 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer)
     SDL_QueryTexture(texture, NULL, NULL, &position_perso.w, &position_perso.h);
     texture3 = texture;
 
+    // chronomètre
+    Uint32 temps_début = SDL_GetTicks();
+    Uint32 temps_écoulé = 0;
+
     int gravite = 5;
     int vitesse_saut = 10;
     int vitesse_max = 5;
-    int saut_dir = 0;
+    int dir = 1;
     int saut_duree = 0;
     int dernier_saut = 0;
     int vx = 0;
@@ -65,26 +74,31 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer)
                 switch (event.key.keysym.sym)
                 {
                 case SDLK_ESCAPE:
+                    Uint32 temps_pause = SDL_GetTicks();
                     statut = menu_jeu(window, renderer, 75, 20);
                     if (statut == -1)
                         goto Quit;
-                    else if(statut == 0)
+                    else if (statut == 0)
                     {
                         printf("continue");
                     }
+                    // reprendre le chrono
+                    temps_début += SDL_GetTicks() - temps_pause;
                     break;
                 case SDLK_RIGHT:
                     vx = vitesse_max;
+                    dir = 1;
                     break;
 
                 case SDLK_LEFT:
                     vx = -vitesse_max;
+                    dir = -1;
                     break;
 
                 case SDLK_UP:
                     if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RIGHT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
-                        saut_dir = 1;
+                        dir = 1;
                         if (SDL_GetTicks() - dernier_saut > 1500)
                         {
                             saut_duree = 25;
@@ -93,7 +107,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer)
                     }
                     else if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LEFT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
-                        saut_dir = -1;
+                        dir = -1;
                         if (SDL_GetTicks() - dernier_saut > 1500)
                         {
                             saut_duree = 25;
@@ -120,80 +134,99 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer)
                 case SDLK_LEFT:
                     vx = 0;
                     break;
-                case SDLK_UP:
-                    saut_dir = 0;
-                    break;
                 }
                 break;
             }
         }
-        position_perso.x += vx;
-        if (position_perso.x >= (position.w / 4) * 3)
-        {
-            position.x -= 7;
-            position_perso.x -= vx;
-        }
+        // Calcul du temps écoulé
+        temps_écoulé = SDL_GetTicks() - temps_début;
+        int minutes = (int)(temps_écoulé / 1000) / 60;
+        int secondes = (int)(temps_écoulé / 1000) % 60;
 
-        if (position.x == -(position.w))
-        {
-            position.x = 0;
-        }
-        
-        if (saut_duree > 0)
-        {
-            position_perso.y -= vitesse_saut;
+        // Affichage du temps écoulé
+        char temps[20];
+        sprintf(temps, "%02d:%02d", minutes, secondes);
+        affichage_text_niveau(&tChrono,police,&position_chrono,0,0,&renderer,temps,couleur);
 
-            saut_duree--;
-        }
-        else
-        {
-            position_perso.y += gravite;
-        }
-        collision(&position_perso, &rectangle2);
-
-        if (position_perso.y >= 800)
-        {
-            position_perso.y = 800;
-        }
-
-        if (SDL_GetTicks() - texture_temps > 100)
-        {
-            if (texture3 == texture)
-            {
-                texture3 = texture2;
-            }
-            else
-            {
-                texture3 = texture;
-            }
-            texture_temps = SDL_GetTicks();
-        }
-        SDL_Delay(10);
-
-        if (vx > 0)
-        {
-            SDL_RenderCopy(renderer, texture3, NULL, &position_perso);
-        }
-        else if (vx < 0)
-        {
-            SDL_RenderCopyEx(renderer, texture3, NULL, &position_perso, 0, NULL, SDL_FLIP_HORIZONTAL);
-        }
-        else
-        {
-            SDL_RenderCopy(renderer, texture, NULL, &position_perso);
-        }
-
-        SDL_RenderPresent(renderer);
+    position_perso.x += vx;
+    //Déplacement de l'arrière plan quand le personnage atteint les 3/4 de l'écran
+    if (position_perso.x >= (position.w / 4) * 3)
+    {
+        position.x -= 7;
+        position_perso.x -= vx;
     }
 
-Quit:
-    if (image != NULL)
-        SDL_DestroyTexture(image);
-    if (texture != NULL)
-        SDL_DestroyTexture(texture);
-    if (texture2 != NULL)
-        SDL_DestroyTexture(texture2);
-    if (texture3 != NULL)
-        SDL_DestroyTexture(texture3);
-    return statut;
+
+    // if (position.x == -(position.w))
+    // {
+    //     position.x = 0;
+    // }
+
+    
+    if (saut_duree > 0)
+    {
+        position_perso.y -= vitesse_saut;
+
+        saut_duree--;
+    }
+    else
+    {
+        position_perso.y += gravite;
+    }
+
+    collision(&position_perso, &rectangle2);
+
+    ////////////////////////////////////////////////////// A modifier avec collision du sol quand on aura fait le sol correctement
+    if (position_perso.y >= 800)
+    {
+        position_perso.y = 800;
+    }
+    
+    //Toutes les 100ms on change de sprite
+    if (SDL_GetTicks() - texture_temps > 100)
+    {
+        changement_sprites(&texture3,texture,texture2);
+        texture_temps = SDL_GetTicks();
+    }
+
+    //Ne peut pas sortir à gauche de l'écran
+    if(position_perso.x <= 0)
+    {
+        position_perso.x = 0;
+    }
+
+    SDL_Delay(10);
+    SDL_RenderCopy(renderer, tChrono, NULL, &position_chrono);
+
+    // Affichage du personnage
+    if (vx > 0)
+    {
+        SDL_RenderCopy(renderer, texture3, NULL, &position_perso);
+    }
+    else if (vx < 0)
+    {
+        SDL_RenderCopyEx(renderer, texture3, NULL, &position_perso, 0, NULL, SDL_FLIP_HORIZONTAL);
+    }
+    else if(vx == 0 && dir == 1)
+    {
+        SDL_RenderCopy(renderer, texture, NULL, &position_perso);
+    }
+    else if(vx == 0 && dir == -1)
+    {
+        SDL_RenderCopyEx(renderer, texture, NULL, &position_perso, 0, NULL, SDL_FLIP_HORIZONTAL);
+    }
+
+    SDL_RenderPresent(renderer);
+}
+
+Quit : 
+if (image != NULL)
+           SDL_DestroyTexture(image);
+if (texture != NULL)
+    SDL_DestroyTexture(texture);
+if (texture2 != NULL)
+    SDL_DestroyTexture(texture2);
+if (texture3 != NULL)
+    SDL_DestroyTexture(texture3);
+return statut;
 }

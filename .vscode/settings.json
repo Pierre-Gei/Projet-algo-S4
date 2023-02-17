@@ -4,6 +4,8 @@
         "unistd.h": "c",
         "math.h": "c",
         "sdl_ttf.h": "c",
-        "niveau1.h": "c"
+        "niveau1.h": "c",
+        "affichage.h": "c",
+        "string.h": "c"
     }
 }
