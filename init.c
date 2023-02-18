@@ -14,10 +14,10 @@ void initVariable(SDL_Rect *position, SDL_Rect *rectangle, SDL_Rect *position_pe
     position->y = 0;
 
     position_perso->x = position->w / 2 - perso->w / 2;
-    position_perso->y = 850;
+    position_perso->y = 850 - perso->h;
     rectangle-> x= 0;
-    rectangle->y = 960 ;
-    rectangle->h = 100;
+    rectangle->y = 850 ;
+    rectangle->h = position->h - rectangle->y;
     rectangle->w = position->w;
 }
 

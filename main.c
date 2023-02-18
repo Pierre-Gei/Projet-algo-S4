@@ -11,6 +11,7 @@
 #include "fonctions.h"
 #include "init.h"
 #include "niveau1.h"
+#include "save.h"
 
 #define TAILLE_POLICE 75
 #define INTERLIGNE 20
@@ -35,8 +36,14 @@ int main()
     bool jeu = true;
     int statut = 0;
     int morts = 0;
+    int recompenses = 0;
+    int niveau = 1;
+    int meilleur_temps = 0;
+
+    SDL_Point souris;
 
     SDL_Color couleurBlanche = {255, 255, 255, 255};
+    SDL_Color couleurJaune = {255, 255, 0, 255};
     init(&window, &renderer);
     SDL_GetWindowSize(window, &window_width, &window_height);
 
@@ -71,15 +78,16 @@ int main()
     {
         SDL_Delay(39);
         SDL_Event event;
-        SDL_RenderCopy(renderer, fond, NULL, &position_fond);
-        SDL_RenderCopy(renderer, tJouer, NULL, &rectJouer);
-        SDL_RenderCopy(renderer, tCharger, NULL, &rectCharger);
-        SDL_RenderCopy(renderer, tParametres, NULL, &rectParam);
-        SDL_RenderCopy(renderer, tSauvegarder, NULL, &rectSauv);
-        SDL_RenderCopy(renderer, tQuitter, NULL, &rectQuit);
+        SDL_GetMouseState(&souris.x, &souris.y);
+        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tJouer, "Jouer",  souris, rectJouer);
+        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tCharger, "Charger",  souris, rectCharger);
+        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tParametres, "Parametres",  souris, rectParam);
+        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tSauvegarder, "Sauvegarder",  souris, rectSauv);
+        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tQuitter, "Quitter",  souris, rectQuit);
 
         while (SDL_PollEvent(&event))
         {
+
             switch (event.type)
             {
             case SDL_QUIT:
@@ -99,13 +107,14 @@ int main()
                     if (event.button.x >= rectJouer.x && event.button.x <= rectJouer.x + rectJouer.w && event.button.y >= rectJouer.y && event.button.y <= rectJouer.y + rectJouer.h)
                     {
                         printf("Jouer ! \n");
-                        niveau1(window, renderer, police,&morts);
+                        niveau1(window, renderer, police, &morts);
                         printf("niveau1 fini ! \n");
                         SDL_RenderPresent(renderer);
                     }
                     if (event.button.x >= rectCharger.x && event.button.x <= rectCharger.x + rectCharger.w && event.button.y >= rectCharger.y && event.button.y <= rectCharger.y + rectCharger.h)
                     {
                         printf("Charger ! \n");
+                        chargement(&recompenses, &morts, &meilleur_temps, &niveau);
                     }
                     if (event.button.x >= rectParam.x && event.button.x <= rectParam.x + rectParam.w && event.button.y >= rectParam.y && event.button.y <= rectParam.y + rectParam.h)
                     {
@@ -114,6 +123,7 @@ int main()
                     if (event.button.x >= rectSauv.x && event.button.x <= rectSauv.x + rectSauv.w && event.button.y >= rectSauv.y && event.button.y <= rectSauv.y + rectSauv.h)
                     {
                         printf("Sauvegarder ! \n");
+                        sauvegarde(recompenses, morts, meilleur_temps, niveau);
                     }
                     if (event.button.x >= rectQuit.x && event.button.x <= rectQuit.x + rectQuit.w && event.button.y >= rectQuit.y && event.button.y <= rectQuit.y + rectQuit.h)
                     {
@@ -124,6 +134,12 @@ int main()
                 break;
             }
         }
+        SDL_RenderCopy(renderer, fond, NULL, &position_fond);
+         SDL_RenderCopy(renderer, tJouer, NULL, &rectJouer);
+        SDL_RenderCopy(renderer, tCharger, NULL, &rectCharger);
+        SDL_RenderCopy(renderer, tParametres, NULL, &rectParam);
+        SDL_RenderCopy(renderer, tSauvegarder, NULL, &rectSauv);
+        SDL_RenderCopy(renderer, tQuitter, NULL, &rectQuit);
         SDL_RenderPresent(renderer);
     }
 

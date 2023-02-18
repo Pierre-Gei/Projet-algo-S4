@@ -191,8 +191,8 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
         {
             position_perso.y += gravite;
         }
-        
-        // collision(&position_perso, &rectangle2);
+        collision(&position_perso, &rectangle);
+        collision(&position_perso, &rectangle2);
         // if(vie_restante != vie_initiale)
         // {
         //     (*morts)++;
@@ -200,11 +200,6 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
         //     vie_restante++;
         // }
 
-        ////////////////////////////////////////////////////// A modifier avec collision du sol quand on aura fait le sol correctement
-        if (position_perso.y >= 800)
-        {
-            position_perso.y = 800;
-        }
 
         // Toutes les 100ms on change de sprite
         if (SDL_GetTicks() - texture_temps > 100)

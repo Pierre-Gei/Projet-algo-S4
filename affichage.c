@@ -213,3 +213,31 @@ void changement_sprites(SDL_Texture **rendu, SDL_Texture *texture1, SDL_Texture 
         *rendu = texture1;
     }
 }
+
+void changement_couleur(TTF_Font *police, SDL_Color couleur, SDL_Renderer **renderer, SDL_Texture **texte_texture, char *texte)
+{
+    SDL_Surface *texte_Surface = TTF_RenderText_Blended(police, texte, couleur);
+    if (!texte_Surface)
+    {
+        fprintf(stderr, "Erreur d'initialisation de TTF_RenderText_Blended : %s \n", TTF_GetError());
+        exit(EXIT_FAILURE);
+    }
+    *texte_texture = SDL_CreateTextureFromSurface(*renderer, texte_Surface);
+    if (!texte_texture)
+    {
+        fprintf(stderr, "Erreur d'initialisation de SDL_CreateTextureFromSurface : %s \n", SDL_GetError());
+        exit(EXIT_FAILURE);
+    }
+}
+
+void changement_couleur_inRect(TTF_Font *police, SDL_Color couleur,SDL_Color couleur_initiale, SDL_Renderer **renderer, SDL_Texture **texte_texture, char *texte, SDL_Point souris, SDL_Rect rectangle)
+{
+    if (SDL_PointInRect(&souris, &rectangle))
+    {
+        changement_couleur(police, couleur, renderer, texte_texture, texte);
+    }
+    else
+    {
+        changement_couleur(police, couleur_initiale, renderer, texte_texture, texte);
+    }
+}
