@@ -72,7 +72,7 @@ void affichage_background(SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect
     position->x = position->x - 1920;
 }
 
-int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE)
+int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, SDL_Rect *position_perso)
 {
     SDL_Texture *image = NULL;
     TTF_Font *police = NULL;
@@ -147,6 +147,8 @@ int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int 
                     {
                         printf("Recommencer ! \n");
                         statut = 1;
+                        position_perso->x = 560;
+                        position_perso->y = 850;
                         goto Quit;
                     }
                     if (event.button.x >= rect3.x && event.button.x <= rect3.x + rect3.w && event.button.y >= rect3.y && event.button.y <= rect3.y + rect3.h)
@@ -211,4 +213,3 @@ void changement_sprites(SDL_Texture **rendu, SDL_Texture *texture1, SDL_Texture 
         *rendu = texture1;
     }
 }
-

@@ -1,1 +1,1 @@
-int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police);
+int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int * morts);

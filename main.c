@@ -34,6 +34,7 @@ int main()
     int window_height = 0;
     bool jeu = true;
     int statut = 0;
+    int morts = 0;
 
     SDL_Color couleurBlanche = {255, 255, 255, 255};
     init(&window, &renderer);
@@ -98,7 +99,7 @@ int main()
                     if (event.button.x >= rectJouer.x && event.button.x <= rectJouer.x + rectJouer.w && event.button.y >= rectJouer.y && event.button.y <= rectJouer.y + rectJouer.h)
                     {
                         printf("Jouer ! \n");
-                        niveau1(window, renderer, police);
+                        niveau1(window, renderer, police,&morts);
                         printf("niveau1 fini ! \n");
                         SDL_RenderPresent(renderer);
                     }

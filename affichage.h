@@ -11,7 +11,7 @@ SDL_Texture *loadTexture(const char *filename, SDL_Renderer *renderer);
 /*Afficher le fond d'écran en jeu*/
 void affichage_background(SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect *position);
 /*Petit menu en jeu*/
-int menu_jeu(SDL_Window * window, SDL_Renderer * renderer, int TAILLE_POLICE, int INTERLIGNE);
+int menu_jeu(SDL_Window * window, SDL_Renderer * renderer, int TAILLE_POLICE, int INTERLIGNE, SDL_Rect * position_perso);
 /*Afficher le texte dans une boucle*/
 void affichage_text_niveau(SDL_Texture **texture, TTF_Font * police, SDL_Rect * position,int x, int y, SDL_Renderer **renderer, char * texte, SDL_Color couleur);
 /*Alterner entre les deux sprites du personnage*/
