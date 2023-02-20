@@ -17,7 +17,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
 {
     SDL_Texture *image = NULL;
     SDL_Rect position;
-    SDL_Rect rectangle;
+    SDL_Rect sol_rect;
     SDL_Rect rectangle2;
   
     rectangle2.x = 1100;
@@ -25,19 +25,22 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
     rectangle2.w = 100;
     rectangle2.h = 100;
     SDL_Surface *perso = IMG_Load("sprites/aventurier1.png");
+    SDL_Surface *enemi1 = IMG_Load("sprites/aventurier1.png");
     SDL_Rect position_perso;
     SDL_Texture *texture = NULL;
     SDL_Texture *texture2 = NULL;
     SDL_Texture *texture3 = NULL;
+    SDL_Texture *enemi = NULL;
     
     SDL_Color couleur = {255, 255, 255, 255};
     bool jeu = true;
     int statut = background(&window, &renderer, &image, &position);
-    initVariable(&position, &rectangle, &position_perso, perso);
+    initVariable(&position, &sol_rect, &position_perso, perso);
     SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255); // A supprimer
     texture = SDL_CreateTextureFromSurface(renderer, perso);
     SDL_FreeSurface(perso);
     perso = IMG_Load("sprites/aventurier2.png");
+    enemi = SDL_CreateTextureFromSurface(renderer, enemi1);
     texture2 = SDL_CreateTextureFromSurface(renderer, perso);
     SDL_FreeSurface(perso);
     SDL_QueryTexture(texture, NULL, NULL, &position_perso.w, &position_perso.h);
@@ -59,7 +62,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
     char morts_str[20];
 
     int gravite = 5;
-    int vitesse_saut = 10;
+    int vitesse_saut = 12;
     int vitesse_max = 5;
     int dir = 1;
     int saut_duree = 0;
@@ -72,7 +75,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
     while (jeu)
     {
         affichage_background(&renderer, &image, &position);
-        SDL_RenderDrawRect(renderer, &rectangle);
+        SDL_RenderDrawRect(renderer, &sol_rect);
         SDL_RenderDrawRect(renderer, &rectangle2);
         while (SDL_PollEvent(&event))
         {
@@ -86,11 +89,13 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
                 {
                 case SDLK_ESCAPE:
                     Uint32 temps_pause = SDL_GetTicks();
-                    statut = menu_jeu(window, renderer, 75, 20, &position_perso);
+                    statut = menu_jeu(window, renderer, 75, 20);
                     if (statut == -1)
                         goto Quit;
                     else if (statut == 1)
                     {
+                        position_perso.x = 560;
+                        position_perso.y = sol_rect.y - position_perso.h;
                         temps_début = SDL_GetTicks();
                         texture3 = texture2;
                         dir = 1;
@@ -117,7 +122,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
                         dir = 1;
                         if (SDL_GetTicks() - dernier_saut > 1500)
                         {
-                            saut_duree = 25;
+                            saut_duree = 20;
                             dernier_saut = SDL_GetTicks();
                         }
                     }
@@ -126,7 +131,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
                         dir = -1;
                         if (SDL_GetTicks() - dernier_saut > 1500)
                         {
-                            saut_duree = 25;
+                            saut_duree = 20;
                             dernier_saut = SDL_GetTicks();
                         }
                     }
@@ -134,7 +139,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
                     {
                         if (SDL_GetTicks() - dernier_saut > 1500)
                         {
-                            saut_duree = 25;
+                            saut_duree = 20;
                             dernier_saut = SDL_GetTicks();
                         }
                     }
@@ -191,14 +196,29 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
         {
             position_perso.y += gravite;
         }
-        collision(&position_perso, &rectangle);
-        collision(&position_perso, &rectangle2);
-        // if(vie_restante != vie_initiale)
-        // {
-        //     (*morts)++;
-        //     menu_jeu(window, renderer, 75, 20, &position_perso);
-        //     vie_restante++;
-        // }
+        collision(&position_perso, &sol_rect);
+        // collision(&position_perso, &rectangle2);
+
+        //Collision enemis avec le perso
+        collision_enemis(&position_perso,&rectangle2,&enemi,&vie_restante);
+        if(vie_restante != vie_initiale)
+        {
+            (*morts)++;
+            statut = menu_game_over(window, renderer, 75, 20);
+            if (statut == -1)
+                goto Quit;
+            else if (statut == 1)
+            {
+                position_perso.x = 560;
+                position_perso.y = sol_rect.y - position_perso.h;
+                temps_début = SDL_GetTicks();
+                texture3 = texture2;
+                dir = 1;
+                vx = 0;
+                saut_duree = 0;
+            }
+            vie_restante++;
+        }
 
 
         // Toutes les 100ms on change de sprite
@@ -215,8 +235,10 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
         }
 
         SDL_Delay(10);
+
         SDL_RenderCopy(renderer, tMorts, NULL, &position_morts);
         SDL_RenderCopy(renderer, tChrono, NULL, &position_chrono);
+        SDL_RenderCopy(renderer, enemi,NULL,&rectangle2 );
 
         // Affichage du personnage
         if (vx > 0)

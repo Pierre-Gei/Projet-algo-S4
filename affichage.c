@@ -72,115 +72,6 @@ void affichage_background(SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect
     position->x = position->x - 1920;
 }
 
-int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, SDL_Rect *position_perso)
-{
-    SDL_Texture *image = NULL;
-    TTF_Font *police = NULL;
-    SDL_Surface *texte_Surface = NULL;
-    SDL_Texture *tContinue = NULL;
-    SDL_Texture *tRecommencer = NULL;
-    SDL_Texture *tQuitter = NULL;
-    SDL_Texture *fond = NULL;
-    SDL_Rect position_fond;
-    int fondtest = 0;
-    int window_width = 0;
-    int window_height = 0;
-    bool jeu = true;
-    int statut = 0;
-
-    SDL_Color couleurBlanche = {255, 255, 255, 255};
-    SDL_GetWindowSize(window, &window_width, &window_height);
-
-    initText(&police, couleurBlanche, &texte_Surface, &tContinue, &renderer, TAILLE_POLICE, "Continuer");
-    int x = (window_width - texte_Surface->w) / 2;
-    SDL_Rect rect1 = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2, texte_Surface->w, texte_Surface->h};
-    SDL_FreeSurface(texte_Surface);
-
-    initText(&police, couleurBlanche, &texte_Surface, &tRecommencer, &renderer, TAILLE_POLICE, "Recommencer");
-    SDL_Rect rect2 = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
-    SDL_FreeSurface(texte_Surface);
-
-    initText(&police, couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
-    SDL_Rect rect3 = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
-    SDL_FreeSurface(texte_Surface);
-
-    fondtest = background(&window, &renderer, &fond, &position_fond);
-
-    // TTF_CloseFont(police); je sais pas ou le mettre
-
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
-    while (jeu)
-    {
-        SDL_Delay(39);
-        SDL_Event event;
-        SDL_RenderCopy(renderer, fond, NULL, &position_fond);
-        SDL_RenderCopy(renderer, tContinue, NULL, &rect1);
-        SDL_RenderCopy(renderer, tRecommencer, NULL, &rect2);
-        SDL_RenderCopy(renderer, tQuitter, NULL, &rect3);
-
-        while (SDL_PollEvent(&event))
-        {
-            switch (event.type)
-            {
-            case SDL_QUIT:
-                jeu = false;
-                break;
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.sym)
-                {
-                case SDLK_ESCAPE:
-                    jeu = false;
-                    break;
-                }
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-                if (event.button.button == SDL_BUTTON_LEFT)
-                {
-                    if (event.button.x >= rect1.x && event.button.x <= rect1.x + rect1.w && event.button.y >= rect1.y && event.button.y <= rect1.y + rect1.h)
-                    {
-                        printf("Continuer ! \n");
-                        statut = 0;
-                        goto Quit;
-                    }
-                    if (event.button.x >= rect2.x && event.button.x <= rect2.x + rect2.w && event.button.y >= rect2.y && event.button.y <= rect2.y + rect2.h)
-                    {
-                        printf("Recommencer ! \n");
-                        statut = 1;
-                        position_perso->x = 560;
-                        position_perso->y = 850;
-                        goto Quit;
-                    }
-                    if (event.button.x >= rect3.x && event.button.x <= rect3.x + rect3.w && event.button.y >= rect3.y && event.button.y <= rect3.y + rect3.h)
-                    {
-                        printf("Quitter ! \n");
-                        statut = -1;
-                        goto Quit;
-                    }
-                    break;
-                }
-            }
-            SDL_RenderPresent(renderer);
-        }
-    }
-
-Quit:
-    if (image != NULL)
-        SDL_DestroyTexture(image);
-    if (police != NULL)
-        TTF_CloseFont(police);
-    if (tContinue != NULL)
-        SDL_DestroyTexture(tContinue);
-    if (tRecommencer != NULL)
-        SDL_DestroyTexture(tRecommencer);
-    if (tQuitter != NULL)
-        SDL_DestroyTexture(tQuitter);
-    if (fond != NULL)
-        SDL_DestroyTexture(fond);
-
-    return statut;
-}
-
 void affichage_text_niveau(SDL_Texture **texture, TTF_Font *police, SDL_Rect *position, int x, int y, SDL_Renderer **renderer, char *texte, SDL_Color couleur)
 {
     SDL_Surface *surface = TTF_RenderText_Blended(police, texte, couleur);
@@ -230,7 +121,7 @@ void changement_couleur(TTF_Font *police, SDL_Color couleur, SDL_Renderer **rend
     }
 }
 
-void changement_couleur_inRect(TTF_Font *police, SDL_Color couleur,SDL_Color couleur_initiale, SDL_Renderer **renderer, SDL_Texture **texte_texture, char *texte, SDL_Point souris, SDL_Rect rectangle)
+void changement_couleur_inRect(TTF_Font *police, SDL_Color couleur, SDL_Color couleur_initiale, SDL_Renderer **renderer, SDL_Texture **texte_texture, char *texte, SDL_Point souris, SDL_Rect rectangle)
 {
     if (SDL_PointInRect(&souris, &rectangle))
     {
@@ -240,4 +131,205 @@ void changement_couleur_inRect(TTF_Font *police, SDL_Color couleur,SDL_Color cou
     {
         changement_couleur(police, couleur_initiale, renderer, texte_texture, texte);
     }
+}
+
+int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE)
+{
+    
+    SDL_Texture *image = NULL;
+    TTF_Font *police = NULL;
+    SDL_Surface *texte_Surface = NULL;
+    SDL_Texture *tContinue = NULL;
+    SDL_Texture *tRecommencer = NULL;
+    SDL_Texture *tQuitter = NULL;
+    SDL_Texture *fond = NULL;
+    SDL_Rect position_fond;
+    int fondtest = 0;
+    int window_width = 0;
+    int window_height = 0;
+    bool jeu = true;
+    int statut = 0;
+
+    SDL_Color couleurBlanche = {255, 255, 255, 255};
+    SDL_Color couleurJaune = {255, 255, 0, 255};
+    SDL_GetWindowSize(window, &window_width, &window_height);
+
+    initText(&police, couleurBlanche, &texte_Surface, &tContinue, &renderer, TAILLE_POLICE, "Continuer");
+    int x = (window_width - texte_Surface->w) / 2;
+    SDL_Rect rectContinue = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
+    initText(&police, couleurBlanche, &texte_Surface, &tRecommencer, &renderer, TAILLE_POLICE, "Recommencer");
+    SDL_Rect rectRecommencer = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
+    initText(&police, couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
+    SDL_Rect rectQuitter = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
+    fondtest = background(&window, &renderer, &fond, &position_fond);
+
+    // TTF_CloseFont(police); je sais pas ou le mettre
+
+    // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+    while (jeu)
+    {
+        SDL_Delay(39);
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_QUIT:
+                jeu = false;
+                break;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym)
+                {
+                case SDLK_ESCAPE:
+                    jeu = false;
+                    break;
+                }
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_LEFT)
+                {
+                    if (event.button.x >= rectContinue.x && event.button.x <= rectContinue.x + rectContinue.w && event.button.y >= rectContinue.y && event.button.y <= rectContinue.y + rectContinue.h)
+                    {
+                        printf("Continuer ! \n");
+                        statut = 0;
+                        goto Quit;
+                    }
+                    if (event.button.x >= rectRecommencer.x && event.button.x <= rectRecommencer.x + rectRecommencer.w && event.button.y >= rectRecommencer.y && event.button.y <= rectRecommencer.y + rectRecommencer.h)
+                    {
+                        printf("Recommencer ! \n");
+                        statut = 1;
+                        goto Quit;
+                    }
+                    if (event.button.x >= rectQuitter.x && event.button.x <= rectQuitter.x + rectQuitter.w && event.button.y >= rectQuitter.y && event.button.y <= rectQuitter.y + rectQuitter.h)
+                    {
+                        printf("Quitter ! \n");
+                        statut = -1;
+                        goto Quit;
+                    }
+                    break;
+                }
+            }
+            SDL_RenderCopy(renderer, fond, NULL, &position_fond);
+            SDL_RenderCopy(renderer, tContinue, NULL, &rectContinue);
+            SDL_RenderCopy(renderer, tRecommencer, NULL, &rectRecommencer);
+            SDL_RenderCopy(renderer, tQuitter, NULL, &rectQuitter);
+            SDL_RenderPresent(renderer);
+        }
+    }
+
+Quit:
+    if (image != NULL)
+        SDL_DestroyTexture(image);
+    if (police != NULL)
+        TTF_CloseFont(police);
+    if (tContinue != NULL)
+        SDL_DestroyTexture(tContinue);
+    if (tRecommencer != NULL)
+        SDL_DestroyTexture(tRecommencer);
+    if (tQuitter != NULL)
+        SDL_DestroyTexture(tQuitter);
+    if (fond != NULL)
+        SDL_DestroyTexture(fond);
+
+    return statut;
+}
+
+int menu_game_over(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE)
+{
+    SDL_RenderClear(renderer);
+    SDL_Texture *image = NULL;
+    TTF_Font *police = NULL;
+    SDL_Surface *texte_Surface = NULL;
+    SDL_Texture *tRecommencer = NULL;
+    SDL_Texture *tQuitter = NULL;
+    SDL_Texture *fond = NULL;
+    SDL_Rect position_fond;
+    int fondtest = 0;
+    int window_width = 0;
+    int window_height = 0;
+    bool jeu = true;
+    int statut = 0;
+
+    SDL_Color couleurBlanche = {255, 255, 255, 255};
+    SDL_GetWindowSize(window, &window_width, &window_height);
+    initText(&police, couleurBlanche, &texte_Surface, &tRecommencer, &renderer, TAILLE_POLICE, "Recommencer");
+    int x = (window_width - texte_Surface->w) / 2;
+    SDL_Rect rectRecommencer = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
+    initText(&police, couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
+    SDL_Rect rectQuitter = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
+    fondtest = background(&window, &renderer, &fond, &position_fond);
+
+    // TTF_CloseFont(police); je sais pas ou le mettre
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+
+    while (jeu)
+    {
+        SDL_Delay(39);
+        SDL_Event event;
+
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_QUIT:
+                jeu = false;
+                break;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym)
+                {
+                case SDLK_ESCAPE:
+                    jeu = false;
+                    break;
+                }
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_LEFT)
+                {
+                    if (event.button.x >= rectRecommencer.x && event.button.x <= rectRecommencer.x + rectRecommencer.w && event.button.y >= rectRecommencer.y && event.button.y <= rectRecommencer.y + rectRecommencer.h)
+                    {
+                        printf("Recommencer ! \n");
+                        statut = 1;
+                        goto Quit;
+                    }
+                    if (event.button.x >= rectQuitter.x && event.button.x <= rectQuitter.x + rectQuitter.w && event.button.y >= rectQuitter.y && event.button.y <= rectQuitter.y + rectQuitter.h)
+                    {
+                        printf("Quitter ! \n");
+                        statut = -1;
+                        goto Quit;
+                    }
+                    break;
+                }
+            }
+            SDL_RenderCopy(renderer, fond, NULL, &position_fond);
+            SDL_RenderCopy(renderer, tRecommencer, NULL, &rectRecommencer);
+            SDL_RenderCopy(renderer, tQuitter, NULL, &rectQuitter);
+            SDL_RenderPresent(renderer);
+        }
+    }
+
+Quit:
+    if (image != NULL)
+        SDL_DestroyTexture(image);
+    if (police != NULL)
+        TTF_CloseFont(police);
+    if (tRecommencer != NULL)
+        SDL_DestroyTexture(tRecommencer);
+    if (tQuitter != NULL)
+        SDL_DestroyTexture(tQuitter);
+    if (fond != NULL)
+        SDL_DestroyTexture(fond);
+
+    return statut;
 }

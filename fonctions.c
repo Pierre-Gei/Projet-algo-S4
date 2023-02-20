@@ -44,7 +44,7 @@ void collision_enemis(SDL_Rect *position_perso, SDL_Rect *enemi, SDL_Texture **t
             //Si le personnage tue l'enemi en touchant la tete
             if (position_perso->y < intersection.y)
             {
-                position_perso->y = intersection.y - position_perso->h;
+                // position_perso->y = intersection.y - position_perso->h;
                 enemi->x = 0;
                 enemi->y = 0;
                 enemi->w = 0;
@@ -53,18 +53,18 @@ void collision_enemis(SDL_Rect *position_perso, SDL_Rect *enemi, SDL_Texture **t
             }
             else
             {
-                position_perso->y = intersection.y + intersection.h;
+                *vies = *vies - 1;
             }
         }
         else
         {
             if (position_perso->x < intersection.x)
             {
-                vies--;
+                *vies = *vies - 1;
             }
             else
             {
-               vies--;
+                *vies = *vies - 1;
             }
         }
     }
