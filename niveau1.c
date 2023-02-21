@@ -13,7 +13,7 @@
 
 #define TAILLE_POLICE 60
 
-int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *morts)
+int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *morts, int x)
 {
     SDL_Texture *image = NULL;
     SDL_Rect position;
@@ -89,7 +89,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
                 {
                 case SDLK_ESCAPE:
                     Uint32 temps_pause = SDL_GetTicks();
-                    statut = menu_jeu(window, renderer, 75, 20);
+                    statut = menu_jeu(window, renderer, 75, 20, x);
                     if (statut == -1)
                         goto Quit;
                     else if (statut == 1)
@@ -204,7 +204,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
         if(vie_restante != vie_initiale)
         {
             (*morts)++;
-            statut = menu_game_over(window, renderer, 75, 20);
+            statut = menu_game_over(window, renderer, 75, 20, x);
             if (statut == -1)
                 goto Quit;
             else if (statut == 1)
@@ -270,6 +270,8 @@ Quit:
         SDL_DestroyTexture(texture2);
     if (texture3 != NULL)
         SDL_DestroyTexture(texture3);
+    if (tMorts != NULL)
+        SDL_DestroyTexture(tMorts);
     if (tChrono != NULL)
         SDL_DestroyTexture(tChrono);
     return statut;

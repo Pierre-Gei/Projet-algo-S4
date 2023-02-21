@@ -70,8 +70,6 @@ int main()
 
     fondtest = background(&window, &renderer, &fond, &position_fond);
 
-    // TTF_CloseFont(police); je sais pas ou le mettre
-
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
     while (jeu)
@@ -79,11 +77,11 @@ int main()
         SDL_Delay(39);
         SDL_Event event;
         SDL_GetMouseState(&souris.x, &souris.y);
-        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tJouer, "Jouer",  souris, rectJouer);
-        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tCharger, "Charger",  souris, rectCharger);
-        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tParametres, "Parametres",  souris, rectParam);
-        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tSauvegarder, "Sauvegarder",  souris, rectSauv);
-        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tQuitter, "Quitter",  souris, rectQuit);
+        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tJouer, "Jouer", souris, rectJouer);
+        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tCharger, "Charger", souris, rectCharger);
+        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tParametres, "Parametres", souris, rectParam);
+        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tSauvegarder, "Sauvegarder", souris, rectSauv);
+        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tQuitter, "Quitter", souris, rectQuit);
 
         while (SDL_PollEvent(&event))
         {
@@ -107,7 +105,7 @@ int main()
                     if (event.button.x >= rectJouer.x && event.button.x <= rectJouer.x + rectJouer.w && event.button.y >= rectJouer.y && event.button.y <= rectJouer.y + rectJouer.h)
                     {
                         printf("Jouer ! \n");
-                        niveau1(window, renderer, police, &morts);
+                        niveau1(window, renderer, police, &morts, x);
                         printf("niveau1 fini ! \n");
                         SDL_RenderPresent(renderer);
                     }
@@ -135,7 +133,7 @@ int main()
             }
         }
         SDL_RenderCopy(renderer, fond, NULL, &position_fond);
-         SDL_RenderCopy(renderer, tJouer, NULL, &rectJouer);
+        SDL_RenderCopy(renderer, tJouer, NULL, &rectJouer);
         SDL_RenderCopy(renderer, tCharger, NULL, &rectCharger);
         SDL_RenderCopy(renderer, tParametres, NULL, &rectParam);
         SDL_RenderCopy(renderer, tSauvegarder, NULL, &rectSauv);
@@ -162,7 +160,7 @@ Quit:
         SDL_DestroyRenderer(renderer);
     if (window != NULL)
         SDL_DestroyWindow(window);
-
+    TTF_Quit();
     SDL_Quit();
     return 0;
 
