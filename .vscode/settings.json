@@ -6,6 +6,7 @@
         "sdl_ttf.h": "c",
         "niveau1.h": "c",
         "affichage.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "sdl.h": "c"
     }
 }

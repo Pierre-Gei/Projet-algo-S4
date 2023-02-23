@@ -89,7 +89,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
                 {
                 case SDLK_ESCAPE:
                     Uint32 temps_pause = SDL_GetTicks();
-                    statut = menu_jeu(window, renderer, 75, 20, x);
+                    statut = menu_jeu(window, renderer, 75, 20, x, image, position);
                     if (statut == -1)
                         goto Quit;
                     else if (statut == 1)
@@ -204,7 +204,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
         if(vie_restante != vie_initiale)
         {
             (*morts)++;
-            statut = menu_game_over(window, renderer, 75, 20, x);
+            statut = menu_game_over(window, renderer, 75, 20, x,image,position);
             if (statut == -1)
                 goto Quit;
             else if (statut == 1)

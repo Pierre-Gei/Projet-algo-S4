@@ -133,16 +133,14 @@ void changement_couleur_inRect(TTF_Font *police, SDL_Color couleur, SDL_Color co
     }
 }
 
-int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x)
+int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond)
 {
-
+    SDL_RenderClear(renderer);
     TTF_Font *police = NULL;
     SDL_Surface *texte_Surface = NULL;
     SDL_Texture *tContinue = NULL;
     SDL_Texture *tRecommencer = NULL;
     SDL_Texture *tQuitter = NULL;
-    SDL_Texture *fond = NULL;
-    SDL_Rect position_fond;
     int fondtest = 0;
     int window_width = 0;
     int window_height = 0;
@@ -166,8 +164,6 @@ int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int 
     initText(&police, couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
     SDL_Rect rectQuitter = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
-
-    fondtest = background(&window, &renderer, &fond, &position_fond);
 
     // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
@@ -236,21 +232,18 @@ Quit:
         SDL_DestroyTexture(tRecommencer);
     if (tQuitter != NULL)
         SDL_DestroyTexture(tQuitter);
-    if (fond != NULL)
-        SDL_DestroyTexture(fond);
 
     return statut;
 }
 
-int menu_game_over(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x)
+int menu_game_over(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond)
 {
     SDL_RenderClear(renderer);
     TTF_Font *police = NULL;
     SDL_Surface *texte_Surface = NULL;
+    SDL_Texture *tPerdu = NULL;
     SDL_Texture *tRecommencer = NULL;
     SDL_Texture *tQuitter = NULL;
-    SDL_Texture *fond = NULL;
-    SDL_Rect position_fond;
     int fondtest = 0;
     int window_width = 0;
     int window_height = 0;
@@ -263,6 +256,11 @@ int menu_game_over(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE
     SDL_Color couleurJaune = {255, 255, 0, 255};
 
     SDL_GetWindowSize(window, &window_width, &window_height);
+
+    initText(&police, couleurBlanche, &texte_Surface, &tPerdu, &renderer, 200, "Game Over");
+    SDL_Rect rectPerdu = {window_width / 2 - texte_Surface->w / 2, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
     initText(&police, couleurBlanche, &texte_Surface, &tRecommencer, &renderer, TAILLE_POLICE, "Recommencer");
     SDL_Rect rectRecommencer = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
@@ -270,8 +268,6 @@ int menu_game_over(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE
     initText(&police, couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
     SDL_Rect rectQuitter = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
-
-    fondtest = background(&window, &renderer, &fond, &position_fond);
 
     // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
@@ -310,6 +306,7 @@ int menu_game_over(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE
             }
         }
         SDL_RenderCopy(renderer, fond, NULL, &position_fond);
+        SDL_RenderCopy(renderer, tPerdu, NULL, &rectPerdu);
         SDL_RenderCopy(renderer, tRecommencer, NULL, &rectRecommencer);
         SDL_RenderCopy(renderer, tQuitter, NULL, &rectQuitter);
         SDL_RenderPresent(renderer);
@@ -322,8 +319,6 @@ Quit:
         SDL_DestroyTexture(tRecommencer);
     if (tQuitter != NULL)
         SDL_DestroyTexture(tQuitter);
-    if (fond != NULL)
-        SDL_DestroyTexture(fond);
 
     return statut;
 }
