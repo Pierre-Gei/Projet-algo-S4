@@ -19,7 +19,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
     SDL_Rect position;
     SDL_Rect sol_rect;
     SDL_Rect rectangle2;
-  
+
     rectangle2.x = 1100;
     rectangle2.y = 700;
     rectangle2.w = 100;
@@ -31,11 +31,12 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
     SDL_Texture *texture2 = NULL;
     SDL_Texture *texture3 = NULL;
     SDL_Texture *enemi = NULL;
-    
+
     SDL_Color couleur = {255, 255, 255, 255};
     bool jeu = true;
     int statut = background(&window, &renderer, &image, &position);
     initVariable(&position, &sol_rect, &position_perso, perso);
+    SDL_Rect fond_position_initiale = position;
     SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255); // A supprimer
     texture = SDL_CreateTextureFromSurface(renderer, perso);
     SDL_FreeSurface(perso);
@@ -56,7 +57,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
     Uint32 temps_ecoule = 0;
     char temps[20];
 
-    //compteur de morts
+    // compteur de morts
     SDL_Rect position_morts;
     SDL_Texture *tMorts = NULL;
     char morts_str[20];
@@ -88,8 +89,9 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
                 switch (event.key.keysym.sym)
                 {
                 case SDLK_ESCAPE:
+                    vx = 0;
                     Uint32 temps_pause = SDL_GetTicks();
-                    statut = menu_jeu(window, renderer, 75, 20, x, image, position);
+                    statut = menu_jeu(window, renderer, 75, 20, x, image, fond_position_initiale);
                     if (statut == -1)
                         goto Quit;
                     else if (statut == 1)
@@ -172,7 +174,6 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
         sprintf(morts_str, "Morts: %03d", *morts);
         affichage_text_niveau(&tMorts, police, &position_morts, position.w - position_morts.w, 0, &renderer, morts_str, couleur);
 
-
         position_perso.x += vx;
         // Déplacement de l'arrière plan quand le personnage atteint les 3/4 de l'écran
         if (position_perso.x >= (position.w / 4) * 3)
@@ -199,12 +200,12 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
         collision(&position_perso, &sol_rect);
         // collision(&position_perso, &rectangle2);
 
-        //Collision enemis avec le perso
-        collision_enemis(&position_perso,&rectangle2,&enemi,&vie_restante);
-        if(vie_restante != vie_initiale)
+        // Collision enemis avec le perso
+        collision_enemis(&position_perso, &rectangle2, &enemi, &vie_restante);
+        if (vie_restante != vie_initiale)
         {
             (*morts)++;
-            statut = menu_game_over(window, renderer, 75, 20, x,image,position);
+            statut = menu_game_over(window, renderer, 75, 20, x, image, fond_position_initiale);
             if (statut == -1)
                 goto Quit;
             else if (statut == 1)
@@ -219,7 +220,6 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
             }
             vie_restante++;
         }
-
 
         // Toutes les 100ms on change de sprite
         if (SDL_GetTicks() - texture_temps > 100)
@@ -238,7 +238,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
 
         SDL_RenderCopy(renderer, tMorts, NULL, &position_morts);
         SDL_RenderCopy(renderer, tChrono, NULL, &position_chrono);
-        SDL_RenderCopy(renderer, enemi,NULL,&rectangle2 );
+        SDL_RenderCopy(renderer, enemi, NULL, &rectangle2);
 
         // Affichage du personnage
         if (vx > 0)
