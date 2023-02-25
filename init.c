@@ -8,18 +8,6 @@
 #include <SDL2/SDL_ttf.h>
 #include <math.h>
 
-void initVariable(SDL_Rect *position, SDL_Rect *rectangle, SDL_Rect *position_perso, SDL_Surface *perso)
-{
-    position->x = 0;
-    position->y = 0;
-
-    position_perso->x = position->w / 2 - perso->w / 2;
-    position_perso->y = 850 - perso->h;
-    rectangle-> x= 0;
-    rectangle->y = 850 ;
-    rectangle->h = position->h - rectangle->y;
-    rectangle->w = position->w;
-}
 
 void initText(TTF_Font ** police, SDL_Color couleur, SDL_Surface **texte_Surface, SDL_Texture **texte_texture, SDL_Renderer **renderer, int taillePolice, char *texte)
 {

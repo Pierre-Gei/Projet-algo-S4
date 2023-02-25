@@ -19,35 +19,37 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
     SDL_Texture *image = NULL;
     SDL_Rect position;
     SDL_Rect sol_rect;
-    SDL_Rect rectangle2;
 
-    rectangle2.x = 1100;
-    rectangle2.y = 700;
-    rectangle2.w = 100;
-    rectangle2.h = 100;
-    SDL_Surface *perso = IMG_Load("sprites/aventurier1.png");
-    SDL_Surface *enemi1 = IMG_Load("sprites/aventurier1.png");
+    SDL_Rect position_ennemi;
+
     SDL_Rect position_perso;
-    SDL_Texture *texture = NULL;
-    SDL_Texture *texture2 = NULL;
-    SDL_Texture *texture3 = NULL;
-    SDL_Texture *enemi = NULL;
+    SDL_Texture *aventurier_sprite1 = NULL;
+    SDL_Texture *aventurier_sprite2 = NULL;
+    SDL_Texture *aventurier_texture = NULL;
+    SDL_Texture *ennemi_texture = NULL;
+    SDL_Texture *sol = NULL;
 
     SDL_Color couleur = {255, 255, 255, 255};
     bool jeu = true;
     int statut = background(&window, &renderer, &image, &position);
-    initVariable(&position, &sol_rect, &position_perso, perso);
+    int collisionPerso = 0;
+    position.x = 0;
+    position.y = 0;
     SDL_Rect fond_position_initiale = position;
-    SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255); // A supprimer
-    texture = SDL_CreateTextureFromSurface(renderer, perso);
-    SDL_FreeSurface(perso);
-    perso = IMG_Load("sprites/aventurier2.png");
-    enemi = SDL_CreateTextureFromSurface(renderer, enemi1);
-    texture2 = SDL_CreateTextureFromSurface(renderer, perso);
-    SDL_FreeSurface(perso);
-    SDL_QueryTexture(texture, NULL, NULL, &position_perso.w, &position_perso.h);
-    texture3 = texture;
 
+    aventurier_sprite1 = loadTexturePNG("sprites/aventurier1.png", renderer, &position_perso);
+    aventurier_sprite2 = loadTexturePNG("sprites/aventurier2.png", renderer, &position_perso);
+    aventurier_texture = aventurier_sprite1;
+    sol = loadTexturePNG("background/sol.png", renderer, &sol_rect);
+    ennemi_texture = loadTexturePNG("sprites/ennemi1.png", renderer, &position_ennemi);
+    sol_rect.x = 0;
+    sol_rect.y = position.h - sol_rect.h;
+    sol_rect.w = position.w; // pour faire des tests avec un sol de largeur d'écran
+    position_perso.x = position.w / 2 - position_perso.w / 2;
+    position_perso.y = sol_rect.y - position_perso.h;
+    position_ennemi.x = 1200;
+    position_ennemi.y = sol_rect.y - position_ennemi.h;
+    
     int vie_initiale = 1;
     int vie_restante = vie_initiale;
 
@@ -63,9 +65,9 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
     SDL_Texture *tMorts = NULL;
     char morts_str[20];
 
-    int gravite = 5;
+    int gravite = 7;
     int vitesse_saut = 12;
-    int vitesse_max = 5;
+    int vitesse_max = 6;
     int dir = 1;
     int saut_duree = 0;
     int dernier_saut = 0;
@@ -77,8 +79,6 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
     while (jeu)
     {
         affichage_background(&renderer, &image, &position);
-        SDL_RenderDrawRect(renderer, &sol_rect);
-        SDL_RenderDrawRect(renderer, &rectangle2);
         while (SDL_PollEvent(&event))
         {
             switch (event.type)
@@ -97,10 +97,10 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
                         goto Quit;
                     else if (statut == 1)
                     {
-                        position_perso.x = position.w/2 - position_perso.w/2;
+                        position_perso.x = position.w / 2 - position_perso.w / 2;
                         position_perso.y = sol_rect.y - position_perso.h;
                         temps_début = SDL_GetTicks();
-                        texture3 = texture2;
+                        aventurier_texture = aventurier_sprite2;
                         dir = 1;
                     }
                     if (statut != 1)
@@ -123,27 +123,27 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
                     if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RIGHT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
                         dir = 1;
-                        if (SDL_GetTicks() - dernier_saut > 1500)
+                        if (collisionPerso == 1)
                         {
                             saut_duree = 20;
-                            dernier_saut = SDL_GetTicks();
+                            // dernier_saut = SDL_GetTicks();
                         }
                     }
                     else if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LEFT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
                         dir = -1;
-                        if (SDL_GetTicks() - dernier_saut > 1500)
+                        if (collisionPerso == 1)
                         {
                             saut_duree = 20;
-                            dernier_saut = SDL_GetTicks();
+                            // dernier_saut = SDL_GetTicks();
                         }
                     }
                     else
                     {
-                        if (SDL_GetTicks() - dernier_saut > 1500)
+                        if (collisionPerso == 1)
                         {
                             saut_duree = 20;
-                            dernier_saut = SDL_GetTicks();
+                            // dernier_saut = SDL_GetTicks();
                         }
                     }
                     break;
@@ -201,11 +201,10 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
 
         collision_ecran(&position_perso, position, &vie_restante);
 
-        collision(&position_perso, &sol_rect);
-        // collision(&position_perso, &rectangle2);
+        collisionPerso = collision(&position_perso, &sol_rect);
 
         // Collision enemis avec le perso
-        collision_enemis(&position_perso, &rectangle2, &enemi, &vie_restante);
+        collision_enemis(&position_perso, &position_ennemi, &ennemi_texture, &vie_restante);
         if (vie_restante != vie_initiale)
         {
             (*morts)++;
@@ -217,7 +216,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
                 position_perso.x = 560;
                 position_perso.y = sol_rect.y - position_perso.h;
                 temps_début = SDL_GetTicks();
-                texture3 = texture2;
+                aventurier_texture = aventurier_sprite2;
                 dir = 1;
                 vx = 0;
                 saut_duree = 0;
@@ -228,32 +227,32 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
         // Toutes les 100ms on change de sprite
         if (SDL_GetTicks() - texture_temps > 100)
         {
-            changement_sprites(&texture3, texture, texture2);
+            changement_sprites(&aventurier_texture, aventurier_sprite1, aventurier_sprite2);
             texture_temps = SDL_GetTicks();
         }
 
         SDL_Delay(10);
-
+        SDL_RenderCopy(renderer, sol, NULL, &sol_rect);
         SDL_RenderCopy(renderer, tMorts, NULL, &position_morts);
         SDL_RenderCopy(renderer, tChrono, NULL, &position_chrono);
-        SDL_RenderCopy(renderer, enemi, NULL, &rectangle2);
+        SDL_RenderCopy(renderer, ennemi_texture, NULL, &position_ennemi);
 
         // Affichage du personnage
         if (vx > 0)
         {
-            SDL_RenderCopy(renderer, texture3, NULL, &position_perso);
+            SDL_RenderCopy(renderer, aventurier_texture, NULL, &position_perso);
         }
         else if (vx < 0)
         {
-            SDL_RenderCopyEx(renderer, texture3, NULL, &position_perso, 0, NULL, SDL_FLIP_HORIZONTAL);
+            SDL_RenderCopyEx(renderer, aventurier_texture, NULL, &position_perso, 0, NULL, SDL_FLIP_HORIZONTAL);
         }
         else if (vx == 0 && dir == 1)
         {
-            SDL_RenderCopy(renderer, texture, NULL, &position_perso);
+            SDL_RenderCopy(renderer, aventurier_sprite1, NULL, &position_perso);
         }
         else if (vx == 0 && dir == -1)
         {
-            SDL_RenderCopyEx(renderer, texture, NULL, &position_perso, 0, NULL, SDL_FLIP_HORIZONTAL);
+            SDL_RenderCopyEx(renderer, aventurier_sprite1, NULL, &position_perso, 0, NULL, SDL_FLIP_HORIZONTAL);
         }
 
         SDL_RenderPresent(renderer);
@@ -262,18 +261,18 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
 Quit:
     if (image != NULL)
         SDL_DestroyTexture(image);
-    if (texture != NULL)
-        SDL_DestroyTexture(texture);
-    if (texture2 != NULL)
-        SDL_DestroyTexture(texture2);
-    if (texture3 != NULL)
-        SDL_DestroyTexture(texture3);
+    if (aventurier_sprite1 != NULL)
+        SDL_DestroyTexture(aventurier_sprite1);
+    if (aventurier_sprite2 != NULL)
+        SDL_DestroyTexture(aventurier_sprite2);
+    if (aventurier_texture != NULL)
+        SDL_DestroyTexture(aventurier_texture);
     if (tMorts != NULL)
         SDL_DestroyTexture(tMorts);
     if (tChrono != NULL)
         SDL_DestroyTexture(tChrono);
-    if (enemi != NULL)
-        SDL_DestroyTexture(enemi);
+    if (ennemi_texture != NULL)
+        SDL_DestroyTexture(ennemi_texture);
 
     return statut;
 }

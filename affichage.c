@@ -29,6 +29,28 @@ int init(SDL_Window **window, SDL_Renderer **renderer)
     return 0;
 }
 
+SDL_Texture *loadTexturePNG(const char *filename, SDL_Renderer *renderer, SDL_Rect *dimension)
+{
+    SDL_Texture *texture = NULL;
+    SDL_Surface *tmp = NULL;
+    tmp = IMG_Load(filename);
+    if (tmp == NULL)
+    {
+        printf("Erreur lors du chargement de l'image: %s", SDL_GetError());
+        return NULL;
+    }
+    texture = SDL_CreateTextureFromSurface(renderer, tmp);
+    dimension->w = tmp->w;
+    dimension->h = tmp->h;
+    SDL_FreeSurface(tmp);
+    if (texture == NULL)
+    {
+        printf("Erreur lors de la creation de la texture: %s", SDL_GetError());
+        return NULL;
+    }
+    return texture;
+}
+
 SDL_Texture *loadTexture(const char *filename, SDL_Renderer *renderer)
 {
     SDL_Texture *texture = NULL;

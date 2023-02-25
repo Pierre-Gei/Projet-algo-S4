@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include "affichage.h"
 
-void collision(SDL_Rect *position_perso, SDL_Rect *objet)
+int collision(SDL_Rect *position_perso, SDL_Rect *objet)
 {
     SDL_Rect intersection;
     if (SDL_IntersectRect(position_perso, objet, &intersection))
@@ -14,10 +14,12 @@ void collision(SDL_Rect *position_perso, SDL_Rect *objet)
             if (position_perso->y < intersection.y)
             {
                 position_perso->y = intersection.y - position_perso->h;
+                return 1;
             }
             else
             {
                 position_perso->y = intersection.y + intersection.h;
+                return -1;
             }
         }
         else
@@ -30,18 +32,19 @@ void collision(SDL_Rect *position_perso, SDL_Rect *objet)
             {
                 position_perso->x = intersection.x + intersection.w;
             }
+            return -1;
         }
     }
 }
 
-void collision_enemis(SDL_Rect *position_perso, SDL_Rect *enemi, SDL_Texture **texture_enemi, int *vies)
+int collision_enemis(SDL_Rect *position_perso, SDL_Rect *enemi, SDL_Texture **texture_enemi, int *vies)
 {
     SDL_Rect intersection;
     if (SDL_IntersectRect(position_perso, enemi, &intersection))
     {
         if (intersection.w > intersection.h)
         {
-            //Si le personnage tue l'enemi en touchant la tete
+            // Si le personnage tue l'enemi en touchant la tete
             if (position_perso->y < intersection.y)
             {
                 // position_perso->y = intersection.y - position_perso->h;
@@ -78,6 +81,6 @@ void collision_ecran(SDL_Rect *position_perso, SDL_Rect position, int *vie_resta
     }
     if (position_perso->y >= position.h)
     {
-        vie_restante--;
+        *vie_restante = *vie_restante - 1;
     }
 }
