@@ -23,11 +23,6 @@ void initVariable(SDL_Rect *position, SDL_Rect *rectangle, SDL_Rect *position_pe
 
 void initText(TTF_Font ** police, SDL_Color couleur, SDL_Surface **texte_Surface, SDL_Texture **texte_texture, SDL_Renderer **renderer, int taillePolice, char *texte)
 {
-    if(TTF_Init() == -1)
-    {
-        fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
-        exit(EXIT_FAILURE);
-    }
     *police = TTF_OpenFont("Polices/Arcade.ttf", taillePolice);
     if(!(*police))
     {

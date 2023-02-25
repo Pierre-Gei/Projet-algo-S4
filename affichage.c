@@ -16,6 +16,11 @@ int init(SDL_Window **window, SDL_Renderer **renderer)
         printf("Erreur lors de l'initialisation de la SDL: %s", SDL_GetError());
         return -1;
     }
+     if(TTF_Init() == -1)
+    {
+        fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
+        exit(EXIT_FAILURE);
+    }
     if (SDL_CreateWindowAndRenderer(800, 600, SDL_WINDOW_FULLSCREEN_DESKTOP, window, renderer) != 0)
     {
         printf("Erreur lors de la creation de la fenetre et du renderer: %s", SDL_GetError());

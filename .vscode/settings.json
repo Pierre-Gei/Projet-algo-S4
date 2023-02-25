@@ -7,6 +7,8 @@
         "niveau1.h": "c",
         "affichage.h": "c",
         "string.h": "c",
-        "sdl.h": "c"
+        "sdl.h": "c",
+        "stdbool.h": "c",
+        "stdio.h": "c"
     }
 }

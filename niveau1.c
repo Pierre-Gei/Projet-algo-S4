@@ -97,7 +97,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
                         goto Quit;
                     else if (statut == 1)
                     {
-                        position_perso.x = 560;
+                        position_perso.x = position.w/2 - position_perso.w/2;
                         position_perso.y = sol_rect.y - position_perso.h;
                         temps_début = SDL_GetTicks();
                         texture3 = texture2;
@@ -198,6 +198,9 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
         {
             position_perso.y += gravite;
         }
+
+        collision_ecran(&position_perso, position, &vie_restante);
+
         collision(&position_perso, &sol_rect);
         // collision(&position_perso, &rectangle2);
 
@@ -227,12 +230,6 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
         {
             changement_sprites(&texture3, texture, texture2);
             texture_temps = SDL_GetTicks();
-        }
-
-        // Ne peut pas sortir à gauche de l'écran
-        if (position_perso.x <= 0)
-        {
-            position_perso.x = 0;
         }
 
         SDL_Delay(10);
@@ -275,5 +272,8 @@ Quit:
         SDL_DestroyTexture(tMorts);
     if (tChrono != NULL)
         SDL_DestroyTexture(tChrono);
+    if (enemi != NULL)
+        SDL_DestroyTexture(enemi);
+
     return statut;
 }

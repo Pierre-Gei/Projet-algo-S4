@@ -69,3 +69,15 @@ void collision_enemis(SDL_Rect *position_perso, SDL_Rect *enemi, SDL_Texture **t
         }
     }
 }
+
+void collision_ecran(SDL_Rect *position_perso, SDL_Rect position, int *vie_restante)
+{
+    if (position_perso->x <= 0)
+    {
+        position_perso->x = 0;
+    }
+    if (position_perso->y >= position.h)
+    {
+        vie_restante--;
+    }
+}
