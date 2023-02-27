@@ -41,6 +41,11 @@ int main()
     int niveau = 1;
     int meilleur_temps = 0;
 
+    // compteur de morts
+    SDL_Rect position_morts;
+    SDL_Texture *tMorts = NULL;
+    char morts_str[20];
+
     SDL_Point souris;
 
     SDL_Color couleurBlanche = {255, 255, 255, 255};
@@ -118,11 +123,14 @@ int main()
                     if (event.button.x >= rectParam.x && event.button.x <= rectParam.x + rectParam.w && event.button.y >= rectParam.y && event.button.y <= rectParam.y + rectParam.h)
                     {
                         printf("Parametres ! \n");
+                        parametre(window,renderer,TAILLE_POLICE,INTERLIGNE,fond,position_fond);
+
                     }
                     if (event.button.x >= rectSauv.x && event.button.x <= rectSauv.x + rectSauv.w && event.button.y >= rectSauv.y && event.button.y <= rectSauv.y + rectSauv.h)
                     {
                         printf("Sauvegarder ! \n");
                         sauvegarde(recompenses, morts, meilleur_temps, niveau);
+                        SDL_RenderPresent(renderer);
                     }
                     if (event.button.x >= rectQuit.x && event.button.x <= rectQuit.x + rectQuit.w && event.button.y >= rectQuit.y && event.button.y <= rectQuit.y + rectQuit.h)
                     {
@@ -133,7 +141,13 @@ int main()
                 break;
             }
         }
+        // Affichage du nombre de morts
+        sprintf(morts_str, "Morts: %03d", morts);
+        affichage_text_niveau(&tMorts, police, &position_morts, position_fond.w - position_morts.w, 0, &renderer, morts_str, couleurBlanche);
+
+
         SDL_RenderCopy(renderer, fond, NULL, &position_fond);
+        SDL_RenderCopy(renderer, tMorts, NULL, &position_morts);
         SDL_RenderCopy(renderer, tJouer, NULL, &rectJouer);
         SDL_RenderCopy(renderer, tCharger, NULL, &rectCharger);
         SDL_RenderCopy(renderer, tParametres, NULL, &rectParam);
@@ -163,7 +177,6 @@ Quit:
         SDL_DestroyWindow(window);
     TTF_Quit();
     SDL_Quit();
-    return 0;
-
+    
     return 0;
 }

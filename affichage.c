@@ -369,3 +369,72 @@ void affiche_perso(SDL_Renderer **renderer, SDL_Texture *perso_rendu, SDL_Textur
         SDL_RenderCopyEx(*renderer, perso_static, NULL, &position_perso, 0, NULL, SDL_FLIP_HORIZONTAL);
     }
 }
+
+void parametre(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, SDL_Texture *fond, SDL_Rect position_fond)
+{
+    SDL_RenderClear(renderer);
+    TTF_Font *police = NULL;
+    SDL_Surface *texte_Surface = NULL;
+    SDL_Texture *tPerdu = NULL;
+    SDL_Texture *tCommandes = NULL;
+    SDL_Texture *tQuitter = NULL;
+    int window_width = 0;
+    int window_height = 0;
+    bool jeu = true;
+
+    SDL_Point souris;
+
+    SDL_Color couleurBlanche = {255, 255, 255, 255};
+
+    SDL_GetWindowSize(window, &window_width, &window_height);
+
+    initText(&police, couleurBlanche, &texte_Surface, &tCommandes, &renderer, TAILLE_POLICE, "Commandes :");
+    SDL_Rect rectRecommencer = {window_width / 5 - texte_Surface->w / 2, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 4 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
+    initText(&police, couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
+    SDL_Rect rectQuitter = {window_width / 4 - texte_Surface->w / 2, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
+    while (jeu)
+    {
+        SDL_Delay(39);
+        SDL_Event event;
+        SDL_GetMouseState(&souris.x, &souris.y);
+
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_QUIT:
+                jeu = false;
+                break;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym)
+                {
+                case SDLK_ESCAPE:
+                    jeu = false;
+                    goto Quit;
+                    break;
+                default:
+                    break;
+                }
+                break;
+            default:
+                break;
+            }
+
+            SDL_RenderCopy(renderer, fond, NULL, &position_fond);
+            SDL_RenderCopy(renderer, tCommandes, NULL, &rectRecommencer);
+            SDL_RenderCopy(renderer, tQuitter, NULL, &rectQuitter);
+            SDL_RenderPresent(renderer);
+        }
+    }
+Quit:
+    if (police != NULL)
+        TTF_CloseFont(police);
+    if (tCommandes != NULL)
+        SDL_DestroyTexture(tCommandes);
+    if (tQuitter != NULL)
+        SDL_DestroyTexture(tQuitter);
+}
