@@ -19,6 +19,13 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
     SDL_Texture *image = NULL;
     SDL_Rect position;
     SDL_Rect sol_rect;
+    SDL_Rect sol_rect2;
+    SDL_Rect sol_rect3;
+    SDL_Rect sol_rect4;
+    SDL_Rect sol_rect5;
+    SDL_Rect sol_rect6;
+    SDL_Rect sol_rect7;
+    SDL_Rect sol_rect8;
 
     SDL_Rect position_ennemi;
 
@@ -30,26 +37,78 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
     SDL_Texture *ennemi_sprite2 = NULL;
     SDL_Texture *ennemi_texture = NULL;
     SDL_Texture *sol = NULL;
+    SDL_Texture *sol2 = NULL;
+    SDL_Texture *sol3 = NULL;
+    SDL_Texture *sol4 = NULL;
+    SDL_Texture *sol5 = NULL;
+    SDL_Texture *sol6 = NULL;
+    SDL_Texture *sol7 = NULL;
+    SDL_Texture *sol8 = NULL;
 
     SDL_Color couleur = {255, 255, 255, 255};
     bool jeu = true;
     int statut = background(&window, &renderer, &image, &position);
     int collisionPerso = 0;
+    int collisionPerso2 = 0;
+    int collisionPerso3 = 0;
+    int collisionPerso4 = 0;
+    int collisionPerso5 = 0;
+    int collisionPerso6 = 0;
+    int collisionPerso7 = 0;
+    int collisionPerso8 = 0;
     position.x = 0;
     position.y = 0;
     SDL_Rect fond_position_initiale = position;
+    SDL_Rect *Lniv[8];
 
     aventurier_sprite1 = loadTexturePNG("sprites/aventurier1.png", renderer, &position_perso);
     aventurier_sprite2 = loadTexturePNG("sprites/aventurier2.png", renderer, &position_perso);
     aventurier_texture = aventurier_sprite1;
-    sol = loadTexturePNG("background/sol.png", renderer, &sol_rect);
     ennemi_sprite1 = loadTexturePNG("sprites/ennemi1.png", renderer, &position_ennemi);
     ennemi_sprite2 = loadTexturePNG("sprites/ennemi2.png", renderer, &position_ennemi);
     ennemi_texture = ennemi_sprite1;
+    sol = loadTexturePNG("background/sol.png", renderer, &sol_rect);
+    sol2 = loadTexturePNG("background/sol.png", renderer, &sol_rect2);
+    sol3 = loadTexturePNG("background/sol.png", renderer, &sol_rect3);
+    sol4 = loadTexturePNG("background/sol.png", renderer, &sol_rect4);
+    sol5 = loadTexturePNG("background/sol.png", renderer, &sol_rect5);
+    sol6 = loadTexturePNG("background/sol.png", renderer, &sol_rect6);
+    sol7 = loadTexturePNG("background/sol.png", renderer, &sol_rect7);
+    sol8 = loadTexturePNG("background/sol.png", renderer, &sol_rect8);
+    ennemi_texture = loadTexturePNG("sprites/ennemi1.png", renderer, &position_ennemi);
     sol_rect.x = 0;
     sol_rect.y = position.h - sol_rect.h;
     sol_rect.w = position.w; // pour faire des tests avec un sol de largeur d'écran
-    position_perso.x = position.w / 2 - position_perso.w / 2;
+    Lniv[0] = &sol_rect;
+    sol_rect2.x = position.w + 2 * position_perso.w;
+    sol_rect2.y = position.h - sol_rect2.h;
+    sol_rect2.w = position.w; // pour faire des tests avec un sol de largeur d'écran
+    Lniv[1] = &sol_rect2;
+    sol_rect3.x = 2 * position.w + position_perso.w;
+    sol_rect3.y = position.h - sol_rect.h - position_perso.h - position_perso.h / 2;
+    sol_rect3.w = position_perso.w * 4; // pour faire des tests avec un sol de largeur d'écran
+    Lniv[2] = &sol_rect3;
+    sol_rect4.x = 2 * position.w + position_perso.w * 4;
+    sol_rect4.y = position.h - sol_rect.h - position_perso.h * 3;
+    sol_rect4.w = position_perso.w * 4; // pour faire des tests avec un sol de largeur d'écran
+    Lniv[3] = &sol_rect4;
+    sol_rect5.x = 2 * position.w + position_perso.w * 7;
+    sol_rect5.y = position.h - sol_rect.h - position_perso.h - position_perso.h / 2;
+    sol_rect5.w = position_perso.w * 4; // pour faire des tests avec un sol de largeur d'écran
+    Lniv[4] = &sol_rect5;
+    sol_rect6.x = 2 * position.w + position_perso.w * 10;
+    sol_rect6.y = position.h - sol_rect2.h;
+    sol_rect6.w = position.w / 2; // pour faire des tests avec un sol de largeur d'écran
+    Lniv[5] = &sol_rect6;
+    sol_rect7.x = 2 * position.w + position_perso.w * 9 + position.w / 2;
+    sol_rect7.y = position.h - sol_rect.h - position_perso.h - position_perso.h / 2;
+    sol_rect7.w = position.w / 2; // pour faire des tests avec un sol de largeur d'écran
+    Lniv[6] = &sol_rect7;
+    sol_rect8.x = 3 * position.w + position_perso.w * 8;
+    sol_rect8.y = position.h - sol_rect.h;
+    sol_rect8.w = position.w / 2; // pour faire des tests avec un sol de largeur d'écran
+    Lniv[7] = &sol_rect8;
+    position_perso.x = position_perso.w;
     position_perso.y = sol_rect.y - position_perso.h;
     position_ennemi.x = 1200;
     position_ennemi.w = 108;
@@ -62,7 +121,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
     // chronomètre
     SDL_Rect position_chrono;
     SDL_Texture *tChrono = NULL;
-    Uint32 temps_début = SDL_GetTicks();
+    Uint32 temps_debut = SDL_GetTicks();
     Uint32 temps_ecoule = 0;
     char temps[20];
 
@@ -106,14 +165,14 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
                     {
                         position_perso.x = position.w / 2 - position_perso.w / 2;
                         position_perso.y = sol_rect.y - position_perso.h;
-                        temps_début = SDL_GetTicks();
+                        temps_debut = SDL_GetTicks();
                         aventurier_texture = aventurier_sprite2;
                         dir = 1;
                     }
                     if (statut != 1)
                     {
                         // reprendre le chrono
-                        temps_début += SDL_GetTicks() - temps_pause;
+                        temps_debut += SDL_GetTicks() - temps_pause;
                     }
                     break;
                 case SDLK_RIGHT:
@@ -130,7 +189,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
                     if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RIGHT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
                         dir = 1;
-                        if (collisionPerso == 1)
+                        if (collisionPerso == 1 || collisionPerso2 == 1 || collisionPerso3 == 1 || collisionPerso4 == 1 || collisionPerso5 == 1 || collisionPerso6 == 1 || collisionPerso7 == 1 || collisionPerso8 == 1)
                         {
                             saut_duree = 20;
                         }
@@ -138,14 +197,14 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
                     else if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LEFT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
                         dir = -1;
-                        if (collisionPerso == 1)
+                        if (collisionPerso == 1 || collisionPerso2 == 1 || collisionPerso3 == 1 || collisionPerso4 == 1 || collisionPerso5 == 1 || collisionPerso6 == 1 || collisionPerso7 == 1 || collisionPerso8 == 1)
                         {
                             saut_duree = 20;
                         }
                     }
                     else
                     {
-                        if (collisionPerso == 1)
+                        if (collisionPerso == 1 || collisionPerso2 == 1 || collisionPerso3 == 1 || collisionPerso4 == 1 || collisionPerso5 == 1 || collisionPerso6 == 1 || collisionPerso7 == 1 || collisionPerso8 == 1)
                         {
                             saut_duree = 20;
                         }
@@ -167,7 +226,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
             }
         }
         // Calcul du temps écoulé
-        temps_ecoule = SDL_GetTicks() - temps_début;
+        temps_ecoule = SDL_GetTicks() - temps_debut;
         int minutes = (int)(temps_ecoule / 1000) / 60;
         int secondes = (int)(temps_ecoule / 1000) % 60;
 
@@ -183,8 +242,12 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
         // Déplacement de l'arrière plan quand le personnage atteint les 3/4 de l'écran
         if (position_perso.x >= (position.w / 4) * 3)
         {
-            position.x -= 7;
+            position.x -= 3;
             position_perso.x -= vx;
+            for (int i = 0; i < 8; i++)
+            {
+                Lniv[i]->x -= 6;
+            }
         }
         if (saut_duree > 0)
         {
@@ -200,6 +263,13 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
         collision_ecran(&position_perso, position, &vie_restante);
 
         collisionPerso = collision(&position_perso, &sol_rect);
+        collisionPerso2 = collision(&position_perso, &sol_rect2);
+        collisionPerso3 = collision(&position_perso, &sol_rect3);
+        collisionPerso4 = collision(&position_perso, &sol_rect4);
+        collisionPerso5 = collision(&position_perso, &sol_rect5);
+        collisionPerso6 = collision(&position_perso, &sol_rect6);
+        collisionPerso7 = collision(&position_perso, &sol_rect7);
+        collisionPerso8 = collision(&position_perso, &sol_rect8);
 
         // Collision enemis avec le perso
         collision_enemis(&position_perso, &position_ennemi, &ennemi_sprite1, &vie_restante);
@@ -213,7 +283,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
             {
                 position_perso.x = 560;
                 position_perso.y = sol_rect.y - position_perso.h;
-                temps_début = SDL_GetTicks();
+                temps_debut = SDL_GetTicks();
                 aventurier_texture = aventurier_sprite2;
                 dir = 1;
                 vx = 0;
@@ -240,6 +310,13 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
         // Affichage de l'ennemi en fonction de la position du perso
         position_perso_ennemi(position_perso, &position_ennemi, &ennemi_texture, &renderer, 2, 300);
         SDL_RenderCopy(renderer, sol, NULL, &sol_rect);
+        SDL_RenderCopy(renderer, sol2, NULL, &sol_rect2);
+        SDL_RenderCopy(renderer, sol3, NULL, &sol_rect3);
+        SDL_RenderCopy(renderer, sol4, NULL, &sol_rect4);
+        SDL_RenderCopy(renderer, sol5, NULL, &sol_rect5);
+        SDL_RenderCopy(renderer, sol6, NULL, &sol_rect6);
+        SDL_RenderCopy(renderer, sol7, NULL, &sol_rect7);
+        SDL_RenderCopy(renderer, sol8, NULL, &sol_rect8);
         SDL_RenderCopy(renderer, tMorts, NULL, &position_morts);
         SDL_RenderCopy(renderer, tChrono, NULL, &position_chrono);
 
@@ -270,6 +347,20 @@ Quit:
         SDL_DestroyTexture(ennemi_texture);
     if (sol != NULL)
         SDL_DestroyTexture(sol);
+    if (sol2 != NULL)
+        SDL_DestroyTexture(sol2);
+    if (sol3 != NULL)
+        SDL_DestroyTexture(sol3);
+    if (sol4 != NULL)
+        SDL_DestroyTexture(sol4);
+    if (sol5 != NULL)
+        SDL_DestroyTexture(sol5);
+    if (sol6 != NULL)
+        SDL_DestroyTexture(sol6);
+    if (sol7 != NULL)
+        SDL_DestroyTexture(sol7);
+    if (sol8 != NULL)
+        SDL_DestroyTexture(sol8);
 
     return statut;
 }
