@@ -84,3 +84,21 @@ void collision_ecran(SDL_Rect *position_perso, SDL_Rect position, int *vie_resta
         *vie_restante = *vie_restante - 1;
     }
 }
+
+void position_perso_ennemi(SDL_Rect position_perso, SDL_Rect * position_ennemi, SDL_Texture **ennemi_texture,SDL_Renderer ** renderer, int vitesse_ennemi, int range)
+{
+    if (position_ennemi->x - position_perso.x > 0 && position_ennemi->x - position_perso.x < range)
+    {
+        position_ennemi->x = position_ennemi->x - vitesse_ennemi;
+        SDL_RenderCopy(*renderer, *ennemi_texture, NULL, position_ennemi);
+    }
+    else if (position_ennemi->x - position_perso.x < 0 && position_ennemi->x - position_perso.x > -range)
+    {
+        position_ennemi->x = position_ennemi->x + vitesse_ennemi;
+        SDL_RenderCopyEx(*renderer, *ennemi_texture, NULL, position_ennemi, 0, NULL, SDL_FLIP_HORIZONTAL);
+    }
+    else
+    {
+        SDL_RenderCopy(*renderer, *ennemi_texture, NULL, position_ennemi);
+    }
+}

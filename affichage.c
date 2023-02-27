@@ -16,7 +16,7 @@ int init(SDL_Window **window, SDL_Renderer **renderer)
         printf("Erreur lors de l'initialisation de la SDL: %s", SDL_GetError());
         return -1;
     }
-     if(TTF_Init() == -1)
+    if (TTF_Init() == -1)
     {
         fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
         exit(EXIT_FAILURE);
@@ -348,4 +348,24 @@ Quit:
         SDL_DestroyTexture(tQuitter);
 
     return statut;
+}
+
+void affiche_perso(SDL_Renderer **renderer, SDL_Texture *perso_rendu, SDL_Texture *perso_static, SDL_Rect position_perso, int vx, int direction)
+{
+    if (vx > 0)
+    {
+        SDL_RenderCopy(*renderer, perso_rendu, NULL, &position_perso);
+    }
+    else if (vx < 0)
+    {
+        SDL_RenderCopyEx(*renderer, perso_rendu, NULL, &position_perso, 0, NULL, SDL_FLIP_HORIZONTAL);
+    }
+    else if (vx == 0 && direction == 1)
+    {
+        SDL_RenderCopy(*renderer, perso_static, NULL, &position_perso);
+    }
+    else if (vx == 0 && direction == -1)
+    {
+        SDL_RenderCopyEx(*renderer, perso_static, NULL, &position_perso, 0, NULL, SDL_FLIP_HORIZONTAL);
+    }
 }
