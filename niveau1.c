@@ -307,7 +307,9 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
         }
 
         SDL_Delay(10);
+        SDL_RenderClear(renderer);
         // Affichage de l'ennemi en fonction de la position du perso
+        affichage_background(&renderer, &image, &position);
         position_perso_ennemi(position_perso, &position_ennemi, &ennemi_texture, &renderer, 2, 300);
         SDL_RenderCopy(renderer, sol, NULL, &sol_rect);
         SDL_RenderCopy(renderer, sol2, NULL, &sol_rect2);
