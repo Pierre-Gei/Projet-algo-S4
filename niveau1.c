@@ -248,6 +248,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
             {
                 Lniv[i]->x -= 6;
             }
+            position_perso.x=(position.w / 4) * 3-1;
         }
         if (saut_duree > 0)
         {
