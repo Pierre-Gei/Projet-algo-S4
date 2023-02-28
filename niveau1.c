@@ -12,9 +12,7 @@
 #include "fonctions.h"
 #include "init.h"
 
-#define TAILLE_POLICE 60
-
-int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *morts, int x)
+int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int x, int TAILLE_POLICE)
 {
     SDL_Texture *image = NULL;
     SDL_Rect position;
@@ -115,8 +113,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
     position_ennemi.h = 100;
     position_ennemi.y = sol_rect.y - position_ennemi.h;
 
-    int vie_initiale = 1;
-    int vie_restante = vie_initiale;
+    int vie_restante = 1;
 
     // chronomètre
     SDL_Rect position_chrono;
@@ -158,22 +155,12 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
                 case SDLK_ESCAPE:
                     vx = 0;
                     Uint32 temps_pause = SDL_GetTicks();
-                    statut = menu_jeu(window, renderer, 75, 20, x, image, fond_position_initiale);
-                    if (statut == -1)
+                    statut = menu_jeu(window, renderer, TAILLE_POLICE, 20, x, image, fond_position_initiale);
+                    if (statut == -1 || statut == 1)
                         goto Quit;
-                    else if (statut == 1)
-                    {
-                        position_perso.x = position.w / 2 - position_perso.w / 2;
-                        position_perso.y = sol_rect.y - position_perso.h;
-                        temps_debut = SDL_GetTicks();
-                        aventurier_texture = aventurier_sprite2;
-                        dir = 1;
-                    }
-                    if (statut != 1)
-                    {
-                        // reprendre le chrono
-                        temps_debut += SDL_GetTicks() - temps_pause;
-                    }
+
+                    // reprendre le chrono
+                    temps_debut += SDL_GetTicks() - temps_pause;
                     break;
                 case SDLK_RIGHT:
                     vx = vitesse_max;
@@ -232,11 +219,11 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
 
         // Affichage du temps écoulé
         sprintf(temps, "%02d:%02d", minutes, secondes);
-        affichage_text_niveau(&tChrono, police, &position_chrono, 0, 0, &renderer, temps, couleur);
+        affichage_text_niveau(&tChrono, TAILLE_POLICE, &position_chrono, 0, 0, &renderer, temps, couleur);
 
         // Affichage du nombre de morts
         sprintf(morts_str, "Morts: %03d", *morts);
-        affichage_text_niveau(&tMorts, police, &position_morts, position.w - position_morts.w, 0, &renderer, morts_str, couleur);
+        affichage_text_niveau(&tMorts, TAILLE_POLICE, &position_morts, position.w - position_morts.w, 0, &renderer, morts_str, couleur);
 
         position_perso.x += vx;
         // Déplacement de l'arrière plan quand le personnage atteint les 3/4 de l'écran
@@ -248,7 +235,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
             {
                 Lniv[i]->x -= 6;
             }
-            position_perso.x=(position.w / 4) * 3-1;
+            position_perso.x = (position.w / 4) * 3 - 1;
         }
         if (saut_duree > 0)
         {
@@ -274,23 +261,11 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *police, int *m
 
         // Collision enemis avec le perso
         collision_enemis(&position_perso, &position_ennemi, &ennemi_sprite1, &vie_restante);
-        if (vie_restante != vie_initiale)
+        if (vie_restante != 1)
         {
             (*morts)++;
-            statut = menu_game_over(window, renderer, 75, 20, x, image, fond_position_initiale);
-            if (statut == -1)
-                goto Quit;
-            else if (statut == 1)
-            {
-                position_perso.x = 560;
-                position_perso.y = sol_rect.y - position_perso.h;
-                temps_debut = SDL_GetTicks();
-                aventurier_texture = aventurier_sprite2;
-                dir = 1;
-                vx = 0;
-                saut_duree = 0;
-            }
-            vie_restante++;
+            statut = menu_game_over(window, renderer, TAILLE_POLICE, 20, x, image, fond_position_initiale);
+            goto Quit;
         }
 
         // Toutes les 100ms on change de sprite

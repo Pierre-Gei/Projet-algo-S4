@@ -15,13 +15,13 @@ void affichage_background(SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect
 /*Petit menu en jeu*/
 int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond);
 /*Afficher le texte dans une boucle*/
-void affichage_text_niveau(SDL_Texture **texture, TTF_Font *police, SDL_Rect *position, int x, int y, SDL_Renderer **renderer, char *texte, SDL_Color couleur);
+void affichage_text_niveau(SDL_Texture **texture,int Taille_Police, SDL_Rect *position, int x, int y, SDL_Renderer **renderer, char *texte, SDL_Color couleur);
 /*Alterner entre les deux sprites du personnage*/
 void changement_sprites(SDL_Texture **rendu, SDL_Texture *texture1, SDL_Texture *texture2);
 /*Changer la couleur d'un texte*/
-void changement_couleur(TTF_Font *police, SDL_Color couleur, SDL_Renderer **renderer, SDL_Texture **texte_texture, char *texte);
+void changement_couleur(int Taille_Police,SDL_Color couleur, SDL_Renderer **renderer, SDL_Texture **texte_texture, char *texte);
 /*Changer la couleur d'un texte lorsque la souris survol*/
-void changement_couleur_inRect(TTF_Font *police, SDL_Color couleur, SDL_Color couleur_initiale, SDL_Renderer **renderer, SDL_Texture **texte_texture, char *texte, SDL_Point souris, SDL_Rect rectangle);
+void changement_couleur_inRect(int Taille_Police, SDL_Color couleur, SDL_Color couleur_initiale, SDL_Renderer **renderer, SDL_Texture **texte_texture, char *texte, SDL_Point souris, SDL_Rect rectangle);
 /*Menu de mort du personnage*/
 int menu_game_over(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond);
 /*Textures du personnage en fonction de la direction*/

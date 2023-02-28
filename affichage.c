@@ -99,8 +99,14 @@ void affichage_background(SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect
     position->x = position->x - 1920;
 }
 
-void affichage_text_niveau(SDL_Texture **texture, TTF_Font *police, SDL_Rect *position, int x, int y, SDL_Renderer **renderer, char *texte, SDL_Color couleur)
+void affichage_text_niveau(SDL_Texture **texture,int Taille_Police, SDL_Rect *position, int x, int y, SDL_Renderer **renderer, char *texte, SDL_Color couleur)
 {
+    TTF_Font *police = TTF_OpenFont("Polices/Arcade.ttf", Taille_Police);
+    if (!police)
+    {
+        fprintf(stderr, "Erreur d'initialisation de TTF_OpenFont : %s \n", TTF_GetError());
+        exit(EXIT_FAILURE);
+    }
     SDL_Surface *surface = TTF_RenderText_Blended(police, texte, couleur);
     if (!surface)
     {
@@ -118,6 +124,7 @@ void affichage_text_niveau(SDL_Texture **texture, TTF_Font *police, SDL_Rect *po
     position->w = surface->w;
     position->h = surface->h;
     SDL_FreeSurface(surface);
+    TTF_CloseFont(police);
 }
 
 void changement_sprites(SDL_Texture **rendu, SDL_Texture *texture1, SDL_Texture *texture2)
@@ -132,8 +139,9 @@ void changement_sprites(SDL_Texture **rendu, SDL_Texture *texture1, SDL_Texture 
     }
 }
 
-void changement_couleur(TTF_Font *police, SDL_Color couleur, SDL_Renderer **renderer, SDL_Texture **texte_texture, char *texte)
+void changement_couleur(int Taille_Police,SDL_Color couleur, SDL_Renderer **renderer, SDL_Texture **texte_texture, char *texte)
 {
+    TTF_Font *police = TTF_OpenFont("Polices/Arcade.ttf", Taille_Police);
     SDL_Surface *texte_Surface = TTF_RenderText_Blended(police, texte, couleur);
     if (!texte_Surface)
     {
@@ -146,24 +154,27 @@ void changement_couleur(TTF_Font *police, SDL_Color couleur, SDL_Renderer **rend
         fprintf(stderr, "Erreur d'initialisation de SDL_CreateTextureFromSurface : %s \n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
+    SDL_FreeSurface(texte_Surface);
+    TTF_CloseFont(police);
 }
 
-void changement_couleur_inRect(TTF_Font *police, SDL_Color couleur, SDL_Color couleur_initiale, SDL_Renderer **renderer, SDL_Texture **texte_texture, char *texte, SDL_Point souris, SDL_Rect rectangle)
+void changement_couleur_inRect(int Taille_Police, SDL_Color couleur, SDL_Color couleur_initiale, SDL_Renderer **renderer, SDL_Texture **texte_texture, char *texte, SDL_Point souris, SDL_Rect rectangle)
 {
+    TTF_Font *police = TTF_OpenFont("Polices/Arcade.ttf", Taille_Police);
     if (SDL_PointInRect(&souris, &rectangle))
     {
-        changement_couleur(police, couleur, renderer, texte_texture, texte);
+        changement_couleur(Taille_Police, couleur, renderer, texte_texture, texte);
     }
     else
     {
-        changement_couleur(police, couleur_initiale, renderer, texte_texture, texte);
+        changement_couleur(Taille_Police, couleur_initiale, renderer, texte_texture, texte);
     }
+    TTF_CloseFont(police);
 }
 
 int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond)
 {
     SDL_RenderClear(renderer);
-    TTF_Font *police = NULL;
     SDL_Surface *texte_Surface = NULL;
     SDL_Texture *tContinue = NULL;
     SDL_Texture *tRecommencer = NULL;
@@ -180,15 +191,15 @@ int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int 
     SDL_Color couleurJaune = {255, 255, 0, 255};
     SDL_GetWindowSize(window, &window_width, &window_height);
 
-    initText(&police, couleurBlanche, &texte_Surface, &tContinue, &renderer, TAILLE_POLICE, "Continuer");
+    initText(couleurBlanche, &texte_Surface, &tContinue, &renderer, TAILLE_POLICE, "Continuer");
     SDL_Rect rectContinue = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
-    initText(&police, couleurBlanche, &texte_Surface, &tRecommencer, &renderer, TAILLE_POLICE, "Recommencer");
+    initText(couleurBlanche, &texte_Surface, &tRecommencer, &renderer, TAILLE_POLICE, "Recommencer");
     SDL_Rect rectRecommencer = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
-    initText(&police, couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
+    initText(couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
     SDL_Rect rectQuitter = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
@@ -199,9 +210,9 @@ int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int 
         SDL_Delay(39);
         SDL_Event event;
         SDL_GetMouseState(&souris.x, &souris.y);
-        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tContinue, "Continuer", souris, rectContinue);
-        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tRecommencer, "Recommencer", souris, rectRecommencer);
-        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tQuitter, "Quitter", souris, rectQuitter);
+        changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tContinue, "Continuer", souris, rectContinue);
+        changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tRecommencer, "Recommencer", souris, rectRecommencer);
+        changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tQuitter, "Quitter", souris, rectQuitter);
 
         while (SDL_PollEvent(&event))
         {
@@ -251,8 +262,6 @@ int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int 
     }
 
 Quit:
-    if (police != NULL)
-        TTF_CloseFont(police);
     if (tContinue != NULL)
         SDL_DestroyTexture(tContinue);
     if (tRecommencer != NULL)
@@ -266,7 +275,6 @@ Quit:
 int menu_game_over(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond)
 {
     SDL_RenderClear(renderer);
-    TTF_Font *police = NULL;
     SDL_Surface *texte_Surface = NULL;
     SDL_Texture *tPerdu = NULL;
     SDL_Texture *tRecommencer = NULL;
@@ -284,15 +292,15 @@ int menu_game_over(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE
 
     SDL_GetWindowSize(window, &window_width, &window_height);
 
-    initText(&police, couleurBlanche, &texte_Surface, &tPerdu, &renderer, 200, "Game Over");
+    initText(couleurBlanche, &texte_Surface, &tPerdu, &renderer, 200, "Game Over");
     SDL_Rect rectPerdu = {window_width / 2 - texte_Surface->w / 2, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
-    initText(&police, couleurBlanche, &texte_Surface, &tRecommencer, &renderer, TAILLE_POLICE, "Recommencer");
+    initText(couleurBlanche, &texte_Surface, &tRecommencer, &renderer, TAILLE_POLICE, "Recommencer");
     SDL_Rect rectRecommencer = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
-    initText(&police, couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
+    initText(couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
     SDL_Rect rectQuitter = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
@@ -303,8 +311,8 @@ int menu_game_over(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE
         SDL_Delay(39);
         SDL_Event event;
         SDL_GetMouseState(&souris.x, &souris.y);
-        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tRecommencer, "Recommencer", souris, rectRecommencer);
-        changement_couleur_inRect(police, couleurJaune, couleurBlanche, &renderer, &tQuitter, "Quitter", souris, rectQuitter);
+        changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tRecommencer, "Recommencer", souris, rectRecommencer);
+        changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tQuitter, "Quitter", souris, rectQuitter);
 
         while (SDL_PollEvent(&event))
         {
@@ -340,8 +348,6 @@ int menu_game_over(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE
     }
 
 Quit:
-    if (police != NULL)
-        TTF_CloseFont(police);
     if (tRecommencer != NULL)
         SDL_DestroyTexture(tRecommencer);
     if (tQuitter != NULL)
@@ -388,11 +394,11 @@ void parametre(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
 
     SDL_GetWindowSize(window, &window_width, &window_height);
 
-    initText(&police, couleurBlanche, &texte_Surface, &tCommandes, &renderer, TAILLE_POLICE, "Commandes :");
+    initText(couleurBlanche, &texte_Surface, &tCommandes, &renderer, TAILLE_POLICE, "Commandes :");
     SDL_Rect rectRecommencer = {window_width / 5 - texte_Surface->w / 2, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 4 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
-    initText(&police, couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
+    initText(couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
     SDL_Rect rectQuitter = {window_width / 4 - texte_Surface->w / 2, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
