@@ -82,6 +82,8 @@ int background(SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **image
     statut = EXIT_SUCCESS;
     SDL_GetWindowSize(*window, &position->w, &position->h);
     SDL_QueryTexture(*image, NULL, NULL, &position->w, &position->h);
+    position->x = 0;
+    position->y = 0;
 
     return statut;
 }

@@ -124,7 +124,6 @@ int main()
                         printf("Jouer ! \n");
                         while(niveau1(window, renderer, &tab_morts[0], x, TAILLE_POLICE) == 1){}
                         printf("niveau1 fini ! \n");
-                        SDL_RenderPresent(renderer);
                     }
                     if (event.button.x >= rectCharger.x && event.button.x <= rectCharger.x + rectCharger.w && event.button.y >= rectCharger.y && event.button.y <= rectCharger.y + rectCharger.h)
                     {
@@ -158,7 +157,7 @@ int main()
         sprintf(morts_str, "Morts: %03d", morts);
         affichage_text_niveau(&tMorts, TAILLE_POLICE, &position_morts, position_fond.w - position_morts.w, 0, &renderer, morts_str, couleurBlanche);
 
-        
+        SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, fond, NULL, &position_fond);
         SDL_RenderCopy(renderer, tMorts, NULL, &position_morts);
         SDL_RenderCopy(renderer, tJouer, NULL, &rectJouer);
