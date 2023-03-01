@@ -7,16 +7,17 @@
 #include <SDL2/SDL_image.h>
 #include <math.h>
 
-void sauvegarde(int recompenses, int nbr_morts, int temps, int niveau, int tab_morts[], int taille_tab_morts)
+void sauvegarde(int recompenses, int nbr_morts, int temps, int niveau, int tab_morts[], int tab_temps[], int taille_tab_morts)
 {
     FILE *fichier = NULL;
     fichier = fopen("sauvegarde.txt", "w");
     if (fichier != NULL)
     {
         fprintf(fichier, "recompenses: %d \n", recompenses);
-        for(int i = 0; i < taille_tab_morts; i++)
+        for (int i = 0; i < taille_tab_morts; i++)
         {
             fprintf(fichier, "%d ", tab_morts[i]);
+            fprintf(fichier, "%d ", tab_temps[i]);
         }
         fprintf(fichier, "nbr_morts: %d \n", nbr_morts);
         fprintf(fichier, "temps: %d \n", temps);
@@ -29,7 +30,7 @@ void sauvegarde(int recompenses, int nbr_morts, int temps, int niveau, int tab_m
     }
 }
 
-void chargement(int *recompenses, int *nbr_morts, int *temps, int *niveau, int tab_morts[], int taille_tab_morts)
+void chargement(int *recompenses, int *nbr_morts, int *temps, int *niveau, int tab_morts[], int tab_temps[], int taille_tab_morts)
 {
     FILE *fichier = NULL;
     fichier = fopen("sauvegarde.txt", "r");
@@ -37,9 +38,10 @@ void chargement(int *recompenses, int *nbr_morts, int *temps, int *niveau, int t
     {
         fscanf(fichier, "recompenses: %d \n", recompenses);
         fscanf(fichier, "nbr_morts: %d \n", nbr_morts);
-        for(int i = 0; i < taille_tab_morts; i++)
+        for (int i = 0; i < taille_tab_morts; i++)
         {
             fscanf(fichier, "%d ", &tab_morts[i]);
+            fscanf(fichier, "%d ", &tab_temps[i]);
         }
         fscanf(fichier, "temps: %d \n", temps);
         fscanf(fichier, "niveau: %d \n", niveau);

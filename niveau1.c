@@ -12,7 +12,7 @@
 #include "fonctions.h"
 #include "init.h"
 
-int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int x, int TAILLE_POLICE)
+int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts,int *meilleur_temps, int x, int TAILLE_POLICE)
 {
     SDL_Texture *image = NULL;
     SDL_Rect position;
@@ -288,7 +288,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int x, int T
         // SDL_SetTextureColorMod (aventurier_texture, 255, 0, 0); // Pour changer la couleur du perso
         affichage_background(&renderer, &image, &position);
         // Affichage de l'ennemi en fonction de la position du perso
-        position_perso_ennemi(position_perso, &position_ennemi, &ennemi_texture, &renderer, 2, 300);
+        position_perso_ennemi(position_perso, &position_ennemi, &ennemi_texture, &renderer, 2, 600);
         SDL_RenderCopy(renderer, sol, NULL, &sol_rect);
         SDL_RenderCopy(renderer, sol2, NULL, &sol_rect2);
         SDL_RenderCopy(renderer, sol3, NULL, &sol_rect3);

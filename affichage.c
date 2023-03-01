@@ -84,7 +84,6 @@ int background(SDL_Window **window, SDL_Renderer **renderer, SDL_Texture **image
     SDL_QueryTexture(*image, NULL, NULL, &position->w, &position->h);
     position->x = 0;
     position->y = 0;
-
     return statut;
 }
 
@@ -101,7 +100,7 @@ void affichage_background(SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect
     position->x = position->x - 1920;
 }
 
-void affichage_text_niveau(SDL_Texture **texture,int Taille_Police, SDL_Rect *position, int x, int y, SDL_Renderer **renderer, char *texte, SDL_Color couleur)
+void affichage_text_niveau(SDL_Texture **texture, int Taille_Police, SDL_Rect *position, int x, int y, SDL_Renderer **renderer, char *texte, SDL_Color couleur)
 {
     TTF_Font *police = TTF_OpenFont("Polices/Arcade.ttf", Taille_Police);
     if (!police)
@@ -141,7 +140,7 @@ void changement_sprites(SDL_Texture **rendu, SDL_Texture *texture1, SDL_Texture 
     }
 }
 
-void changement_couleur(int Taille_Police,SDL_Color couleur, SDL_Renderer **renderer, SDL_Texture **texte_texture, char *texte)
+void changement_couleur(int Taille_Police, SDL_Color couleur, SDL_Renderer **renderer, SDL_Texture **texte_texture, char *texte)
 {
     TTF_Font *police = TTF_OpenFont("Polices/Arcade.ttf", Taille_Police);
     SDL_Surface *texte_Surface = TTF_RenderText_Blended(police, texte, couleur);
@@ -174,12 +173,104 @@ void changement_couleur_inRect(int Taille_Police, SDL_Color couleur, SDL_Color c
     TTF_CloseFont(police);
 }
 
+void parametre(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, SDL_Texture *fond, SDL_Rect position_fond)
+{
+    SDL_Surface *texte_Surface = NULL;
+    SDL_Texture *tSaut = NULL;
+    SDL_Texture *tAvant = NULL;
+    SDL_Texture *tGauche = NULL;
+    SDL_Texture *tCommandes = NULL;
+    SDL_Texture *tQuitter = NULL;
+    int window_width = 0;
+    int window_height = 0;
+    bool jeu = true;
+
+    SDL_Point souris;
+
+    SDL_Color couleurJaune = {255, 255, 0, 255};
+    SDL_Color couleurBlanche = {255, 255, 255, 255};
+
+    SDL_GetWindowSize(window, &window_width, &window_height);
+
+    initText(couleurJaune, &texte_Surface, &tCommandes, &renderer, TAILLE_POLICE, "Commandes :");
+    SDL_Rect rectRecommencer = {window_width / 2 - texte_Surface->w / 2, 300, texte_Surface->w, texte_Surface->h};
+    int x = (window_width / 2 - texte_Surface->w / 2);
+    SDL_FreeSurface(texte_Surface);
+
+    initText(couleurJaune, &texte_Surface, &tSaut, &renderer, TAILLE_POLICE, "Saut :      ^");
+    SDL_Rect rectSaut = {x, 355 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
+    initText(couleurJaune, &texte_Surface, &tAvant, &renderer, TAILLE_POLICE, "Avant :    >");
+    SDL_Rect rectAvant = {x, 355 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
+    initText(couleurJaune, &texte_Surface, &tGauche, &renderer, TAILLE_POLICE, "Gauche :  <");
+    SDL_Rect rectGauche = {x, 355 + 3 * texte_Surface->h + 3 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
+    initText(couleurJaune, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Retour");
+    SDL_Rect rectQuitter = {x, 355 + 6 * texte_Surface->h + 4 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
+    while (jeu)
+    {
+        SDL_Delay(39);
+        SDL_Event event;
+        SDL_GetMouseState(&souris.x, &souris.y);
+        changement_couleur_inRect(TAILLE_POLICE, couleurBlanche, couleurJaune, &renderer, &tQuitter, "Retour", souris, rectQuitter);
+
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_QUIT:
+                jeu = false;
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_LEFT)
+                {
+                    if (SDL_PointInRect(&souris, &rectQuitter))
+                    {
+                        printf("Retour ! \n");
+                        
+                        goto Quit;
+                    }
+                }
+                break;
+            }
+        }
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, fond, NULL, &position_fond);
+        SDL_RenderCopy(renderer, tCommandes, NULL, &rectRecommencer);
+        SDL_RenderCopy(renderer, tSaut, NULL, &rectSaut);
+        SDL_RenderCopy(renderer, tAvant, NULL, &rectAvant);
+        SDL_RenderCopy(renderer, tGauche, NULL, &rectGauche);
+        SDL_RenderCopy(renderer, tQuitter, NULL, &rectQuitter);
+        SDL_RenderPresent(renderer);
+    }
+Quit:
+    if (tCommandes != NULL)
+        SDL_DestroyTexture(tCommandes);
+    if (tQuitter != NULL)
+        SDL_DestroyTexture(tQuitter);
+    if (tSaut != NULL)
+        SDL_DestroyTexture(tSaut);
+    if (tAvant != NULL)
+        SDL_DestroyTexture(tAvant);
+    if (tGauche != NULL)
+        SDL_DestroyTexture(tGauche);
+
+    return;
+}
+
 int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond)
 {
     SDL_RenderClear(renderer);
     SDL_Surface *texte_Surface = NULL;
     SDL_Texture *tContinue = NULL;
     SDL_Texture *tRecommencer = NULL;
+    SDL_Texture *tCommandes = NULL;
     SDL_Texture *tQuitter = NULL;
     int fondtest = 0;
     int window_width = 0;
@@ -197,12 +288,16 @@ int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int 
     SDL_Rect rectContinue = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
+    initText(couleurBlanche, &texte_Surface, &tCommandes, &renderer, TAILLE_POLICE, "Commandes");
+    SDL_Rect rectCommandes = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
     initText(couleurBlanche, &texte_Surface, &tRecommencer, &renderer, TAILLE_POLICE, "Recommencer");
-    SDL_Rect rectRecommencer = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_Rect rectRecommencer = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
     initText(couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
-    SDL_Rect rectQuitter = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_Rect rectQuitter = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 3 * texte_Surface->h + 3 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
     // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -213,6 +308,7 @@ int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int 
         SDL_Event event;
         SDL_GetMouseState(&souris.x, &souris.y);
         changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tContinue, "Continuer", souris, rectContinue);
+        changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tCommandes, "Commandes", souris, rectCommandes);
         changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tRecommencer, "Recommencer", souris, rectRecommencer);
         changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tQuitter, "Quitter", souris, rectQuitter);
 
@@ -234,30 +330,33 @@ int menu_jeu(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int 
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT)
                 {
-                    if (event.button.x >= rectContinue.x && event.button.x <= rectContinue.x + rectContinue.w && event.button.y >= rectContinue.y && event.button.y <= rectContinue.y + rectContinue.h)
+                    if (SDL_PointInRect(&souris, &rectContinue))
                     {
-                        printf("Continuer ! \n");
                         statut = 0;
-                        goto Quit;
+                        jeu = false;
                     }
-                    if (event.button.x >= rectRecommencer.x && event.button.x <= rectRecommencer.x + rectRecommencer.w && event.button.y >= rectRecommencer.y && event.button.y <= rectRecommencer.y + rectRecommencer.h)
+                    else if (SDL_PointInRect(&souris, &rectCommandes))
                     {
-                        printf("Recommencer ! \n");
+                        parametre(window, renderer, TAILLE_POLICE, INTERLIGNE, fond, position_fond);
+                    }
+                    else if (SDL_PointInRect(&souris, &rectRecommencer))
+                    {
                         statut = 1;
-                        goto Quit;
+                        jeu = false;
                     }
-                    if (event.button.x >= rectQuitter.x && event.button.x <= rectQuitter.x + rectQuitter.w && event.button.y >= rectQuitter.y && event.button.y <= rectQuitter.y + rectQuitter.h)
+                    else if (SDL_PointInRect(&souris, &rectQuitter))
                     {
-                        printf("Quitter ! \n");
                         statut = -1;
-                        goto Quit;
+                        jeu = false;
                     }
+
                     break;
                 }
             }
         }
         SDL_RenderCopy(renderer, fond, NULL, &position_fond);
         SDL_RenderCopy(renderer, tContinue, NULL, &rectContinue);
+        SDL_RenderCopy(renderer, tCommandes, NULL, &rectCommandes);
         SDL_RenderCopy(renderer, tRecommencer, NULL, &rectRecommencer);
         SDL_RenderCopy(renderer, tQuitter, NULL, &rectQuitter);
         SDL_RenderPresent(renderer);
@@ -326,13 +425,13 @@ int menu_game_over(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT)
                 {
-                    if (event.button.x >= rectRecommencer.x && event.button.x <= rectRecommencer.x + rectRecommencer.w && event.button.y >= rectRecommencer.y && event.button.y <= rectRecommencer.y + rectRecommencer.h)
+                    if (SDL_PointInRect(&souris, &rectRecommencer))
                     {
                         printf("Recommencer ! \n");
                         statut = 1;
                         goto Quit;
                     }
-                    if (event.button.x >= rectQuitter.x && event.button.x <= rectQuitter.x + rectQuitter.w && event.button.y >= rectQuitter.y && event.button.y <= rectQuitter.y + rectQuitter.h)
+                    if (SDL_PointInRect(&souris, &rectQuitter))
                     {
                         printf("Quitter ! \n");
                         statut = -1;
@@ -378,71 +477,3 @@ void affiche_perso(SDL_Renderer **renderer, SDL_Texture *perso_rendu, SDL_Textur
     }
 }
 
-void parametre(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, SDL_Texture *fond, SDL_Rect position_fond)
-{
-    SDL_RenderClear(renderer);
-    TTF_Font *police = NULL;
-    SDL_Surface *texte_Surface = NULL;
-    SDL_Texture *tPerdu = NULL;
-    SDL_Texture *tCommandes = NULL;
-    SDL_Texture *tQuitter = NULL;
-    int window_width = 0;
-    int window_height = 0;
-    bool jeu = true;
-
-    SDL_Point souris;
-
-    SDL_Color couleurBlanche = {255, 255, 255, 255};
-
-    SDL_GetWindowSize(window, &window_width, &window_height);
-
-    initText(couleurBlanche, &texte_Surface, &tCommandes, &renderer, TAILLE_POLICE, "Commandes :");
-    SDL_Rect rectRecommencer = {window_width / 5 - texte_Surface->w / 2, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 4 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
-    SDL_FreeSurface(texte_Surface);
-
-    initText(couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
-    SDL_Rect rectQuitter = {window_width / 4 - texte_Surface->w / 2, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
-    SDL_FreeSurface(texte_Surface);
-
-    while (jeu)
-    {
-        SDL_Delay(39);
-        SDL_Event event;
-        SDL_GetMouseState(&souris.x, &souris.y);
-
-        while (SDL_PollEvent(&event))
-        {
-            switch (event.type)
-            {
-            case SDL_QUIT:
-                jeu = false;
-                break;
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.sym)
-                {
-                case SDLK_ESCAPE:
-                    jeu = false;
-                    goto Quit;
-                    break;
-                default:
-                    break;
-                }
-                break;
-            default:
-                break;
-            }
-
-            SDL_RenderCopy(renderer, fond, NULL, &position_fond);
-            SDL_RenderCopy(renderer, tCommandes, NULL, &rectRecommencer);
-            SDL_RenderCopy(renderer, tQuitter, NULL, &rectQuitter);
-            SDL_RenderPresent(renderer);
-        }
-    }
-Quit:
-    if (police != NULL)
-        TTF_CloseFont(police);
-    if (tCommandes != NULL)
-        SDL_DestroyTexture(tCommandes);
-    if (tQuitter != NULL)
-        SDL_DestroyTexture(tQuitter);
-}

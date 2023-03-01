@@ -1,2 +1,2 @@
-void sauvegarde(int recompenses, int nbr_morts, int temps, int niveau, int tab_morts[], int taille_tab_morts);
-void chargement(int *recompenses, int *nbr_morts, int *temps, int *niveau, int tab_morts[], int taille_tab_morts);
+void sauvegarde(int recompenses, int nbr_morts, int temps, int niveau, int tab_morts[], int tab_temps[], int taille_tab_morts);
+void chargement(int *recompenses, int *nbr_morts, int *temps, int *niveau, int tab_morts[], int tab_temps[], int taille_tab_morts);

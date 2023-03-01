@@ -1,1 +1,1 @@
-int niveau1(SDL_Window *window, SDL_Renderer *renderer, int * morts, int x, int TAILLE_POLICE);
+int niveau1(SDL_Window *window, SDL_Renderer *renderer, int * morts,int *meilleur_temps, int x, int TAILLE_POLICE);
