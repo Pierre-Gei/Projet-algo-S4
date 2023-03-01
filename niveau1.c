@@ -8,12 +8,17 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 #include <math.h>
+#include "structure.h"
 #include "affichage.h"
 #include "fonctions.h"
 #include "init.h"
 
-int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts,int *meilleur_temps, int x, int TAILLE_POLICE)
+int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleur_temps, int x, int TAILLE_POLICE)
 {
+    Astronaute astronaute;
+    astronaute = initAstronaute(astronaute);
+    Ennemi ennemi;
+    ennemi = initEnnemi(ennemi);
     SDL_Texture *image = NULL;
     SDL_Rect position;
     SDL_Rect sol_rect;
@@ -27,13 +32,10 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts,int *meilleur
 
     SDL_Rect position_ennemi;
 
-    SDL_Rect position_perso;
-    SDL_Texture *aventurier_sprite1 = NULL;
-    SDL_Texture *aventurier_sprite2 = NULL;
-    SDL_Texture *aventurier_texture = NULL;
     SDL_Texture *ennemi_sprite1 = NULL;
     SDL_Texture *ennemi_sprite2 = NULL;
     SDL_Texture *ennemi_texture = NULL;
+
     SDL_Texture *sol = NULL;
     SDL_Texture *sol2 = NULL;
     SDL_Texture *sol3 = NULL;
@@ -59,12 +61,14 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts,int *meilleur
     SDL_Rect fond_position_initiale = position;
     SDL_Rect *Lniv[8];
 
-    aventurier_sprite1 = loadTexturePNG("sprites/aventurier1.png", renderer, &position_perso);
-    aventurier_sprite2 = loadTexturePNG("sprites/aventurier2.png", renderer, &position_perso);
-    aventurier_texture = aventurier_sprite1;
-    ennemi_sprite1 = loadTexturePNG("sprites/ennemi1.png", renderer, &position_ennemi);
-    ennemi_sprite2 = loadTexturePNG("sprites/ennemi2.png", renderer, &position_ennemi);
-    ennemi_texture = ennemi_sprite1;
+    // Remplir les champs et charger les textures de l'astronaute
+    astronaute = setAstronaute("sprites/aventurier1.png", "sprites/aventurier2.png", 1, renderer, 6, 12);
+
+    // Remplir les champs et charger les textures de l'ennemi
+    ennemi = setEnnemi("sprites/ennemi1.png", "sprites/ennemi2.png",renderer);
+
+   
+
     sol = loadTexturePNG("background/sol.png", renderer, &sol_rect);
     sol2 = loadTexturePNG("background/sol.png", renderer, &sol_rect2);
     sol3 = loadTexturePNG("background/sol.png", renderer, &sol_rect3);
@@ -73,47 +77,44 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts,int *meilleur
     sol6 = loadTexturePNG("background/sol.png", renderer, &sol_rect6);
     sol7 = loadTexturePNG("background/sol.png", renderer, &sol_rect7);
     sol8 = loadTexturePNG("background/sol.png", renderer, &sol_rect8);
-    ennemi_texture = loadTexturePNG("sprites/ennemi1.png", renderer, &position_ennemi);
     sol_rect.x = 0;
     sol_rect.y = position.h - sol_rect.h;
     sol_rect.w = position.w; // pour faire des tests avec un sol de largeur d'écran
     Lniv[0] = &sol_rect;
-    sol_rect2.x = position.w + 2 * position_perso.w;
+    sol_rect2.x = position.w + 2 * astronaute.position.w;
     sol_rect2.y = position.h - sol_rect2.h;
     sol_rect2.w = position.w; // pour faire des tests avec un sol de largeur d'écran
     Lniv[1] = &sol_rect2;
-    sol_rect3.x = 2 * position.w + position_perso.w;
-    sol_rect3.y = position.h - sol_rect.h - position_perso.h - position_perso.h / 2;
-    sol_rect3.w = position_perso.w * 4; // pour faire des tests avec un sol de largeur d'écran
+    sol_rect3.x = 2 * position.w + astronaute.position.w;
+    sol_rect3.y = position.h - sol_rect.h - astronaute.position.h - astronaute.position.h / 2;
+    sol_rect3.w = astronaute.position.w * 4; // pour faire des tests avec un sol de largeur d'écran
     Lniv[2] = &sol_rect3;
-    sol_rect4.x = 2 * position.w + position_perso.w * 4;
-    sol_rect4.y = position.h - sol_rect.h - position_perso.h * 3;
-    sol_rect4.w = position_perso.w * 4; // pour faire des tests avec un sol de largeur d'écran
+    sol_rect4.x = 2 * position.w + astronaute.position.w * 4;
+    sol_rect4.y = position.h - sol_rect.h - astronaute.position.h * 3;
+    sol_rect4.w = astronaute.position.w * 4; // pour faire des tests avec un sol de largeur d'écran
     Lniv[3] = &sol_rect4;
-    sol_rect5.x = 2 * position.w + position_perso.w * 7;
-    sol_rect5.y = position.h - sol_rect.h - position_perso.h - position_perso.h / 2;
-    sol_rect5.w = position_perso.w * 4; // pour faire des tests avec un sol de largeur d'écran
+    sol_rect5.x = 2 * position.w + astronaute.position.w * 7;
+    sol_rect5.y = position.h - sol_rect.h - astronaute.position.h - astronaute.position.h / 2;
+    sol_rect5.w = astronaute.position.w * 4; // pour faire des tests avec un sol de largeur d'écran
     Lniv[4] = &sol_rect5;
-    sol_rect6.x = 2 * position.w + position_perso.w * 10;
+    sol_rect6.x = 2 * position.w + astronaute.position.w * 10;
     sol_rect6.y = position.h - sol_rect2.h;
     sol_rect6.w = position.w / 2; // pour faire des tests avec un sol de largeur d'écran
     Lniv[5] = &sol_rect6;
-    sol_rect7.x = 2 * position.w + position_perso.w * 9 + position.w / 2;
-    sol_rect7.y = position.h - sol_rect.h - position_perso.h - position_perso.h / 2;
+    sol_rect7.x = 2 * position.w + astronaute.position.w * 9 + position.w / 2;
+    sol_rect7.y = position.h - sol_rect.h - astronaute.position.h - astronaute.position.h / 2;
     sol_rect7.w = position.w / 2; // pour faire des tests avec un sol de largeur d'écran
     Lniv[6] = &sol_rect7;
-    sol_rect8.x = 3 * position.w + position_perso.w * 8;
+    sol_rect8.x = 3 * position.w + astronaute.position.w * 8;
     sol_rect8.y = position.h - sol_rect.h;
     sol_rect8.w = position.w / 2; // pour faire des tests avec un sol de largeur d'écran
     Lniv[7] = &sol_rect8;
-    position_perso.x = position_perso.w;
-    position_perso.y = sol_rect.y - position_perso.h;
-    position_ennemi.x = 1200;
-    position_ennemi.w = 108;
-    position_ennemi.h = 100;
-    position_ennemi.y = sol_rect.y - position_ennemi.h;
-
-    int vie_restante = 1;
+    astronaute.position.x = astronaute.position.w;
+    astronaute.position.y = sol_rect.y - astronaute.position.h;
+    ennemi.position.x = 1200;
+    ennemi.position.w = 108;
+    ennemi.position.h = 100;
+    ennemi.position.y = sol_rect.y - ennemi.position.h;
 
     // chronomètre
     SDL_Rect position_chrono;
@@ -128,8 +129,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts,int *meilleur
     char morts_str[20];
 
     int gravite = 7;
-    int vitesse_saut = 12;
-    int vitesse_max = 6;
+
     int dir = 1;
     int saut_duree = 0;
     int dernier_saut = 0;
@@ -163,12 +163,12 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts,int *meilleur
                     temps_debut += SDL_GetTicks() - temps_pause;
                     break;
                 case SDLK_RIGHT:
-                    vx = vitesse_max;
+                    vx = astronaute.vitesse_max;
                     dir = 1;
                     break;
 
                 case SDLK_LEFT:
-                    vx = -vitesse_max;
+                    vx = -astronaute.vitesse_max;
                     dir = -1;
                     break;
 
@@ -225,43 +225,43 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts,int *meilleur
         sprintf(morts_str, "Morts: %03d", *morts);
         affichage_text_niveau(&tMorts, TAILLE_POLICE, &position_morts, position.w - position_morts.w, 0, &renderer, morts_str, couleur);
 
-        position_perso.x += vx;
+        astronaute.position.x += vx;
         // Déplacement de l'arrière plan quand le personnage atteint les 3/4 de l'écran
-        if (position_perso.x >= (position.w / 4) * 3)
+        if (astronaute.position.x >= (position.w / 4) * 3)
         {
             position.x -= 3;
-            position_perso.x -= vx;
+            astronaute.position.x -= vx;
             for (int i = 0; i < 8; i++)
             {
                 Lniv[i]->x -= 6;
             }
-            position_perso.x = (position.w / 4) * 3 - 1;
+            astronaute.position.x = (position.w / 4) * 3 - 1;
         }
         if (saut_duree > 0)
         {
-            position_perso.y -= vitesse_saut;
+            astronaute.position.y -= astronaute.vitesse_saut;
 
             saut_duree--;
         }
         else
         {
-            position_perso.y += gravite;
+            astronaute.position.y += gravite;
         }
 
-        collision_ecran(&position_perso, position, &vie_restante);
+        collision_ecran(&astronaute.position, position, &astronaute.vie);
 
-        collisionPerso = collision(&position_perso, &sol_rect);
-        collisionPerso2 = collision(&position_perso, &sol_rect2);
-        collisionPerso3 = collision(&position_perso, &sol_rect3);
-        collisionPerso4 = collision(&position_perso, &sol_rect4);
-        collisionPerso5 = collision(&position_perso, &sol_rect5);
-        collisionPerso6 = collision(&position_perso, &sol_rect6);
-        collisionPerso7 = collision(&position_perso, &sol_rect7);
-        collisionPerso8 = collision(&position_perso, &sol_rect8);
+        collisionPerso = collision(&astronaute.position, &sol_rect);
+        collisionPerso2 = collision(&astronaute.position, &sol_rect2);
+        collisionPerso3 = collision(&astronaute.position, &sol_rect3);
+        collisionPerso4 = collision(&astronaute.position, &sol_rect4);
+        collisionPerso5 = collision(&astronaute.position, &sol_rect5);
+        collisionPerso6 = collision(&astronaute.position, &sol_rect6);
+        collisionPerso7 = collision(&astronaute.position, &sol_rect7);
+        collisionPerso8 = collision(&astronaute.position, &sol_rect8);
 
         // Collision enemis avec le perso
-        collision_enemis(&position_perso, &position_ennemi, &ennemi_sprite1, &vie_restante);
-        if (vie_restante != 1)
+        collision_enemis(&astronaute.position, &ennemi.position, &ennemi.sprite1, &astronaute.vie);
+        if (astronaute.vie != 1)
         {
             (*morts)++;
             statut = menu_game_over(window, renderer, TAILLE_POLICE, 20, x, image, fond_position_initiale);
@@ -271,14 +271,14 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts,int *meilleur
         // Toutes les 100ms on change de sprite
         if (SDL_GetTicks() - texture_temps > 100)
         {
-            changement_sprites(&aventurier_texture, aventurier_sprite1, aventurier_sprite2);
+            changement_sprites(&astronaute.sprite_finale, astronaute.sprite1, astronaute.sprite2);
             texture_temps = SDL_GetTicks();
         }
 
         // Toutes les 100ms on change de sprite
         if (SDL_GetTicks() - ennemi_temps > 250)
         {
-            changement_sprites(&ennemi_texture, ennemi_sprite1, ennemi_sprite2);
+            changement_sprites(&ennemi.sprite_finale, ennemi.sprite1, ennemi.sprite2);
             ennemi_temps = SDL_GetTicks();
         }
 
@@ -288,7 +288,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts,int *meilleur
         // SDL_SetTextureColorMod (aventurier_texture, 255, 0, 0); // Pour changer la couleur du perso
         affichage_background(&renderer, &image, &position);
         // Affichage de l'ennemi en fonction de la position du perso
-        position_perso_ennemi(position_perso, &position_ennemi, &ennemi_texture, &renderer, 2, 600);
+        position_perso_ennemi(astronaute.position, &ennemi.position, &ennemi.sprite_finale, &renderer, 2, 600);
         SDL_RenderCopy(renderer, sol, NULL, &sol_rect);
         SDL_RenderCopy(renderer, sol2, NULL, &sol_rect2);
         SDL_RenderCopy(renderer, sol3, NULL, &sol_rect3);
@@ -301,30 +301,20 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts,int *meilleur
         SDL_RenderCopy(renderer, tChrono, NULL, &position_chrono);
 
         // Affichage du personnage
-        affiche_perso(&renderer, aventurier_texture, aventurier_sprite1, position_perso, vx, dir);
+        affiche_perso(&renderer, astronaute.sprite_finale, astronaute.sprite1, astronaute.position, vx, dir);
 
         SDL_RenderPresent(renderer);
     }
 
 Quit:
+    destroyAstronaute(&astronaute);
+    destroyEnnemi(&ennemi);
     if (image != NULL)
         SDL_DestroyTexture(image);
-    if (aventurier_sprite1 != NULL)
-        SDL_DestroyTexture(aventurier_sprite1);
-    if (aventurier_sprite2 != NULL)
-        SDL_DestroyTexture(aventurier_sprite2);
-    if (aventurier_texture != NULL)
-        SDL_DestroyTexture(aventurier_texture);
     if (tMorts != NULL)
         SDL_DestroyTexture(tMorts);
     if (tChrono != NULL)
         SDL_DestroyTexture(tChrono);
-    if (ennemi_sprite1 != NULL)
-        SDL_DestroyTexture(ennemi_sprite1);
-    if (ennemi_sprite2 != NULL)
-        SDL_DestroyTexture(ennemi_sprite2);
-    if (ennemi_texture != NULL)
-        SDL_DestroyTexture(ennemi_texture);
     if (sol != NULL)
         SDL_DestroyTexture(sol);
     if (sol2 != NULL)

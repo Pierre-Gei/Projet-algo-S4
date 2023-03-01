@@ -6,6 +6,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include "structure.h"
 #include "fonctions.h"
 #include "init.h"
 
@@ -49,6 +50,27 @@ SDL_Texture *loadTexturePNG(const char *filename, SDL_Renderer *renderer, SDL_Re
         return NULL;
     }
     return texture;
+}
+
+Astronaute setAstronaute(char *chemin1, char *chemin2, int vie, SDL_Renderer *renderer, int vitesse_max, int vitesse_saut)
+{
+    Astronaute a;
+    a.vie = vie;
+    a.sprite1 = loadTexturePNG(chemin1, renderer, &a.position);
+    a.sprite2 = loadTexturePNG(chemin2, renderer, &a.position);
+    a.sprite_finale = a.sprite1;
+    a.vitesse_max = vitesse_max;
+    a.vitesse_saut = vitesse_saut;
+    return a;
+}
+
+Ennemi setEnnemi(char *chemin1, char *chemin2, SDL_Renderer *renderer)
+{
+    Ennemi e;
+    e.sprite1 = loadTexturePNG(chemin1, renderer, &e.position);
+    e.sprite2 = loadTexturePNG(chemin2, renderer, &e.position);
+    e.sprite_finale = e.sprite1;
+    return e;
 }
 
 SDL_Texture *loadTexture(const char *filename, SDL_Renderer *renderer)
@@ -181,6 +203,7 @@ void parametre(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
     SDL_Texture *tGauche = NULL;
     SDL_Texture *tCommandes = NULL;
     SDL_Texture *tQuitter = NULL;
+    SDL_Texture *tEchap = NULL;
     int window_width = 0;
     int window_height = 0;
     bool jeu = true;
@@ -209,6 +232,10 @@ void parametre(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
     SDL_Rect rectGauche = {x, 355 + 3 * texte_Surface->h + 3 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
+    initText(couleurJaune, &texte_Surface, &tEchap, &renderer, TAILLE_POLICE, "Menu : Echap");
+    SDL_Rect rectEchap = {x, 355 + 4 * texte_Surface->h + 4 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
     initText(couleurJaune, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Retour");
     SDL_Rect rectQuitter = {x, 355 + 6 * texte_Surface->h + 4 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
@@ -233,7 +260,7 @@ void parametre(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
                     if (SDL_PointInRect(&souris, &rectQuitter))
                     {
                         printf("Retour ! \n");
-                        
+
                         goto Quit;
                     }
                 }
@@ -246,6 +273,7 @@ void parametre(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
         SDL_RenderCopy(renderer, tSaut, NULL, &rectSaut);
         SDL_RenderCopy(renderer, tAvant, NULL, &rectAvant);
         SDL_RenderCopy(renderer, tGauche, NULL, &rectGauche);
+        SDL_RenderCopy(renderer, tEchap, NULL, &rectEchap);
         SDL_RenderCopy(renderer, tQuitter, NULL, &rectQuitter);
         SDL_RenderPresent(renderer);
     }
@@ -260,6 +288,8 @@ Quit:
         SDL_DestroyTexture(tAvant);
     if (tGauche != NULL)
         SDL_DestroyTexture(tGauche);
+    if (tEchap != NULL)
+        SDL_DestroyTexture(tEchap);
 
     return;
 }
@@ -476,4 +506,3 @@ void affiche_perso(SDL_Renderer **renderer, SDL_Texture *perso_rendu, SDL_Textur
         SDL_RenderCopyEx(*renderer, perso_static, NULL, &position_perso, 0, NULL, SDL_FLIP_HORIZONTAL);
     }
 }
-

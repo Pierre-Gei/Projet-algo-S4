@@ -10,6 +10,9 @@ int init(SDL_Window **window, SDL_Renderer **renderer);
 SDL_Texture *loadTexture(const char *filename, SDL_Renderer *renderer);
 /*Charger une texture a partir d'un PNG ou autre*/
 SDL_Texture *loadTexturePNG(const char *filename, SDL_Renderer *renderer, SDL_Rect *dimension);
+/*Remplir les champs de la structure Astronaute*/
+Astronaute setAstronaute(char * chemin1, char * chemin2, int vie, SDL_Renderer *renderer, int vitesse_max, int vitesse_saut);
+Ennemi setEnnemi(char *chemin1, char *chemin2, SDL_Renderer *renderer);
 /*Afficher le fond d'écran en jeu*/
 void affichage_background(SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect *position);
 /*Petit menu en jeu*/

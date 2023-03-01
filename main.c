@@ -115,14 +115,6 @@ int main()
             case SDL_QUIT:
                 jeu = false;
                 break;
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.sym)
-                {
-                case SDLK_ESCAPE:
-                    jeu = false;
-                    break;
-                }
-                break;
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT)
                 {
