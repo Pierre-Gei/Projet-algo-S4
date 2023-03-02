@@ -29,6 +29,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     SDL_Rect sol_rect6;
     SDL_Rect sol_rect7;
     SDL_Rect sol_rect8;
+    SDL_Rect vict_rect;
 
     SDL_Rect position_ennemi;
 
@@ -44,6 +45,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     SDL_Texture *sol6 = NULL;
     SDL_Texture *sol7 = NULL;
     SDL_Texture *sol8 = NULL;
+    SDL_Texture *vict = NULL;
 
     SDL_Color couleur = {255, 255, 255, 255};
     bool jeu = true;
@@ -56,6 +58,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     int collisionPerso6 = 0;
     int collisionPerso7 = 0;
     int collisionPerso8 = 0;
+    int collisionPersovict = 0;
     position.x = 0;
     position.y = 0;
     SDL_Rect fond_position_initiale = position;
@@ -77,6 +80,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     sol6 = loadTexturePNG("background/sol.png", renderer, &sol_rect6);
     sol7 = loadTexturePNG("background/sol.png", renderer, &sol_rect7);
     sol8 = loadTexturePNG("background/sol.png", renderer, &sol_rect8);
+    vict = loadTexturePNG("background/sol.png", renderer, &vict_rect);
     sol_rect.x = 0;
     sol_rect.y = position.h - sol_rect.h;
     sol_rect.w = position.w; // pour faire des tests avec un sol de largeur d'écran
@@ -105,16 +109,25 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     sol_rect7.y = position.h - sol_rect.h - astronaute.position.h - astronaute.position.h / 2;
     sol_rect7.w = position.w / 2; // pour faire des tests avec un sol de largeur d'écran
     Lniv[6] = &sol_rect7;
-    sol_rect8.x = 3 * position.w + astronaute.position.w * 8;
-    sol_rect8.y = position.h - sol_rect.h;
-    sol_rect8.w = position.w / 2; // pour faire des tests avec un sol de largeur d'écran
-    Lniv[7] = &sol_rect8;
+    // sol_rect8.x = 3 * position.w + astronaute.position.w * 8;
+    // sol_rect8.y = position.h - sol_rect.h;
+    // sol_rect8.w = position.w / 2; // pour faire des tests avec un sol de largeur d'écran
+    // Lniv[7] = &sol_rect8;
     astronaute.position.x = astronaute.position.w;
     astronaute.position.y = sol_rect.y - astronaute.position.h;
     ennemi.position.x = 1200;
     ennemi.position.w = 108;
     ennemi.position.h = 100;
     ennemi.position.y = sol_rect.y - ennemi.position.h;
+    vict_rect.x = 0;
+    vict_rect.y = position.h - sol_rect.h-10;
+    vict_rect.w = 10; // pour faire des tests avec un sol de largeur d'écran
+    vict_rect.h = 10;
+    Lniv[7] = &vict_rect;
+
+
+
+    int vie_restante = 1;
 
     // chronomètre
     SDL_Rect position_chrono;
@@ -258,6 +271,10 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
         collisionPerso6 = collision(&astronaute.position, &sol_rect6);
         collisionPerso7 = collision(&astronaute.position, &sol_rect7);
         collisionPerso8 = collision(&astronaute.position, &sol_rect8);
+        if(collisionPersovict = collision(&astronaute.position, &vict_rect)==1)
+        {
+            goto Quit;
+        }
 
         // Collision enemis avec le perso
         collision_enemis(&astronaute.position, &ennemi.position, &ennemi.sprite1, &astronaute.vie);
