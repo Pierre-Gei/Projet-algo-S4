@@ -7,7 +7,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
-#include "niveau1.h"
+#include "structure.h"
 #include "affichage.h"
 #include "fonctions.h"
 #include "init.h"
@@ -64,9 +64,8 @@ int main()
     SDL_FreeSurface(texte_Surface);
 
     initText(couleurBlanche, &texte_Surface, &tTitre, &renderer, 200, "Astroventure");
-    SDL_Rect rectTitre = {window_width / 2 - texte_Surface->w / 2,y/2 - texte_Surface->h/2, texte_Surface->w, texte_Surface->h};
+    SDL_Rect rectTitre = {window_width / 2 - texte_Surface->w / 2, y / 2 - texte_Surface->h / 2, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
-
 
     initText(couleurBlanche, &texte_Surface, &tCharger, &renderer, TAILLE_POLICE, "Charger");
     SDL_Rect rectCharger = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
@@ -118,32 +117,37 @@ int main()
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT)
                 {
+                    // boutton Jouer
                     if (SDL_PointInRect(&souris, &rectJouer))
                     {
-                        printf("Jouer ! \n");
-                        while (niveau1(window, renderer, &tab_morts[0], &tab_temps[0], x, TAILLE_POLICE) == 1)
-                        {
-                        }
-                        printf("niveau1 fini ! \n");
-                        SDL_RenderPresent(renderer);
+                        // printf("Jouer ! \n");
+                        // while (niveau1(window, renderer, &tab_morts[0], &tab_temps[0], x, TAILLE_POLICE) == 1)
+                        // {
+                        // }
+                        // SDL_RenderPresent(renderer);
+                        choix_niveau(window, renderer, TAILLE_POLICE, INTERLIGNE, x, fond, position_fond, niveau, tab_morts, tab_temps);
                     }
+                    // boutton Charger
                     if (SDL_PointInRect(&souris, &rectCharger))
                     {
                         printf("Charger ! \n");
                         chargement(&recompenses, &morts, &meilleur_temps, &niveau, tab_morts, tab_temps, 2);
                         save = -25;
                     }
+                    // bouton Parametres
                     if (SDL_PointInRect(&souris, &rectParam))
                     {
                         printf("Parametres ! \n");
                         parametre(window, renderer, TAILLE_POLICE, INTERLIGNE, fond, position_fond);
                     }
+                    // bouton Sauvegarder
                     if (SDL_PointInRect(&souris, &rectSauv))
                     {
                         printf("Sauvegarder ! \n");
                         sauvegarde(recompenses, morts, meilleur_temps, niveau, tab_morts, tab_temps, 2);
                         save = 25;
                     }
+                    // bouton Quitter
                     if (SDL_PointInRect(&souris, &rectQuit))
                     {
                         printf("Quitter ! \n");

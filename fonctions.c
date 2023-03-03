@@ -3,6 +3,7 @@
 #include <string.h>
 #include <SDL2/SDL.h>
 #include "affichage.h"
+#include "structure.h"
 
 int collision(SDL_Rect *position_perso, SDL_Rect *objet)
 {
@@ -57,6 +58,7 @@ int collision_enemis(SDL_Rect *position_perso, SDL_Rect *enemi, SDL_Texture **te
             else
             {
                 *vies = *vies - 1;
+                return -1;
             }
         }
         else
@@ -64,10 +66,12 @@ int collision_enemis(SDL_Rect *position_perso, SDL_Rect *enemi, SDL_Texture **te
             if (position_perso->x < intersection.x)
             {
                 *vies = *vies - 1;
+                return -1;
             }
             else
             {
                 *vies = *vies - 1;
+                return -1;
             }
         }
     }
@@ -85,7 +89,7 @@ void collision_ecran(SDL_Rect *position_perso, SDL_Rect position, int *vie_resta
     }
 }
 
-void position_perso_ennemi(SDL_Rect position_perso, SDL_Rect * position_ennemi, SDL_Texture **ennemi_texture,SDL_Renderer ** renderer, int vitesse_ennemi, int range)
+void position_perso_ennemi(SDL_Rect position_perso, SDL_Rect *position_ennemi, SDL_Texture **ennemi_texture, SDL_Renderer **renderer, int vitesse_ennemi, int range)
 {
     if (position_ennemi->x - position_perso.x > 0 && position_ennemi->x - position_perso.x < range)
     {

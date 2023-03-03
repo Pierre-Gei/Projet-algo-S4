@@ -33,10 +33,6 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
 
     SDL_Rect position_ennemi;
 
-    SDL_Texture *ennemi_sprite1 = NULL;
-    SDL_Texture *ennemi_sprite2 = NULL;
-    SDL_Texture *ennemi_texture = NULL;
-
     SDL_Texture *sol = NULL;
     SDL_Texture *sol2 = NULL;
     SDL_Texture *sol3 = NULL;
@@ -58,19 +54,16 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     int collisionPerso6 = 0;
     int collisionPerso7 = 0;
     int collisionPerso8 = 0;
-    int collisionPersovict = 0;
     position.x = 0;
     position.y = 0;
     SDL_Rect fond_position_initiale = position;
     SDL_Rect *Lniv[8];
 
     // Remplir les champs et charger les textures de l'astronaute
-    astronaute = setAstronaute("sprites/aventurier1.png", "sprites/aventurier2.png", 1, renderer, 6, 12);
+    astronaute = setAstronaute("sprites/aventurier1.png", "sprites/aventurier2.png", "sprites/aventurier_mort1.png", "sprites/aventurier_mort2.png", "sprites/aventurier_mort3.png", 1, renderer, 6, 12);
 
     // Remplir les champs et charger les textures de l'ennemi
-    ennemi = setEnnemi("sprites/ennemi1.png", "sprites/ennemi2.png",renderer);
-
-   
+    ennemi = setEnnemi("sprites/ennemi1.png", "sprites/ennemi2.png", renderer);
 
     sol = loadTexturePNG("background/sol.png", renderer, &sol_rect);
     sol2 = loadTexturePNG("background/sol.png", renderer, &sol_rect2);
@@ -120,12 +113,10 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     ennemi.position.h = 100;
     ennemi.position.y = sol_rect.y - ennemi.position.h;
     vict_rect.x = 0;
-    vict_rect.y = position.h - sol_rect.h-10;
+    vict_rect.y = position.h - sol_rect.h - 10;
     vict_rect.w = 10; // pour faire des tests avec un sol de largeur d'écran
     vict_rect.h = 10;
     Lniv[7] = &vict_rect;
-
-
 
     int vie_restante = 1;
 
@@ -229,6 +220,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
         temps_ecoule = SDL_GetTicks() - temps_debut;
         int minutes = (int)(temps_ecoule / 1000) / 60;
         int secondes = (int)(temps_ecoule / 1000) % 60;
+        int temps_secondes = (int)(temps_ecoule / 1000);
 
         // Affichage du temps écoulé
         sprintf(temps, "%02d:%02d", minutes, secondes);
@@ -271,13 +263,28 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
         collisionPerso6 = collision(&astronaute.position, &sol_rect6);
         collisionPerso7 = collision(&astronaute.position, &sol_rect7);
         collisionPerso8 = collision(&astronaute.position, &sol_rect8);
-        if(collisionPersovict = collision(&astronaute.position, &vict_rect)==1)
+
+        // Enregistrement du temps si c'est le meilleur
+        if (collision(&astronaute.position, &vict_rect) != 0)
         {
+            if (*meilleur_temps == 0)
+            {
+                *meilleur_temps = temps_secondes;
+            }
+            else if (temps_secondes < *meilleur_temps)
+            {
+                *meilleur_temps = temps_secondes;
+            }
+            // Animation victoire
+
             goto Quit;
         }
 
         // Collision enemis avec le perso
-        collision_enemis(&astronaute.position, &ennemi.position, &ennemi.sprite1, &astronaute.vie);
+        if (collision_enemis(&astronaute.position, &ennemi.position, &ennemi.sprite1, &astronaute.vie) == -1)
+        {
+            animation_mort(renderer, astronaute, image, position);
+        }
         if (astronaute.vie != 1)
         {
             (*morts)++;
