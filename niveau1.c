@@ -278,6 +278,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
                 *meilleur_temps = temps_secondes;
             }
             *recompenses = *recompenses + MAX_RECOMPENSES - temps_secondes;
+            statut = menu_victoire(window, renderer, TAILLE_POLICE, 20, x, image, fond_position_initiale);
 
             // Animation victoire
 

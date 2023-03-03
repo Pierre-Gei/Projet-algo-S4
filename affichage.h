@@ -13,6 +13,8 @@ void changement_couleur(int Taille_Police, SDL_Color couleur, SDL_Renderer **ren
 void changement_couleur_inRect(int Taille_Police, SDL_Color couleur, SDL_Color couleur_initiale, SDL_Renderer **renderer, SDL_Texture **texte_texture, char *texte, SDL_Point souris, SDL_Rect rectangle);
 /*Menu de mort du personnage*/
 int menu_game_over(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond);
+/*Menu de victoire*/
+int menu_victoire(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond);
 /*Textures du personnage en fonction de la direction*/
 void affiche_perso(SDL_Renderer **renderer, SDL_Texture *perso_rendu, SDL_Texture *perso_static, SDL_Rect position_perso, int vx, int direction);
 /*Afficher les paramètres avec les commandes*/

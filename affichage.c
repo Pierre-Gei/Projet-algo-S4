@@ -381,6 +381,91 @@ Quit:
         SDL_DestroyTexture(tRecommencer);
     if (tQuitter != NULL)
         SDL_DestroyTexture(tQuitter);
+    if (tPerdu != NULL)
+        SDL_DestroyTexture(tPerdu);
+
+    return statut;
+}
+
+int menu_victoire(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond)
+{
+    SDL_RenderClear(renderer);
+    SDL_Surface *texte_Surface = NULL;
+    SDL_Texture *tPerdu = NULL;
+    SDL_Texture *tRecommencer = NULL;
+    SDL_Texture *tQuitter = NULL;
+    int window_width = 0;
+    int window_height = 0;
+    bool jeu = true;
+    int statut = 0;
+
+    SDL_Point souris;
+
+    SDL_Color couleurBlanche = {255, 255, 255, 255};
+    SDL_Color couleurJaune = {255, 255, 0, 255};
+
+    SDL_GetWindowSize(window, &window_width, &window_height);
+
+    initText(couleurBlanche, &texte_Surface, &tPerdu, &renderer, 200, "VICTOIRE ");
+    SDL_Rect rectPerdu = {window_width / 2 - texte_Surface->w / 2, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
+    initText(couleurBlanche, &texte_Surface, &tRecommencer, &renderer, TAILLE_POLICE, "Suivant");
+    SDL_Rect rectRecommencer = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
+    initText(couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
+    SDL_Rect rectQuitter = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
+    while (jeu)
+    {
+        SDL_Delay(39);
+        SDL_Event event;
+        SDL_GetMouseState(&souris.x, &souris.y);
+        changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tRecommencer, "Suivant", souris, rectRecommencer);
+        changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tQuitter, "Quitter", souris, rectQuitter);
+
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_QUIT:
+                jeu = false;
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_LEFT)
+                {
+                    if (SDL_PointInRect(&souris, &rectRecommencer))
+                    {
+                        printf("Suivant ! \n");
+                        statut = 0;
+                        goto Quit;
+                    }
+                    if (SDL_PointInRect(&souris, &rectQuitter))
+                    {
+                        printf("Quitter ! \n");
+                        statut = -1;
+                        goto Quit;
+                    }
+                    break;
+                }
+            }
+        }
+        SDL_RenderCopy(renderer, fond, NULL, &position_fond);
+        SDL_RenderCopy(renderer, tPerdu, NULL, &rectPerdu);
+        SDL_RenderCopy(renderer, tRecommencer, NULL, &rectRecommencer);
+        SDL_RenderCopy(renderer, tQuitter, NULL, &rectQuitter);
+        SDL_RenderPresent(renderer);
+    }
+
+Quit:
+    if (tRecommencer != NULL)
+        SDL_DestroyTexture(tRecommencer);
+    if (tQuitter != NULL)
+        SDL_DestroyTexture(tQuitter);
+    if (tPerdu != NULL)
+        SDL_DestroyTexture(tPerdu);
 
     return statut;
 }
@@ -538,9 +623,16 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
                 {
                     if (SDL_PointInRect(&souris, &rectJouer1))
                     {
-                        while (niveau1(window, renderer, &tab_mort[0], &tab_temps[0], recompenses, x, TAILLE_POLICE) == 1)
+                        while ((statut = niveau1(window, renderer, &tab_mort[0], &tab_temps[0], recompenses, x, TAILLE_POLICE)) == 1)
                         {
                         }
+                        // if (statut == 0)
+                        // {
+                        //     while (niveau2(window, renderer, &tab_mort[1], &tab_temps[1], x, TAILLE_POLICE) == 1)
+                        //     {
+                        //     }
+                        // }
+
                         goto Quit;
                     }
                     if (SDL_PointInRect(&souris, &rectJouer2))
