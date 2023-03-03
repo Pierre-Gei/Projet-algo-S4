@@ -9,6 +9,7 @@
 #include <SDL2/SDL_mixer.h>
 #include "structure.h"
 #include "affichage.h"
+#include "menus.h"
 #include "fonctions.h"
 #include "init.h"
 #include "niveau1.h"
@@ -25,6 +26,7 @@ int main()
     SDL_Texture *tTitre = NULL;
     SDL_Texture *tJouer = NULL;
     SDL_Texture *tCharger = NULL;
+    SDL_Texture * tIventaire = NULL;
     SDL_Texture *tParametres = NULL;
     SDL_Texture *tSauvegarder = NULL;
     SDL_Texture *tQuitter = NULL;
@@ -33,6 +35,7 @@ int main()
     SDL_Texture *fond = NULL;
     SDL_Rect position_fond;
     int fondtest = 0;
+    int skin = 1;
     int window_width = 0;
     int window_height = 0;
     bool jeu = true;
@@ -49,6 +52,9 @@ int main()
     SDL_Rect position_morts;
     SDL_Texture *tMorts = NULL;
     char morts_str[20];
+    SDL_Texture *tRecompenses = NULL;
+    char recompenses_str[20];
+    SDL_Rect position_recompenses;
 
     SDL_Point souris;
 
@@ -71,16 +77,20 @@ int main()
     SDL_Rect rectCharger = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + texte_Surface->h + INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
+    initText(couleurBlanche, &texte_Surface, &tIventaire, &renderer, TAILLE_POLICE, "Inventaire");
+    SDL_Rect rectInvent = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
     initText(couleurBlanche, &texte_Surface, &tParametres, &renderer, TAILLE_POLICE, "Commandes");
-    SDL_Rect rectParam = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 2 * texte_Surface->h + 2 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_Rect rectParam = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 3 * texte_Surface->h + 3 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
     initText(couleurBlanche, &texte_Surface, &tSauvegarder, &renderer, TAILLE_POLICE, "Sauvegarder");
-    SDL_Rect rectSauv = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 3 * texte_Surface->h + 3 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_Rect rectSauv = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 4 * texte_Surface->h + 4 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
     initText(couleurBlanche, &texte_Surface, &tQuitter, &renderer, TAILLE_POLICE, "Quitter");
-    SDL_Rect rectQuit = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 4 * texte_Surface->h + 4 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
+    SDL_Rect rectQuit = {x, (window_height - 4 * texte_Surface->h - 3 * INTERLIGNE) / 2 + 5 * texte_Surface->h + 5 * INTERLIGNE, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
     initText(couleurBlanche, &texte_Surface, &tValidation_save, &renderer, 50, "Sauvegarde effectuee");
@@ -102,6 +112,7 @@ int main()
         SDL_GetMouseState(&souris.x, &souris.y);
         changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tJouer, "Jouer", souris, rectJouer);
         changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tCharger, "Charger", souris, rectCharger);
+        changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tIventaire, "Inventaire", souris, rectInvent);
         changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tParametres, "Commandes", souris, rectParam);
         changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tSauvegarder, "Sauvegarder", souris, rectSauv);
         changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tQuitter, "Quitter", souris, rectQuit);
@@ -125,7 +136,7 @@ int main()
                         // {
                         // }
                         // SDL_RenderPresent(renderer);
-                        choix_niveau(window, renderer, TAILLE_POLICE, INTERLIGNE, x, fond, position_fond, niveau, tab_morts, tab_temps, &recompenses);
+                        choix_niveau(window, renderer, TAILLE_POLICE, INTERLIGNE, x, fond, position_fond, &niveau, tab_morts, tab_temps, &recompenses);
                     }
                     // boutton Charger
                     if (SDL_PointInRect(&souris, &rectCharger))
@@ -133,6 +144,12 @@ int main()
                         printf("Charger ! \n");
                         chargement(&recompenses, &morts, &meilleur_temps, &niveau, tab_morts, tab_temps, 2);
                         save = -25;
+                    }
+                    // bouton Inventaire
+                    if (SDL_PointInRect(&souris, &rectInvent))
+                    {
+                        printf("Inventaire ! \n");
+                        
                     }
                     // bouton Parametres
                     if (SDL_PointInRect(&souris, &rectParam))
@@ -157,10 +174,12 @@ int main()
                 break;
             }
         }
-        // Affichage du nombre de morts
+        // Affichage du nombre de morts et des récompenses
         morts = tab_morts[0] + tab_morts[1];
         sprintf(morts_str, "Morts: %03d", morts);
         affichage_text_niveau(&tMorts, TAILLE_POLICE, &position_morts, position_fond.w - position_morts.w, 0, &renderer, morts_str, couleurBlanche);
+        sprintf(recompenses_str, "%04d", recompenses);
+        affichage_text_niveau(&tRecompenses, TAILLE_POLICE, &position_recompenses, position_morts.x , position_morts.h, &renderer, recompenses_str, couleurBlanche);
 
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, fond, NULL, &position_fond);
@@ -168,9 +187,11 @@ int main()
         SDL_RenderCopy(renderer, tMorts, NULL, &position_morts);
         SDL_RenderCopy(renderer, tJouer, NULL, &rectJouer);
         SDL_RenderCopy(renderer, tCharger, NULL, &rectCharger);
+        SDL_RenderCopy(renderer, tIventaire, NULL, &rectInvent);
         SDL_RenderCopy(renderer, tParametres, NULL, &rectParam);
         SDL_RenderCopy(renderer, tSauvegarder, NULL, &rectSauv);
         SDL_RenderCopy(renderer, tQuitter, NULL, &rectQuit);
+        SDL_RenderCopy(renderer, tRecompenses, NULL, &position_recompenses);
         if (save > 0)
         {
             SDL_RenderCopy(renderer, tValidation_save, NULL, &rectValidation_save);
@@ -192,6 +213,8 @@ Quit:
         SDL_DestroyTexture(tCharger);
     if (tParametres != NULL)
         SDL_DestroyTexture(tParametres);
+    if (tIventaire != NULL)
+        SDL_DestroyTexture(tIventaire);
     if (tSauvegarder != NULL)
         SDL_DestroyTexture(tSauvegarder);
     if (tQuitter != NULL)

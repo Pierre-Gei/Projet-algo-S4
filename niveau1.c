@@ -10,12 +10,13 @@
 #include <math.h>
 #include "structure.h"
 #include "affichage.h"
+#include "menus.h"
 #include "fonctions.h"
 #include "init.h"
 
 #define MAX_RECOMPENSES 300
 
-int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleur_temps, int *recompenses, int x, int TAILLE_POLICE)
+int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleur_temps, int *recompenses, int *niveau, int x, int TAILLE_POLICE)
 {
     Astronaute astronaute;
     astronaute = initAstronaute(astronaute);
@@ -278,6 +279,10 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
                 *meilleur_temps = temps_secondes;
             }
             *recompenses = *recompenses + MAX_RECOMPENSES - temps_secondes;
+            if(*niveau == 1)
+            {
+                *niveau = 2;
+            }
             statut = menu_victoire(window, renderer, TAILLE_POLICE, 20, x, image, fond_position_initiale);
 
             // Animation victoire
