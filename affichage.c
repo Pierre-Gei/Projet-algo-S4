@@ -491,9 +491,9 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
     SDL_FreeSurface(texte_Surface);
 
     initText(couleurBlanche, &texte_Surface, &tNiveau2, &renderer, 60, "Niveau 2 - Planete 0");
-    rectContour_niveau2.x = window_width / 4 * 3 - texte_Surface->w / 2 - 10;
+    rectContour_niveau2.x = window_width - rectContour_niveau1.x - rectContour_niveau1.w;
     rectContour_niveau2.y = rectContour_niveau2.h / 2;
-    rectContour_niveau2.w = texte_Surface->w + 20;
+    rectContour_niveau2.w = rectContour_niveau1.w;
     SDL_Rect rectNiveau2 = {rectContour_niveau2.x + ((rectContour_niveau2.w - texte_Surface->w) / 2), rectContour_niveau2.y, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
@@ -509,11 +509,16 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
     SDL_Rect rectJouer2 = {rectContour_niveau2.x + ((rectContour_niveau2.w - texte_Surface->w) / 2), (rectContour_niveau2.h / 4) * 3 + rectContour_niveau2.y, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
+    initText(couleurBlanche, &texte_Surface, &tRetour, &renderer, 60, "Retour");
+    SDL_Rect rectRetour = {rectContour_niveau1.x, window_height - texte_Surface->h - 60, texte_Surface->w, texte_Surface->h};
+    SDL_FreeSurface(texte_Surface);
+
     while (jeu)
     {
         SDL_RenderClear(renderer);
         changement_couleur_inRect(60, couleurJaune, couleurBlanche, &renderer, &tJouer1, "Jouer", souris, rectJouer1);
         changement_couleur_inRect(60, couleurJaune, couleurBlanche, &renderer, &tJouer2, "Jouer", souris, rectJouer2);
+        changement_couleur_inRect(60, couleurJaune, couleurBlanche, &renderer, &tRetour, "Retour", souris, rectRetour);
 
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
@@ -545,6 +550,10 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
                         // }
                         goto Quit;
                     }
+                    if (SDL_PointInRect(&souris, &rectRetour))
+                    {
+                        goto Quit;
+                    }
                     break;
                 }
             }
@@ -560,6 +569,7 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
         SDL_RenderCopy(renderer, tNiveau2_temps, NULL, &rectNiveau2_temps);
         SDL_RenderCopy(renderer, tNiveau2_mort, NULL, &rectNiveau2_mort);
         SDL_RenderCopy(renderer, tJouer2, NULL, &rectJouer2);
+        SDL_RenderCopy(renderer, tRetour, NULL, &rectRetour);
         SDL_RenderPresent(renderer);
     }
 
@@ -580,6 +590,8 @@ Quit:
         SDL_DestroyTexture(tNiveau2_temps);
     if (tJouer2 != NULL)
         SDL_DestroyTexture(tJouer2);
+    if (tRetour != NULL)
+        SDL_DestroyTexture(tRetour);
 
     return statut;
 }

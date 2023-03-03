@@ -1,4 +1,4 @@
 recompenses: 0 
-1 0 0 0 nbr_morts: 1 
+2 1 0 0 nbr_morts: 2 
 temps: 0 
 niveau: 1 
