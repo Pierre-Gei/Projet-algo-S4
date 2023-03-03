@@ -425,7 +425,7 @@ void animation_mort(SDL_Renderer *renderer, Astronaute a, SDL_Texture *fond, SDL
     SDL_RenderPresent(renderer);
     SDL_Delay(1000);
 }
-int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond, int niveau, int tab_mort[], int tab_temps[])
+int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond, int niveau, int tab_mort[], int tab_temps[], int *recompenses)
 {
     SDL_RenderClear(renderer);
 
@@ -443,7 +443,7 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
     char mort_niveau1[20];
     char mort_niveau2[20];
 
-    //Mise en forme du temps et des morts en chaîne de caractères
+    // Mise en forme du temps et des morts en chaîne de caractères
     minutes = tab_temps[0] / 60;
     secondes = tab_temps[0] % 60;
     sprintf(temps_niveau1, "Temps : %02d:%02d", minutes, secondes);
@@ -470,7 +470,7 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
     SDL_Color couleurJaune = {255, 255, 0, 255};
     SDL_Color couleurGrise = {100, 100, 100, 255};
 
-    //Calcul des coordonnées des rectangles informatifs des niveaux
+    // Calcul des coordonnées des rectangles informatifs des niveaux
     initText(couleurBlanche, &texte_Surface, &tNiveau1, &renderer, 60, "Niveau 1 - Presentation");
     rectContour_niveau1.x = window_width / 4 - texte_Surface->w / 2 - 10;
     rectContour_niveau1.y = rectContour_niveau1.h / 2;
@@ -538,7 +538,7 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
                 {
                     if (SDL_PointInRect(&souris, &rectJouer1))
                     {
-                        while (niveau1(window, renderer, &tab_mort[0], &tab_temps[0], x, TAILLE_POLICE) == 1)
+                        while (niveau1(window, renderer, &tab_mort[0], &tab_temps[0], recompenses, x, TAILLE_POLICE) == 1)
                         {
                         }
                         goto Quit;

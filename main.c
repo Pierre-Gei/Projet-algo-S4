@@ -39,8 +39,8 @@ int main()
     int statut = 0;
     int tab_morts[] = {0, 0};
     int tab_temps[] = {0, 0};
-    int morts = 0;
     int recompenses = 0;
+    int morts = 0;
     int niveau = 1;
     int meilleur_temps = 0;
     int save = 0;
@@ -125,7 +125,7 @@ int main()
                         // {
                         // }
                         // SDL_RenderPresent(renderer);
-                        choix_niveau(window, renderer, TAILLE_POLICE, INTERLIGNE, x, fond, position_fond, niveau, tab_morts, tab_temps);
+                        choix_niveau(window, renderer, TAILLE_POLICE, INTERLIGNE, x, fond, position_fond, niveau, tab_morts, tab_temps, &recompenses);
                     }
                     // boutton Charger
                     if (SDL_PointInRect(&souris, &rectCharger))

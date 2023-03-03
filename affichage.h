@@ -20,4 +20,4 @@ void parametre(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
 /*Animation de mort du personnage*/
 void animation_mort(SDL_Renderer *renderer, Astronaute a, SDL_Texture *fond, SDL_Rect position_fond);
 
-int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond, int niveau, int tab_mort[], int tab_temps[]);
+int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond, int niveau, int tab_mort[], int tab_temps[], int *recompenses);

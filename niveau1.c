@@ -13,7 +13,9 @@
 #include "fonctions.h"
 #include "init.h"
 
-int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleur_temps, int x, int TAILLE_POLICE)
+#define MAX_RECOMPENSES 300
+
+int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleur_temps, int *recompenses, int x, int TAILLE_POLICE)
 {
     Astronaute astronaute;
     astronaute = initAstronaute(astronaute);
@@ -275,6 +277,8 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
             {
                 *meilleur_temps = temps_secondes;
             }
+            *recompenses = *recompenses + MAX_RECOMPENSES - temps_secondes;
+
             // Animation victoire
 
             goto Quit;
