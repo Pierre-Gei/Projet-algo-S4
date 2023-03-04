@@ -8,13 +8,12 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 #include "structure.h"
+#include "init.h"
 #include "affichage.h"
 #include "menus.h"
 #include "fonctions.h"
-#include "init.h"
 #include "niveau1.h"
 #include "save.h"
-
 #define TAILLE_POLICE 75
 #define INTERLIGNE 20
 
@@ -26,13 +25,17 @@ int main()
     SDL_Texture *tTitre = NULL;
     SDL_Texture *tJouer = NULL;
     SDL_Texture *tCharger = NULL;
-    SDL_Texture * tIventaire = NULL;
+    SDL_Texture *tIventaire = NULL;
     SDL_Texture *tParametres = NULL;
     SDL_Texture *tSauvegarder = NULL;
     SDL_Texture *tQuitter = NULL;
     SDL_Texture *tValidation_save = NULL;
     SDL_Texture *tValidation_charger = NULL;
     SDL_Texture *fond = NULL;
+    SDL_Texture *tPiece = NULL;
+    SDL_Rect rectPiece;
+    SDL_Texture *tMort = NULL;
+    SDL_Rect rectMort;
     SDL_Rect position_fond;
     int fondtest = 0;
     int skin = 1;
@@ -47,6 +50,8 @@ int main()
     int niveau = 1;
     int meilleur_temps = 0;
     int save = 0;
+    int choix_skin = 1;
+    int skin_achete = 1;
 
     // compteur de morts
     SDL_Rect position_morts;
@@ -61,6 +66,13 @@ int main()
     SDL_Color couleurBlanche = {255, 255, 255, 255};
     SDL_Color couleurJaune = {255, 255, 0, 255};
     init(&window, &renderer);
+    // if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) == -1)
+    // {
+    //     printf("%s", Mix_GetError());
+    // }
+    // Mix_Music *musique;
+    // musique = Mix_LoadMUS("Musiques/MenuPrincipal.mp3");
+
     SDL_GetWindowSize(window, &window_width, &window_height);
 
     initText(couleurBlanche, &texte_Surface, &tJouer, &renderer, TAILLE_POLICE, "Jouer");
@@ -103,7 +115,16 @@ int main()
 
     fondtest = background(&window, &renderer, &fond, &position_fond);
 
+    tPiece = loadTexturePNG("sprites/piece.png", renderer, &rectPiece);
+    rectPiece.w = 40;
+    rectPiece.h = 40;
+    tMort = loadTexturePNG("sprites/mort.png", renderer, &rectMort);
+    rectMort.h = 40;
+    rectMort.w = 40;
+
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    // Mix_PlayMusic(musique, -1);
+    // Mix_VolumeMusic(20);
 
     while (jeu)
     {
@@ -136,20 +157,22 @@ int main()
                         // {
                         // }
                         // SDL_RenderPresent(renderer);
-                        choix_niveau(window, renderer, TAILLE_POLICE, INTERLIGNE, x, fond, position_fond, &niveau, tab_morts, tab_temps, &recompenses);
+                        choix_niveau(window, renderer, TAILLE_POLICE, INTERLIGNE, x, fond, position_fond, &niveau, tab_morts, tab_temps, &recompenses, choix_skin);
                     }
                     // boutton Charger
                     if (SDL_PointInRect(&souris, &rectCharger))
                     {
                         printf("Charger ! \n");
-                        chargement(&recompenses, &morts, &meilleur_temps, &niveau, tab_morts, tab_temps, 2);
+                        chargement(&recompenses, &morts, &meilleur_temps, &niveau, tab_morts, tab_temps, 2, &choix_skin, &skin_achete);
+                        printf("choix_skin = %d", choix_skin);
+                        printf("skin_achete = %d", skin_achete);
                         save = -25;
                     }
                     // bouton Inventaire
                     if (SDL_PointInRect(&souris, &rectInvent))
                     {
                         printf("Inventaire ! \n");
-                        
+                        inventaire(window, renderer, TAILLE_POLICE, INTERLIGNE, x, fond, position_fond, &choix_skin, &recompenses, &skin_achete);
                     }
                     // bouton Parametres
                     if (SDL_PointInRect(&souris, &rectParam))
@@ -161,7 +184,7 @@ int main()
                     if (SDL_PointInRect(&souris, &rectSauv))
                     {
                         printf("Sauvegarder ! \n");
-                        sauvegarde(recompenses, morts, meilleur_temps, niveau, tab_morts, tab_temps, 2);
+                        sauvegarde(recompenses, morts, meilleur_temps, niveau, tab_morts, tab_temps, 2, choix_skin, skin_achete);
                         save = 25;
                     }
                     // bouton Quitter
@@ -175,11 +198,16 @@ int main()
             }
         }
         // Affichage du nombre de morts et des récompenses
-        morts = tab_morts[0] + tab_morts[1];
-        sprintf(morts_str, "Morts: %03d", morts);
-        affichage_text_niveau(&tMorts, TAILLE_POLICE, &position_morts, position_fond.w - position_morts.w, 0, &renderer, morts_str, couleurBlanche);
         sprintf(recompenses_str, "%04d", recompenses);
-        affichage_text_niveau(&tRecompenses, TAILLE_POLICE, &position_recompenses, position_morts.x , position_morts.h, &renderer, recompenses_str, couleurBlanche);
+        affichage_text_niveau(&tRecompenses, TAILLE_POLICE, &position_recompenses, rectPiece.w + 10, 0, &renderer, recompenses_str, couleurBlanche);
+        rectPiece.x = position_recompenses.x - rectPiece.w - 10;
+        rectPiece.y = position_recompenses.y + 10;
+
+        morts = tab_morts[0] + tab_morts[1];
+        sprintf(morts_str, "%03d    ", morts);
+        affichage_text_niveau(&tMorts, TAILLE_POLICE, &position_morts, rectMort.w + 10, position_recompenses.y + position_recompenses.h, &renderer, morts_str, couleurBlanche);
+        rectMort.x = position_morts.x - rectMort.w - 10;
+        rectMort.y = position_morts.y + 10;
 
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, fond, NULL, &position_fond);
@@ -192,6 +220,8 @@ int main()
         SDL_RenderCopy(renderer, tSauvegarder, NULL, &rectSauv);
         SDL_RenderCopy(renderer, tQuitter, NULL, &rectQuit);
         SDL_RenderCopy(renderer, tRecompenses, NULL, &position_recompenses);
+        SDL_RenderCopy(renderer, tPiece, NULL, &rectPiece);
+        SDL_RenderCopy(renderer, tMort, NULL, &rectMort);
         if (save > 0)
         {
             SDL_RenderCopy(renderer, tValidation_save, NULL, &rectValidation_save);
@@ -219,10 +249,27 @@ Quit:
         SDL_DestroyTexture(tSauvegarder);
     if (tQuitter != NULL)
         SDL_DestroyTexture(tQuitter);
+    if (tTitre != NULL)
+        SDL_DestroyTexture(tTitre);
+    if (tMorts != NULL)
+        SDL_DestroyTexture(tMorts);
+    if (tRecompenses != NULL)
+        SDL_DestroyTexture(tRecompenses);
+    if (tPiece != NULL)
+        SDL_DestroyTexture(tPiece);
+    if (tMort != NULL)
+        SDL_DestroyTexture(tMort);
+    if (tValidation_save != NULL)
+        SDL_DestroyTexture(tValidation_save);
+    if (tValidation_charger != NULL)
+        SDL_DestroyTexture(tValidation_charger);
+    if (fond != NULL)
+        SDL_DestroyTexture(fond);
     if (renderer != NULL)
         SDL_DestroyRenderer(renderer);
     if (window != NULL)
         SDL_DestroyWindow(window);
+
     TTF_Quit();
     SDL_Quit();
 

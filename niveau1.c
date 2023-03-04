@@ -16,7 +16,7 @@
 
 #define MAX_RECOMPENSES 300
 
-int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleur_temps, int *recompenses, int *niveau, int x, int TAILLE_POLICE)
+int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleur_temps, int *recompenses, int *niveau, int x, int TAILLE_POLICE, int choix_skin)
 {
     Astronaute astronaute;
     astronaute = initAstronaute(astronaute);
@@ -63,7 +63,14 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     SDL_Rect *Lniv[8];
 
     // Remplir les champs et charger les textures de l'astronaute
-    astronaute = setAstronaute("sprites/aventurier1.png", "sprites/aventurier2.png", "sprites/aventurier_mort1.png", "sprites/aventurier_mort2.png", "sprites/aventurier_mort3.png", 1, renderer, 6, 12);
+    if (choix_skin == 1)
+    {
+        astronaute = setAstronaute("sprites/aventurier1.png", "sprites/aventurier2.png", "sprites/aventurier_mort1.png", "sprites/aventurier_mort2.png", "sprites/aventurier_mort3.png", 1, renderer, 6, 12);
+    }
+    else if (choix_skin == 2)
+    {
+        astronaute =     astronaute = setAstronaute("sprites/astronaute1.png", "sprites/astronaute2.png", "sprites/astronaute_mort1.png", "sprites/astronaute_mort2.png", "sprites/astronaute_mort3.png", 1, renderer, 6, 12);
+    }
 
     // Remplir les champs et charger les textures de l'ennemi
     ennemi = setEnnemi("sprites/ennemi1.png", "sprites/ennemi2.png", renderer);
@@ -279,11 +286,11 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
                 *meilleur_temps = temps_secondes;
             }
             *recompenses = *recompenses + MAX_RECOMPENSES - temps_secondes;
-            if(*niveau == 1)
+            if (*niveau == 1)
             {
                 *niveau = 2;
             }
-            statut = menu_victoire(window, renderer, TAILLE_POLICE, 20, x, image, fond_position_initiale);
+            statut = menu_victoire(window, renderer, TAILLE_POLICE, 20, x, image, fond_position_initiale, MAX_RECOMPENSES - temps_secondes);
 
             // Animation victoire
 
@@ -365,6 +372,5 @@ Quit:
         SDL_DestroyTexture(sol7);
     if (sol8 != NULL)
         SDL_DestroyTexture(sol8);
-
     return statut;
 }
