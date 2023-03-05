@@ -193,3 +193,13 @@ void destroyEnnemi(Ennemi *e)
     if (e->sprite_finale != NULL)
         SDL_DestroyTexture(e->sprite_finale);
 }
+
+plateforme initplateforme(plateforme p)
+{
+    p.position.x = 0;
+    p.position.y = 0;
+    p.position.w = 0;
+    p.position.h = 0;
+    p.texture=NULL;
+    p.collision=0;
+}

@@ -18,3 +18,9 @@ typedef struct Ennemi{
     SDL_Texture *sprite1;
     SDL_Texture *sprite2;
 }Ennemi;
+
+typedef struct plateforme{
+    SDL_Rect position;
+    SDL_Texture *texture;
+    int collision;
+}plateforme;

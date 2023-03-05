@@ -20,4 +20,6 @@ Ennemi setEnnemi(char *chemin1, char *chemin2, SDL_Renderer *renderer);
 void destroyAstronaute(Astronaute *a);
 /*Detruire les textures d'une structure Ennemi*/
 void destroyEnnemi(Ennemi *e);
+/*Initialiser à 0 les champs de la structure plateforme*/
+plateforme initplateforme(plateforme p);
 
