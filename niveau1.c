@@ -243,14 +243,6 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
         {
             astronaute.position.y += gravite;
         }
-        for (int i = 0; i < 9; i++)
-        {
-            if (Lniv[i].position.x+Lniv[i].position.w<position.x)
-            {
-                if (Lniv[i].texture != NULL)
-                {SDL_DestroyTexture(Lniv[i].texture);printf("disparu");}
-            }
-        }
 
         collision_ecran(&astronaute.position, position, &astronaute.vie);
         for (int i = 0; i <9; i++)
