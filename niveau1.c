@@ -24,43 +24,38 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     ennemi = initEnnemi(ennemi);
     SDL_Texture *image = NULL;
     SDL_Rect position;
-    SDL_Rect sol_rect;
-    SDL_Rect sol_rect2;
-    SDL_Rect sol_rect3;
-    SDL_Rect sol_rect4;
-    SDL_Rect sol_rect5;
-    SDL_Rect sol_rect6;
-    SDL_Rect sol_rect7;
-    SDL_Rect sol_rect8;
-    SDL_Rect vict_rect;
+    plateforme Lniv[9];
+    plateforme sol1;
+    plateforme sol2;
+    plateforme sol3;
+    plateforme sol4;
+    plateforme sol5;
+    plateforme sol6;
+    plateforme sol7;
+    plateforme sol8;
+    plateforme Vict;
+    Lniv[0] = sol1;
+    Lniv[1] = sol2;
+    Lniv[2] = sol3;
+    Lniv[3] = sol4;
+    Lniv[4] = sol5;
+    Lniv[5] = sol6;
+    Lniv[6] = sol7;
+    Lniv[7] = sol8;
+    Lniv[8] = Vict;
+    for (int i = 0; i < 9; i++)
+    {
+        Lniv[i] = initplateforme(Lniv[i]);
+    }
 
     SDL_Rect position_ennemi;
-
-    SDL_Texture *sol = NULL;
-    SDL_Texture *sol2 = NULL;
-    SDL_Texture *sol3 = NULL;
-    SDL_Texture *sol4 = NULL;
-    SDL_Texture *sol5 = NULL;
-    SDL_Texture *sol6 = NULL;
-    SDL_Texture *sol7 = NULL;
-    SDL_Texture *sol8 = NULL;
-    SDL_Texture *vict = NULL;
 
     SDL_Color couleur = {255, 255, 255, 255};
     bool jeu = true;
     int statut = background(&window, &renderer, &image, &position);
-    int collisionPerso = 0;
-    int collisionPerso2 = 0;
-    int collisionPerso3 = 0;
-    int collisionPerso4 = 0;
-    int collisionPerso5 = 0;
-    int collisionPerso6 = 0;
-    int collisionPerso7 = 0;
-    int collisionPerso8 = 0;
     position.x = 0;
     position.y = 0;
     SDL_Rect fond_position_initiale = position;
-    SDL_Rect *Lniv[8];
 
     // Remplir les champs et charger les textures de l'astronaute
     if (choix_skin == 1)
@@ -71,62 +66,48 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     {
         astronaute =     astronaute = setAstronaute("sprites/astronaute1.png", "sprites/astronaute2.png", "sprites/astronaute_mort1.png", "sprites/astronaute_mort2.png", "sprites/astronaute_mort3.png", 1, renderer, 6, 12);
     }
-
     // Remplir les champs et charger les textures de l'ennemi
     ennemi = setEnnemi("sprites/ennemi1.png", "sprites/ennemi2.png", renderer);
+    for (int i = 0; i < 8; i++)
+    {
+        Lniv[i].texture = loadTexturePNG("background/sol.png", renderer, &Lniv[i].position);
+    }
+    Lniv[8].texture = loadTexturePNG("background/sol.png", renderer, &Lniv[8].position);
 
-    sol = loadTexturePNG("background/sol.png", renderer, &sol_rect);
-    sol2 = loadTexturePNG("background/sol.png", renderer, &sol_rect2);
-    sol3 = loadTexturePNG("background/sol.png", renderer, &sol_rect3);
-    sol4 = loadTexturePNG("background/sol.png", renderer, &sol_rect4);
-    sol5 = loadTexturePNG("background/sol.png", renderer, &sol_rect5);
-    sol6 = loadTexturePNG("background/sol.png", renderer, &sol_rect6);
-    sol7 = loadTexturePNG("background/sol.png", renderer, &sol_rect7);
-    sol8 = loadTexturePNG("background/sol.png", renderer, &sol_rect8);
-    vict = loadTexturePNG("background/sol.png", renderer, &vict_rect);
-    sol_rect.x = 0;
-    sol_rect.y = position.h - sol_rect.h;
-    sol_rect.w = position.w; // pour faire des tests avec un sol de largeur d'écran
-    Lniv[0] = &sol_rect;
-    sol_rect2.x = position.w + 2 * astronaute.position.w;
-    sol_rect2.y = position.h - sol_rect2.h;
-    sol_rect2.w = position.w; // pour faire des tests avec un sol de largeur d'écran
-    Lniv[1] = &sol_rect2;
-    sol_rect3.x = 2 * position.w + astronaute.position.w;
-    sol_rect3.y = position.h - sol_rect.h - astronaute.position.h - astronaute.position.h / 2;
-    sol_rect3.w = astronaute.position.w * 4; // pour faire des tests avec un sol de largeur d'écran
-    Lniv[2] = &sol_rect3;
-    sol_rect4.x = 2 * position.w + astronaute.position.w * 4;
-    sol_rect4.y = position.h - sol_rect.h - astronaute.position.h * 3;
-    sol_rect4.w = astronaute.position.w * 4; // pour faire des tests avec un sol de largeur d'écran
-    Lniv[3] = &sol_rect4;
-    sol_rect5.x = 2 * position.w + astronaute.position.w * 7;
-    sol_rect5.y = position.h - sol_rect.h - astronaute.position.h - astronaute.position.h / 2;
-    sol_rect5.w = astronaute.position.w * 4; // pour faire des tests avec un sol de largeur d'écran
-    Lniv[4] = &sol_rect5;
-    sol_rect6.x = 2 * position.w + astronaute.position.w * 10;
-    sol_rect6.y = position.h - sol_rect2.h;
-    sol_rect6.w = position.w / 2; // pour faire des tests avec un sol de largeur d'écran
-    Lniv[5] = &sol_rect6;
-    sol_rect7.x = 2 * position.w + astronaute.position.w * 9 + position.w / 2;
-    sol_rect7.y = position.h - sol_rect.h - astronaute.position.h - astronaute.position.h / 2;
-    sol_rect7.w = position.w / 2; // pour faire des tests avec un sol de largeur d'écran
-    Lniv[6] = &sol_rect7;
-    // sol_rect8.x = 3 * position.w + astronaute.position.w * 8;
-    // sol_rect8.y = position.h - sol_rect.h;
-    // sol_rect8.w = position.w / 2; // pour faire des tests avec un sol de largeur d'écran
-    // Lniv[7] = &sol_rect8;
+    // Lniv[0] = , position.h - Lniv[0].position.h, position.w);
+    Lniv[0].position.x=0;
+    Lniv[0].position.y=position.h - Lniv[0].position.h;
+    Lniv[0].position.w=position.w;
+    Lniv[1].position.x=position.w + 2 * astronaute.position.w;
+    Lniv[1].position.y=position.h - Lniv[1].position.h;
+    Lniv[1].position.w=position.w;
+    Lniv[2].position.x=2 * position.w + astronaute.position.w;
+    Lniv[2].position.y=position.h - Lniv[2].position.h - astronaute.position.h - astronaute.position.h / 2;
+    Lniv[2].position.w=astronaute.position.w * 4;
+    Lniv[3].position.x=2 * position.w + astronaute.position.w * 4;
+    Lniv[3].position.y=position.h - Lniv[3].position.h - astronaute.position.h * 3;
+    Lniv[3].position.w=astronaute.position.w * 4;
+    Lniv[4].position.x=2 * position.w + astronaute.position.w * 7;
+    Lniv[4].position.y=position.h - Lniv[4].position.h - astronaute.position.h - astronaute.position.h / 2;
+    Lniv[4].position.w=astronaute.position.w * 4;
+    Lniv[5].position.x=2 * position.w + astronaute.position.w * 10;
+    Lniv[5].position.y=position.h - Lniv[5].position.h;
+    Lniv[5].position.w=position.w / 2;
+    Lniv[6].position.x=2 * position.w + astronaute.position.w * 9 + position.w / 2;
+    Lniv[6].position.y=position.h - Lniv[6].position.h - astronaute.position.h - astronaute.position.h / 2;
+    Lniv[6].position.w=position.w / 2;
+    Lniv[7].position.x=3 * position.w + astronaute.position.w * 8;
+    Lniv[7].position.y=position.h - Lniv[7].position.h;
+    Lniv[7].position.w=position.w / 2;
+    Lniv[8].position.x=0;
+    Lniv[8].position.y=position.h - Lniv[8].position.h - 10;
+    Lniv[8].position.w=10;
     astronaute.position.x = astronaute.position.w;
-    astronaute.position.y = sol_rect.y - astronaute.position.h;
+    astronaute.position.y = Lniv[0].position.y - astronaute.position.h;
     ennemi.position.x = 1200;
     ennemi.position.w = 108;
     ennemi.position.h = 100;
-    ennemi.position.y = sol_rect.y - ennemi.position.h;
-    vict_rect.x = 0;
-    vict_rect.y = position.h - sol_rect.h - 10;
-    vict_rect.w = 10; // pour faire des tests avec un sol de largeur d'écran
-    vict_rect.h = 10;
-    Lniv[7] = &vict_rect;
+    ennemi.position.y = Lniv[0].position.y - ennemi.position.h;
 
     int vie_restante = 1;
 
@@ -190,7 +171,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
                     if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RIGHT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
                         dir = 1;
-                        if (collisionPerso == 1 || collisionPerso2 == 1 || collisionPerso3 == 1 || collisionPerso4 == 1 || collisionPerso5 == 1 || collisionPerso6 == 1 || collisionPerso7 == 1 || collisionPerso8 == 1)
+                        if (Lniv[0].collision== 1 || Lniv[2].collision == 1 || Lniv[3].collision == 1 || Lniv[4].collision == 1 || Lniv[5].collision == 1 || Lniv[6].collision == 1 || Lniv[7].collision == 1 || Lniv[1].collision == 1)
                         {
                             saut_duree = 20;
                         }
@@ -198,14 +179,14 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
                     else if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LEFT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
                         dir = -1;
-                        if (collisionPerso == 1 || collisionPerso2 == 1 || collisionPerso3 == 1 || collisionPerso4 == 1 || collisionPerso5 == 1 || collisionPerso6 == 1 || collisionPerso7 == 1 || collisionPerso8 == 1)
+                        if (Lniv[0].collision== 1 || Lniv[2].collision == 1 || Lniv[3].collision == 1 || Lniv[4].collision == 1 || Lniv[5].collision == 1 || Lniv[6].collision == 1 || Lniv[7].collision == 1 || Lniv[1].collision == 1)
                         {
                             saut_duree = 20;
                         }
                     }
                     else
                     {
-                        if (collisionPerso == 1 || collisionPerso2 == 1 || collisionPerso3 == 1 || collisionPerso4 == 1 || collisionPerso5 == 1 || collisionPerso6 == 1 || collisionPerso7 == 1 || collisionPerso8 == 1)
+                        if (Lniv[0].collision== 1 || Lniv[2].collision == 1 || Lniv[3].collision == 1 || Lniv[4].collision == 1 || Lniv[5].collision == 1 || Lniv[6].collision == 1 || Lniv[7].collision == 1 || Lniv[1].collision == 1)
                         {
                             saut_duree = 20;
                         }
@@ -246,9 +227,9 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
         {
             position.x -= 3;
             astronaute.position.x -= vx;
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < 9; i++)
             {
-                Lniv[i]->x -= 6;
+                Lniv[i].position.x -= 6;
             }
             astronaute.position.x = (position.w / 4) * 3 - 1;
         }
@@ -262,20 +243,23 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
         {
             astronaute.position.y += gravite;
         }
+        for (int i = 0; i < 9; i++)
+        {
+            if (Lniv[i].position.x+Lniv[i].position.w<position.x)
+            {
+                if (Lniv[i].texture != NULL)
+                {SDL_DestroyTexture(Lniv[i].texture);printf("disparu");}
+            }
+        }
 
         collision_ecran(&astronaute.position, position, &astronaute.vie);
-
-        collisionPerso = collision(&astronaute.position, &sol_rect);
-        collisionPerso2 = collision(&astronaute.position, &sol_rect2);
-        collisionPerso3 = collision(&astronaute.position, &sol_rect3);
-        collisionPerso4 = collision(&astronaute.position, &sol_rect4);
-        collisionPerso5 = collision(&astronaute.position, &sol_rect5);
-        collisionPerso6 = collision(&astronaute.position, &sol_rect6);
-        collisionPerso7 = collision(&astronaute.position, &sol_rect7);
-        collisionPerso8 = collision(&astronaute.position, &sol_rect8);
-
+        for (int i = 0; i <9; i++)
+        {
+            Lniv[i].collision= collision(&astronaute.position, &Lniv[i].position);
+        }
+        
         // Enregistrement du temps si c'est le meilleur
-        if (collision(&astronaute.position, &vict_rect) != 0)
+        if (collision(&astronaute.position, &Lniv[8].position) != 0)
         {
             if (*meilleur_temps == 0)
             {
@@ -330,14 +314,11 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
         affichage_background(&renderer, &image, &position);
         // Affichage de l'ennemi en fonction de la position du perso
         position_perso_ennemi(astronaute.position, &ennemi.position, &ennemi.sprite_finale, &renderer, 2, 600);
-        SDL_RenderCopy(renderer, sol, NULL, &sol_rect);
-        SDL_RenderCopy(renderer, sol2, NULL, &sol_rect2);
-        SDL_RenderCopy(renderer, sol3, NULL, &sol_rect3);
-        SDL_RenderCopy(renderer, sol4, NULL, &sol_rect4);
-        SDL_RenderCopy(renderer, sol5, NULL, &sol_rect5);
-        SDL_RenderCopy(renderer, sol6, NULL, &sol_rect6);
-        SDL_RenderCopy(renderer, sol7, NULL, &sol_rect7);
-        SDL_RenderCopy(renderer, sol8, NULL, &sol_rect8);
+        for (int i = 0; i < 9; i++)
+        {
+            SDL_RenderCopy(renderer, Lniv[i].texture, NULL, &Lniv[i].position);
+        }
+        
         SDL_RenderCopy(renderer, tMorts, NULL, &position_morts);
         SDL_RenderCopy(renderer, tChrono, NULL, &position_chrono);
 
@@ -356,21 +337,10 @@ Quit:
         SDL_DestroyTexture(tMorts);
     if (tChrono != NULL)
         SDL_DestroyTexture(tChrono);
-    if (sol != NULL)
-        SDL_DestroyTexture(sol);
-    if (sol2 != NULL)
-        SDL_DestroyTexture(sol2);
-    if (sol3 != NULL)
-        SDL_DestroyTexture(sol3);
-    if (sol4 != NULL)
-        SDL_DestroyTexture(sol4);
-    if (sol5 != NULL)
-        SDL_DestroyTexture(sol5);
-    if (sol6 != NULL)
-        SDL_DestroyTexture(sol6);
-    if (sol7 != NULL)
-        SDL_DestroyTexture(sol7);
-    if (sol8 != NULL)
-        SDL_DestroyTexture(sol8);
+    for (int i = 0; i < 9; i++)
+    {
+        if (Lniv[i].texture != NULL)
+            SDL_DestroyTexture(Lniv[i].texture);
+    }
     return statut;
 }
