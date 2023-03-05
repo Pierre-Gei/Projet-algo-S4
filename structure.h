@@ -24,3 +24,10 @@ typedef struct plateforme{
     SDL_Texture *texture;
     int collision;
 }plateforme;
+
+typedef struct vaisseau{
+    SDL_Rect position;
+    SDL_Texture * immobile;
+    SDL_Texture * mouvement1;
+    SDL_Texture * mouvement2;
+}vaisseau;

@@ -138,3 +138,44 @@ void animation_mort(SDL_Renderer *renderer, Astronaute a, SDL_Texture *fond, SDL
     SDL_RenderPresent(renderer);
     SDL_Delay(1000);
 }
+
+void animation_victoire(SDL_Renderer *renderer, vaisseau v, SDL_Texture *fond, SDL_Rect position_fond)
+{
+    int cpt = 0;
+    int temps = 0;
+    int acceleration = 0;
+    SDL_Texture *temp = NULL;
+    while (v.position.y > 200)
+    {
+        v.position.y = v.position.y - 15;
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, fond, NULL, &position_fond);
+        SDL_RenderCopy(renderer, v.immobile, NULL, &v.position);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(20);
+    }
+    SDL_Delay(500);
+    while (v.position.x < position_fond.w)
+    {
+        v.position.x = v.position.x + acceleration;
+        acceleration = acceleration + 1;
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, fond, NULL, &position_fond);
+        if (SDL_GetTicks() - temps > 100)
+        {
+            if (cpt % 2 == 0)
+            {
+                temp = v.mouvement1;
+            }
+            else
+            {
+                temp = v.mouvement2;
+            }
+            cpt++;
+            temps = SDL_GetTicks();
+        }
+        SDL_RenderCopy(renderer, temp, NULL, &v.position);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(20);
+    }
+}

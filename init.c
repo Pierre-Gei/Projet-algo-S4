@@ -203,3 +203,22 @@ plateforme initplateforme(plateforme p)
     p.texture=NULL;
     p.collision=0;
 }
+
+vaisseau initvaisseau(vaisseau v)
+{
+    v.position.x = 0;
+    v.position.y = 0;
+    v.position.w = 0;
+    v.position.h = 0;
+    v.immobile = NULL;
+    v.mouvement1 = NULL;
+    v.mouvement2 = NULL;
+}
+
+vaisseau setVaisseau(vaisseau v, char *chemin_immobile, char *chemin_mouvement1, char *chemin_mouvement2, SDL_Renderer *renderer)
+{
+    v.immobile = loadTexturePNG(chemin_immobile, renderer, &v.position);
+    v.mouvement1 = loadTexturePNG(chemin_mouvement1, renderer, &v.position);
+    v.mouvement2 = loadTexturePNG(chemin_mouvement2, renderer, &v.position);
+    return v;
+}

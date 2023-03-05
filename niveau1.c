@@ -22,6 +22,9 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     astronaute = initAstronaute(astronaute);
     Ennemi ennemi;
     ennemi = initEnnemi(ennemi);
+    vaisseau vaisseau;
+    vaisseau = initvaisseau(vaisseau);
+    vaisseau = setVaisseau(vaisseau, "sprites/vaisseau1.png", "sprites/vaisseau2.png", "sprites/vaisseau3.png", renderer);
     SDL_Texture *image = NULL;
     SDL_Rect position;
     plateforme Lniv[9];
@@ -64,7 +67,8 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     }
     else if (choix_skin == 2)
     {
-        astronaute =     astronaute = setAstronaute("sprites/astronaute1.png", "sprites/astronaute2.png", "sprites/astronaute_mort1.png", "sprites/astronaute_mort2.png", "sprites/astronaute_mort3.png", 1, renderer, 6, 12);
+ 
+        astronaute = setAstronaute("sprites/astronaute1.png", "sprites/astronaute2.png", "sprites/astronaute_mort1.png", "sprites/astronaute_mort2.png", "sprites/astronaute_mort3.png", 1, renderer, 6, 12);
     }
     // Remplir les champs et charger les textures de l'ennemi
     ennemi = setEnnemi("sprites/ennemi1.png", "sprites/ennemi2.png", renderer);
@@ -251,7 +255,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
         }
         
         // Enregistrement du temps si c'est le meilleur
-        if (collision(&astronaute.position, &Lniv[8].position) != 0)
+        if (collision(&astronaute.position, &vaisseau.position) != 0)
         {
             if (*meilleur_temps == 0)
             {
@@ -266,6 +270,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
             {
                 *niveau = 2;
             }
+            // animation_victoire(renderer,vaisseau,image,position);
             statut = menu_victoire(window, renderer, TAILLE_POLICE, 20, x, image, fond_position_initiale, MAX_RECOMPENSES - temps_secondes);
 
             // Animation victoire
@@ -310,6 +315,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
         {
             SDL_RenderCopy(renderer, Lniv[i].texture, NULL, &Lniv[i].position);
         }
+        SDL_RenderCopy(renderer, vaisseau.immobile, NULL, &vaisseau.position);
         
         SDL_RenderCopy(renderer, tMorts, NULL, &position_morts);
         SDL_RenderCopy(renderer, tChrono, NULL, &position_chrono);

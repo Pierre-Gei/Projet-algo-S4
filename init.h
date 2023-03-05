@@ -22,4 +22,8 @@ void destroyAstronaute(Astronaute *a);
 void destroyEnnemi(Ennemi *e);
 /*Initialiser à 0 les champs de la structure plateforme*/
 plateforme initplateforme(plateforme p);
+/*Initialiser à 0 les champs de la structure vaisseau*/
+vaisseau initvaisseau(vaisseau v);
+/*Remplir les champ de la structure vaisseau*/
+vaisseau setVaisseau(vaisseau v, char *chemin_immobile, char *chemin_mouvement1, char *chemin_mouvement2, SDL_Renderer *renderer);
 

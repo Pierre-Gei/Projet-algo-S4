@@ -12,3 +12,5 @@ void changement_couleur_inRect(int Taille_Police, SDL_Color couleur, SDL_Color c
 void affiche_perso(SDL_Renderer **renderer, SDL_Texture *perso_rendu, SDL_Texture *perso_static, SDL_Rect position_perso, int vx, int direction);
 /*Animation de mort du personnage*/
 void animation_mort(SDL_Renderer *renderer, Astronaute a, SDL_Texture *fond, SDL_Rect position_fond);
+/*Animation de victoire*/
+void animation_victoire(SDL_Renderer * renderer, vaisseau v, SDL_Texture*fond, SDL_Rect position_fond);
