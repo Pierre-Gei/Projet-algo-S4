@@ -26,6 +26,9 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     vaisseau = initvaisseau(vaisseau);
     vaisseau = setVaisseau(vaisseau, "sprites/vaisseau1.png", "sprites/vaisseau2.png", "sprites/vaisseau3.png", renderer);
     SDL_Texture *image = NULL;
+    SDL_Texture * tMort_logo = NULL;
+    SDL_Rect positionMort_logo;
+    tMort_logo = loadTexturePNG("sprites/mort.png", renderer, &positionMort_logo);
     SDL_Rect position;
     plateforme Lniv[9];
     plateforme sol1;
@@ -222,8 +225,12 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
         affichage_text_niveau(&tChrono, TAILLE_POLICE, &position_chrono, 0, 0, &renderer, temps, couleur);
 
         // Affichage du nombre de morts
-        sprintf(morts_str, "Morts: %03d", *morts);
+        sprintf(morts_str, "%03d", *morts);
         affichage_text_niveau(&tMorts, TAILLE_POLICE, &position_morts, position.w - position_morts.w, 0, &renderer, morts_str, couleur);
+        positionMort_logo.x = position.w - positionMort_logo.w - position_morts.w - 10;
+        positionMort_logo.y = 10;
+        positionMort_logo.w = 40;
+        positionMort_logo.h = 40;
 
         astronaute.position.x += vx;
         // Déplacement de l'arrière plan quand le personnage atteint les 3/4 de l'écran
@@ -315,10 +322,11 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
         {
             SDL_RenderCopy(renderer, Lniv[i].texture, NULL, &Lniv[i].position);
         }
-        SDL_RenderCopy(renderer, vaisseau.immobile, NULL, &vaisseau.position);
+        // SDL_RenderCopy(renderer, vaisseau.immobile, NULL, &vaisseau.position);
         
         SDL_RenderCopy(renderer, tMorts, NULL, &position_morts);
         SDL_RenderCopy(renderer, tChrono, NULL, &position_chrono);
+        SDL_RenderCopy(renderer, tMort_logo, NULL, &positionMort_logo);
 
         // Affichage du personnage
         affiche_perso(&renderer, astronaute.sprite_finale, astronaute.sprite1, astronaute.position, vx, dir);
@@ -329,6 +337,7 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
 Quit:
     destroyAstronaute(&astronaute);
     destroyEnnemi(&ennemi);
+    destroyVaisseau(&vaisseau);
     if (image != NULL)
         SDL_DestroyTexture(image);
     if (tMorts != NULL)

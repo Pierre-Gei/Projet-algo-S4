@@ -222,3 +222,13 @@ vaisseau setVaisseau(vaisseau v, char *chemin_immobile, char *chemin_mouvement1,
     v.mouvement2 = loadTexturePNG(chemin_mouvement2, renderer, &v.position);
     return v;
 }
+
+void destroyVaisseau(vaisseau *v)
+{
+    if (v->immobile != NULL)
+        SDL_DestroyTexture(v->immobile);
+    if (v->mouvement1 != NULL)
+        SDL_DestroyTexture(v->mouvement1);
+    if (v->mouvement2 != NULL)
+        SDL_DestroyTexture(v->mouvement2);
+}

@@ -412,6 +412,13 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
     SDL_RenderClear(renderer);
 
     SDL_Surface *texte_Surface = NULL;
+    SDL_Texture *tMort_logo = NULL;
+    SDL_Texture *tMort_logo2 = NULL;
+    SDL_Rect rectMort_logo ;
+    SDL_Rect rectMort_logo2 ;
+    tMort_logo = loadTexturePNG("sprites/mort.png", renderer, &rectMort_logo);
+    tMort_logo2 = loadTexturePNG("sprites/mort.png", renderer, &rectMort_logo2);
+
     SDL_Texture *tNiveau1 = NULL;
     SDL_Texture *tNiveau2 = NULL;
     SDL_Texture *tNiveau1_temps = NULL;
@@ -429,11 +436,11 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
     minutes = tab_temps[0] / 60;
     secondes = tab_temps[0] % 60;
     sprintf(temps_niveau1, "Temps : %02d:%02d", minutes, secondes);
-    sprintf(mort_niveau1, "Morts : %03d", tab_mort[0]);
+    sprintf(mort_niveau1, "%03d", tab_mort[0]);
     minutes = tab_temps[1] / 60;
     secondes = tab_temps[1] % 60;
     sprintf(temps_niveau2, "Temps : %02d:%02d", minutes, secondes);
-    sprintf(mort_niveau2, "Morts : %03d", tab_mort[1]);
+    sprintf(mort_niveau2, "%03d", tab_mort[1]);
 
     SDL_Texture *tNiveau1_mort = NULL;
     SDL_Texture *tNiveau2_mort = NULL;
@@ -464,8 +471,13 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
     SDL_Rect rectNiveau1_temps = {rectContour_niveau1.x + ((rectContour_niveau1.w - texte_Surface->w) / 2), rectContour_niveau1.h / 4 + rectContour_niveau1.y, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
+    rectMort_logo.x = rectNiveau1_temps.x;
+    rectMort_logo.y = (rectContour_niveau1.h / 4) * 2 + rectContour_niveau1.y;
+    rectMort_logo.w = 40;
+    rectMort_logo.h = 40;
+
     initText(couleurBlanche, &texte_Surface, &tNiveau1_mort, &renderer, 60, mort_niveau1);
-    SDL_Rect rectNiveau1_mort = {rectNiveau1_temps.x, (rectContour_niveau1.h / 4) * 2 + rectContour_niveau1.y, texte_Surface->w, texte_Surface->h};
+    SDL_Rect rectNiveau1_mort = {rectNiveau1_temps.x + rectMort_logo.w + 10, rectMort_logo.y - 7  , texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
     initText(couleurBlanche, &texte_Surface, &tJouer1, &renderer, 60, "Jouer");
@@ -483,8 +495,13 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
     SDL_Rect rectNiveau2_temps = {rectContour_niveau2.x + ((rectContour_niveau2.w - texte_Surface->w) / 2), rectContour_niveau2.h / 4 + rectContour_niveau2.y, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
+    rectMort_logo2.x = rectNiveau2_temps.x;
+    rectMort_logo2.y = (rectContour_niveau2.h / 4) * 2 + rectContour_niveau2.y;
+    rectMort_logo2.w = 40;
+    rectMort_logo2.h = 40;
+
     initText(couleurBlanche, &texte_Surface, &tNiveau2_mort, &renderer, 60, mort_niveau2);
-    SDL_Rect rectNiveau2_mort = {rectNiveau2_temps.x, (rectContour_niveau2.h / 4) * 2 + rectContour_niveau2.y, texte_Surface->w, texte_Surface->h};
+    SDL_Rect rectNiveau2_mort = {rectNiveau2_temps.x + rectMort_logo2.w + 10, rectMort_logo2.y - 7, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
     initText(couleurBlanche, &texte_Surface, &tJouer2, &renderer, 60, "Jouer");
@@ -560,6 +577,7 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
         SDL_RenderCopy(renderer, tNiveau1_temps, NULL, &rectNiveau1_temps);
         SDL_RenderCopy(renderer, tNiveau1_mort, NULL, &rectNiveau1_mort);
         SDL_RenderCopy(renderer, tJouer1, NULL, &rectJouer1);
+        SDL_RenderCopy(renderer, tMort_logo, NULL, &rectMort_logo);
         SDL_RenderDrawRect(renderer, &rectContour_niveau1);
 
         if (*niveau != 2)
@@ -569,6 +587,7 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
             changement_couleur(60, couleurGrise, &renderer, &tNiveau2_temps, temps_niveau2);
             changement_couleur(60, couleurGrise, &renderer, &tNiveau2_mort, mort_niveau2);
             changement_couleur(60, couleurGrise, &renderer, &tJouer2, "Jouer");
+            SDL_SetTextureColorMod(tMort_logo2, 128, 128, 128);
         }
         SDL_RenderDrawRect(renderer, &rectContour_niveau2);
         SDL_RenderCopy(renderer, tNiveau2, NULL, &rectNiveau2);
@@ -576,6 +595,7 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
         SDL_RenderCopy(renderer, tNiveau2_mort, NULL, &rectNiveau2_mort);
         SDL_RenderCopy(renderer, tJouer2, NULL, &rectJouer2);
         SDL_RenderCopy(renderer, tRetour, NULL, &rectRetour);
+        SDL_RenderCopy(renderer, tMort_logo2, NULL, &rectMort_logo2);
         SDL_RenderPresent(renderer);
     }
 

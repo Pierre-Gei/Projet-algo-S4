@@ -26,4 +26,6 @@ plateforme initplateforme(plateforme p);
 vaisseau initvaisseau(vaisseau v);
 /*Remplir les champ de la structure vaisseau*/
 vaisseau setVaisseau(vaisseau v, char *chemin_immobile, char *chemin_mouvement1, char *chemin_mouvement2, SDL_Renderer *renderer);
+/*Detruire les textures d'une structure vaisseau*/
+void destroyVaisseau(vaisseau *v);
 
