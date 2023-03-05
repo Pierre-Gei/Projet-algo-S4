@@ -618,6 +618,10 @@ Quit:
         SDL_DestroyTexture(tJouer2);
     if (tRetour != NULL)
         SDL_DestroyTexture(tRetour);
+    if (tMort_logo != NULL)
+        SDL_DestroyTexture(tMort_logo);
+    if (tMort_logo2 != NULL)
+        SDL_DestroyTexture(tMort_logo2);
 
     return statut;
 }
