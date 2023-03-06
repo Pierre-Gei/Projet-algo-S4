@@ -146,7 +146,7 @@ void animation_victoire(SDL_Renderer *renderer, vaisseau v, SDL_Texture *fond, S
     {
         v.position.y = v.position.y - 15;
         SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, fond, NULL, &position_fond);
+        affichage_background(&renderer,&fond,&position_fond);
         SDL_RenderCopy(renderer, v.immobile, NULL, &v.position);
         SDL_RenderPresent(renderer);
         SDL_Delay(20);
@@ -157,7 +157,7 @@ void animation_victoire(SDL_Renderer *renderer, vaisseau v, SDL_Texture *fond, S
         v.position.x = v.position.x + acceleration;
         acceleration = acceleration + 1;
         SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, fond, NULL, &position_fond);
+        affichage_background(&renderer,&fond,&position_fond);
         if (SDL_GetTicks() - temps > 100)
         {
             if (cpt % 2 == 0)
