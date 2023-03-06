@@ -5,4 +5,3 @@
 ### - GEIGUER Pierre
 ### - LAMBALLAIS Hugo
 ### - FERNANDO Théo
-### - STA Mehdi
