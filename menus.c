@@ -10,6 +10,7 @@
 #include "init.h"
 #include "affichage.h"
 #include "niveau1.h"
+#include "niveau2.h"
 
 void parametre(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, SDL_Texture *fond, SDL_Rect position_fond)
 {
@@ -308,7 +309,7 @@ int menu_victoire(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE,
     int window_height = 0;
     bool jeu = true;
     int statut = 0;
-    char recompenses_texte [20];
+    char recompenses_texte[20];
     sprintf(recompenses_texte, "+ %d", gains);
 
     SDL_Point souris;
@@ -331,15 +332,14 @@ int menu_victoire(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE,
     SDL_FreeSurface(texte_Surface);
 
     initText(couleurBlanche, &texte_Surface, &tReccompenses, &renderer, TAILLE_POLICE, recompenses_texte);
-    SDL_Rect rectRecompenses = {window_width / 2 - texte_Surface->w / 2,rectGagne. y + rectGagne.h +20, texte_Surface->w, texte_Surface->h};
+    SDL_Rect rectRecompenses = {window_width / 2 - texte_Surface->w / 2, rectGagne.y + rectGagne.h + 20, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
     tPiece = loadTexturePNG("sprites/piece.png", renderer, &rectPiece);
     rectPiece.w = 40;
     rectPiece.h = 40;
     rectPiece.y = rectRecompenses.y + rectRecompenses.h / 2 - rectPiece.h / 2;
-    rectPiece.x = rectRecompenses.x +rectRecompenses.w + 10;
-
+    rectPiece.x = rectRecompenses.x + rectRecompenses.w + 10;
 
     while (jeu)
     {
@@ -396,15 +396,15 @@ Quit:
     return statut;
 }
 
-int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond, int *niveau, int tab_mort[], int tab_temps[], int *recompenses, int choix_skin, int * cpt_musique)
+int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond, int *niveau, int tab_mort[], int tab_temps[], int *recompenses, int choix_skin, int *cpt_musique)
 {
     SDL_RenderClear(renderer);
 
     SDL_Surface *texte_Surface = NULL;
     SDL_Texture *tMort_logo = NULL;
     SDL_Texture *tMort_logo2 = NULL;
-    SDL_Rect rectMort_logo ;
-    SDL_Rect rectMort_logo2 ;
+    SDL_Rect rectMort_logo;
+    SDL_Rect rectMort_logo2;
     tMort_logo = loadTexturePNG("sprites/mort.png", renderer, &rectMort_logo);
     tMort_logo2 = loadTexturePNG("sprites/mort.png", renderer, &rectMort_logo2);
 
@@ -466,7 +466,7 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
     rectMort_logo.h = 40;
 
     initText(couleurBlanche, &texte_Surface, &tNiveau1_mort, &renderer, 60, mort_niveau1);
-    SDL_Rect rectNiveau1_mort = {rectNiveau1_temps.x + rectMort_logo.w + 10, rectMort_logo.y - 7  , texte_Surface->w, texte_Surface->h};
+    SDL_Rect rectNiveau1_mort = {rectNiveau1_temps.x + rectMort_logo.w + 10, rectMort_logo.y - 7, texte_Surface->w, texte_Surface->h};
     SDL_FreeSurface(texte_Surface);
 
     initText(couleurBlanche, &texte_Surface, &tJouer1, &renderer, 60, "Jouer");
@@ -533,12 +533,12 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
                         while ((statut = niveau1(window, renderer, &tab_mort[0], &tab_temps[0], recompenses, niveau, x, TAILLE_POLICE, choix_skin)) == 1)
                         {
                         }
-                        // if (statut == 0)
-                        // {
-                        //     while (niveau2(window, renderer, &tab_mort[1], &tab_temps[1], x, TAILLE_POLICE) == 1)
-                        //     {
-                        //     }
-                        // }
+                        if (statut == 0)
+                        {
+                            while (niveau2(window, renderer, &tab_mort[1], &tab_temps[1], recompenses, niveau, x, TAILLE_POLICE, choix_skin) == 1)
+                            {
+                            }
+                        }
                         *cpt_musique = 0;
                         goto Quit;
                     }
@@ -546,11 +546,12 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
                     {
                         if (*niveau == 2)
                         {
-                            // while (niveau2(window, renderer, &tab_mort[1], &tab_temps[1], x, TAILLE_POLICE) == 1)
-                            // {
-                            // }
+                            while (niveau2(window, renderer, &tab_mort[1], &tab_temps[1], recompenses, niveau, x, TAILLE_POLICE, choix_skin) == 1)
+                            {
+                            }
+                            *cpt_musique = 0;
+                            goto Quit;
                         }
-                        goto Quit;
                     }
                     if (SDL_PointInRect(&souris, &rectRetour))
                     {
@@ -725,9 +726,9 @@ int inventaire(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
     SDL_Rect rectPrix = {piece.x + piece.w + 5, piece.y + (piece.h - texte_surface->h) / 2, texte_surface->w, texte_surface->h};
     SDL_FreeSurface(texte_surface);
 
-    //retour 
+    // retour
     initText(couleurBlanche, &texte_surface, &tRetour, &renderer, TAILLE_POLICE, "Retour");
-    SDL_Rect rectRetour = { 200, window_height - 100, texte_surface->w, texte_surface->h};
+    SDL_Rect rectRetour = {200, window_height - 100, texte_surface->w, texte_surface->h};
     SDL_FreeSurface(texte_surface);
 
     while (jeu)

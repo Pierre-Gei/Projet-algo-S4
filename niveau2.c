@@ -7,14 +7,13 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
-#include <math.h>
 #include "structure.h"
 #include "affichage.h"
 #include "menus.h"
 #include "fonctions.h"
 #include "init.h"
 
-#define MAX_RECOMPENSES 300
+#define MAX_RECOMPENSES 400
 
 int niveau2(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleur_temps, int *recompenses, int *niveau, int x, int TAILLE_POLICE, int choix_skin)
 {
@@ -26,10 +25,12 @@ int niveau2(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     vaisseau = initvaisseau(vaisseau);
     vaisseau = setVaisseau(vaisseau, "sprites/vaisseau1.png", "sprites/vaisseau2.png", "sprites/vaisseau3.png", renderer);
     SDL_Texture *image = NULL;
-    SDL_Texture * tMort_logo = NULL;
+    SDL_Texture *tMort_logo = NULL;
     SDL_Rect positionMort_logo;
     tMort_logo = loadTexturePNG("sprites/mort.png", renderer, &positionMort_logo);
     SDL_Rect position;
+    Mix_Music *musique;
+    musique = Mix_LoadMUS("Musiques/InGame.mp3");
     plateforme Lniv[9];
     for (int i = 0; i < 8; i++)
     {
@@ -52,7 +53,7 @@ int niveau2(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     }
     else if (choix_skin == 2)
     {
- 
+
         astronaute = setAstronaute("sprites/astronaute1.png", "sprites/astronaute2.png", "sprites/astronaute_mort1.png", "sprites/astronaute_mort2.png", "sprites/astronaute_mort3.png", 1, renderer, 6, 12);
     }
     // Remplir les champs et charger les textures de l'ennemi
@@ -67,28 +68,28 @@ int niveau2(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     }
 
     // Lniv[0] = , position.h - Lniv[0].position.h, position.w);
-    Lniv[0].position.x=0;
-    Lniv[0].position.y=position.h - Lniv[0].position.h;
-    Lniv[0].position.w=position.w;
-    Lniv[1].position.x=position.w + 2 * astronaute.position.w;
-    Lniv[1].position.y=position.h - Lniv[1].position.h;
-    Lniv[1].position.w=position.w;
-    Lniv[7].position.x=2 * position.w + astronaute.position.w;
-    Lniv[7].position.y=position.h - Lniv[2].position.h - astronaute.position.h - astronaute.position.h / 2;
-    Lniv[5].position.x=2 * position.w + astronaute.position.w * 4;
-    Lniv[5].position.y=position.h - Lniv[3].position.h - astronaute.position.h * 3;
-    Lniv[4].position.x=2 * position.w + astronaute.position.w * 7;
-    Lniv[4].position.y=position.h - Lniv[3].position.h - astronaute.position.h - astronaute.position.h / 2;
-    Lniv[3].position.x=2 * position.w + astronaute.position.w * 10;
-    Lniv[3].position.y=position.h - Lniv[3].position.h;
-    Lniv[3].position.w=position.w / 2;
-    Lniv[6].position.x=2 * position.w + astronaute.position.w * 9 + position.w / 2;
-    Lniv[6].position.y=position.h - Lniv[2].position.h - astronaute.position.h - astronaute.position.h / 2;
-    Lniv[2].position.x=3 * position.w + astronaute.position.w * 8;
-    Lniv[2].position.y=position.h - Lniv[2].position.h;
-    Lniv[2].position.w=position.w / 2;
-    vaisseau.position.x=3 * position.w + astronaute.position.w * 8+position.w / 4;
-    vaisseau.position.y=position.h - Lniv[8].position.h - Lniv[3].position.h;
+    Lniv[0].position.x = 0;
+    Lniv[0].position.y = position.h - Lniv[0].position.h;
+    Lniv[0].position.w = position.w;
+    Lniv[1].position.x = position.w + 2 * astronaute.position.w;
+    Lniv[1].position.y = position.h - Lniv[1].position.h;
+    Lniv[1].position.w = position.w;
+    Lniv[7].position.x = 2 * position.w + astronaute.position.w;
+    Lniv[7].position.y = position.h - Lniv[2].position.h - astronaute.position.h - astronaute.position.h / 2;
+    Lniv[5].position.x = 2 * position.w + astronaute.position.w * 4;
+    Lniv[5].position.y = position.h - Lniv[3].position.h - astronaute.position.h * 3;
+    Lniv[4].position.x = 2 * position.w + astronaute.position.w * 7;
+    Lniv[4].position.y = position.h - Lniv[3].position.h - astronaute.position.h - astronaute.position.h / 2;
+    Lniv[3].position.x = 2 * position.w + astronaute.position.w * 10;
+    Lniv[3].position.y = position.h - Lniv[3].position.h;
+    Lniv[3].position.w = position.w / 2;
+    Lniv[6].position.x = 2 * position.w + astronaute.position.w * 9 + position.w / 2;
+    Lniv[6].position.y = position.h - Lniv[2].position.h - astronaute.position.h - astronaute.position.h / 2;
+    Lniv[2].position.x = 3 * position.w + astronaute.position.w * 8;
+    Lniv[2].position.y = position.h - Lniv[2].position.h;
+    Lniv[2].position.w = position.w / 2;
+    vaisseau.position.x = 3 * position.w + astronaute.position.w * 8 + position.w / 4;
+    vaisseau.position.y = position.h - Lniv[8].position.h - Lniv[3].position.h;
     astronaute.position.x = astronaute.position.w;
     astronaute.position.y = Lniv[0].position.y - astronaute.position.h;
     ennemi.position.x = 1200;
@@ -119,6 +120,7 @@ int niveau2(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
     int texture_temps = 0;
     int ennemi_temps = 0;
     SDL_Event event;
+    Mix_PlayMusic(musique, -1);
     if (statut == -1)
         goto Quit;
     while (jeu)
@@ -158,7 +160,7 @@ int niveau2(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
                     if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RIGHT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
                         dir = 1;
-                        if (Lniv[0].collision== 1 || Lniv[2].collision == 1 || Lniv[3].collision == 1 || Lniv[4].collision == 1 || Lniv[5].collision == 1 || Lniv[6].collision == 1 || Lniv[7].collision == 1 || Lniv[1].collision == 1)
+                        if (Lniv[0].collision == 1 || Lniv[2].collision == 1 || Lniv[3].collision == 1 || Lniv[4].collision == 1 || Lniv[5].collision == 1 || Lniv[6].collision == 1 || Lniv[7].collision == 1 || Lniv[1].collision == 1)
                         {
                             saut_duree = 20;
                         }
@@ -166,14 +168,14 @@ int niveau2(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
                     else if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LEFT] && SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
                     {
                         dir = -1;
-                        if (Lniv[0].collision== 1 || Lniv[2].collision == 1 || Lniv[3].collision == 1 || Lniv[4].collision == 1 || Lniv[5].collision == 1 || Lniv[6].collision == 1 || Lniv[7].collision == 1 || Lniv[1].collision == 1)
+                        if (Lniv[0].collision == 1 || Lniv[2].collision == 1 || Lniv[3].collision == 1 || Lniv[4].collision == 1 || Lniv[5].collision == 1 || Lniv[6].collision == 1 || Lniv[7].collision == 1 || Lniv[1].collision == 1)
                         {
                             saut_duree = 20;
                         }
                     }
                     else
                     {
-                        if (Lniv[0].collision== 1 || Lniv[2].collision == 1 || Lniv[3].collision == 1 || Lniv[4].collision == 1 || Lniv[5].collision == 1 || Lniv[6].collision == 1 || Lniv[7].collision == 1 || Lniv[1].collision == 1)
+                        if (Lniv[0].collision == 1 || Lniv[2].collision == 1 || Lniv[3].collision == 1 || Lniv[4].collision == 1 || Lniv[5].collision == 1 || Lniv[6].collision == 1 || Lniv[7].collision == 1 || Lniv[1].collision == 1)
                         {
                             saut_duree = 20;
                         }
@@ -222,7 +224,7 @@ int niveau2(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
             {
                 Lniv[i].position.x -= 6;
             }
-            vaisseau.position.x-=6;
+            vaisseau.position.x -= 6;
             astronaute.position.x = (position.w / 3) * 2 - 1;
         }
         if (saut_duree > 0)
@@ -237,11 +239,11 @@ int niveau2(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
         }
 
         collision_ecran(&astronaute.position, position, &astronaute.vie);
-        for (int i = 0; i <8; i++)
+        for (int i = 0; i < 8; i++)
         {
-            Lniv[i].collision= collision(&astronaute.position, &Lniv[i].position);
+            Lniv[i].collision = collision(&astronaute.position, &Lniv[i].position);
         }
-        
+
         // Enregistrement du temps si c'est le meilleur
         if (collision(&astronaute.position, &vaisseau.position) != 0)
         {
@@ -258,7 +260,7 @@ int niveau2(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
             {
                 *niveau = 2;
             }
-            animation_victoire(renderer,vaisseau,image,position);
+            animation_victoire(renderer, vaisseau, image, position);
             statut = menu_victoire(window, renderer, TAILLE_POLICE, 20, x, image, fond_position_initiale, MAX_RECOMPENSES - temps_secondes);
 
             // Animation victoire
@@ -304,7 +306,7 @@ int niveau2(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
             SDL_RenderCopy(renderer, Lniv[i].texture, NULL, &Lniv[i].position);
         }
         SDL_RenderCopy(renderer, vaisseau.immobile, NULL, &vaisseau.position);
-        
+
         SDL_RenderCopy(renderer, tMorts, NULL, &position_morts);
         SDL_RenderCopy(renderer, tChrono, NULL, &position_chrono);
         SDL_RenderCopy(renderer, tMort_logo, NULL, &positionMort_logo);
