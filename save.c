@@ -5,7 +5,6 @@
 #include <stdbool.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <math.h>
 
 void sauvegarde(int recompenses, int nbr_morts, int temps, int niveau, int tab_morts[], int tab_temps[], int taille_tab_morts, int choix_skin, int skin_achete)
 {

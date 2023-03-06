@@ -11,8 +11,6 @@
 #include "init.h"
 #include "affichage.h"
 #include "menus.h"
-#include "fonctions.h"
-#include "niveau1.h"
 #include "save.h"
 #define TAILLE_POLICE 75
 #define INTERLIGNE 20
@@ -52,6 +50,7 @@ int main()
     int save = 0;
     int choix_skin = 1;
     int skin_achete = 1;
+    int cpt_musique = 0;
 
     // compteur de morts
     SDL_Rect position_morts;
@@ -66,12 +65,9 @@ int main()
     SDL_Color couleurBlanche = {255, 255, 255, 255};
     SDL_Color couleurJaune = {255, 255, 0, 255};
     init(&window, &renderer);
-    // if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) == -1)
-    // {
-    //     printf("%s", Mix_GetError());
-    // }
-    // Mix_Music *musique;
-    // musique = Mix_LoadMUS("Musiques/MenuPrincipal.mp3");
+   
+    Mix_Music *musique;
+    musique = Mix_LoadMUS("Musiques/MenuPrincipal.mp3");
 
     SDL_GetWindowSize(window, &window_width, &window_height);
 
@@ -123,12 +119,16 @@ int main()
     rectMort.w = 40;
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    // Mix_PlayMusic(musique, -1);
-    // Mix_VolumeMusic(20);
+    Mix_PlayMusic(musique, -1);
+    Mix_VolumeMusic(35);
 
     while (jeu)
     {
-        SDL_Delay(39);
+        if (cpt_musique == 0)
+        {
+            Mix_PlayMusic(musique, -1);
+            cpt_musique = 1;
+        }
         SDL_Event event;
         SDL_GetMouseState(&souris.x, &souris.y);
         changement_couleur_inRect(TAILLE_POLICE, couleurJaune, couleurBlanche, &renderer, &tJouer, "Jouer", souris, rectJouer);
@@ -140,7 +140,6 @@ int main()
 
         while (SDL_PollEvent(&event))
         {
-
             switch (event.type)
             {
             case SDL_QUIT:
@@ -152,46 +151,34 @@ int main()
                     // boutton Jouer
                     if (SDL_PointInRect(&souris, &rectJouer))
                     {
-                        // printf("Jouer ! \n");
-                        // while (niveau1(window, renderer, &tab_morts[0], &tab_temps[0], x, TAILLE_POLICE) == 1)
-                        // {
-                        // }
-                        // SDL_RenderPresent(renderer);
-                        choix_niveau(window, renderer, TAILLE_POLICE, INTERLIGNE, x, fond, position_fond, &niveau, tab_morts, tab_temps, &recompenses, choix_skin);
+                        choix_niveau(window, renderer, TAILLE_POLICE, INTERLIGNE, x, fond, position_fond, &niveau, tab_morts, tab_temps, &recompenses, choix_skin, &cpt_musique);
                     }
                     // boutton Charger
                     if (SDL_PointInRect(&souris, &rectCharger))
                     {
-                        printf("Charger ! \n");
                         chargement(&recompenses, &morts, &meilleur_temps, &niveau, tab_morts, tab_temps, 2, &choix_skin, &skin_achete);
-                        printf("choix_skin = %d", choix_skin);
-                        printf("skin_achete = %d", skin_achete);
                         save = -25;
                     }
                     // bouton Inventaire
                     if (SDL_PointInRect(&souris, &rectInvent))
                     {
-                        printf("Inventaire ! \n");
                         inventaire(window, renderer, TAILLE_POLICE, INTERLIGNE, x, fond, position_fond, &choix_skin, &recompenses, &skin_achete);
                     }
                     // bouton Parametres
                     if (SDL_PointInRect(&souris, &rectParam))
                     {
-                        printf("Parametres ! \n");
                         parametre(window, renderer, TAILLE_POLICE, INTERLIGNE, fond, position_fond);
                     }
                     // bouton Sauvegarder
                     if (SDL_PointInRect(&souris, &rectSauv))
                     {
-                        printf("Sauvegarder ! \n");
                         sauvegarde(recompenses, morts, meilleur_temps, niveau, tab_morts, tab_temps, 2, choix_skin, skin_achete);
                         save = 25;
                     }
                     // bouton Quitter
                     if (SDL_PointInRect(&souris, &rectQuit))
                     {
-                        printf("Quitter ! \n");
-                        jeu = false;
+                        goto Quit;
                     }
                 }
                 break;
@@ -265,6 +252,8 @@ Quit:
         SDL_DestroyTexture(tValidation_charger);
     if (fond != NULL)
         SDL_DestroyTexture(fond);
+    if(musique != NULL)
+        Mix_FreeMusic(musique);
     if (renderer != NULL)
         SDL_DestroyRenderer(renderer);
     if (window != NULL)

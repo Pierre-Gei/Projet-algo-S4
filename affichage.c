@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,9 +7,7 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include "structure.h"
-#include "fonctions.h"
 #include "init.h"
-#include "niveau1.h"
 
 void affichage_background(SDL_Renderer **renderer, SDL_Texture **image, SDL_Rect *position)
 {

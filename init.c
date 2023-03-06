@@ -6,9 +6,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-#include <math.h>
+#include <SDL2/SDL_mixer.h>
 #include "structure.h"
-#include "affichage.h"
 
 int init(SDL_Window **window, SDL_Renderer **renderer)
 {
@@ -26,6 +25,10 @@ int init(SDL_Window **window, SDL_Renderer **renderer)
     {
         printf("Erreur lors de la creation de la fenetre et du renderer: %s", SDL_GetError());
         return -1;
+    }
+     if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) == -1)
+    {
+        printf("%s", Mix_GetError());
     }
     return 0;
 }

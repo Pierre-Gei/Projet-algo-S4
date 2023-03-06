@@ -11,6 +11,7 @@
         "stdbool.h": "c",
         "stdio.h": "c",
         "stdlib.h": "c",
-        "fonctions.h": "c"
+        "fonctions.h": "c",
+        "structure.h": "c"
     }
 }

@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <SDL2/SDL.h>
-#include "affichage.h"
 #include "structure.h"
 
 int collision(SDL_Rect *position_perso, SDL_Rect *objet)

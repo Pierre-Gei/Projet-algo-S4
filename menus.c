@@ -7,9 +7,8 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include "structure.h"
-#include "affichage.h"
-#include "fonctions.h"
 #include "init.h"
+#include "affichage.h"
 #include "niveau1.h"
 
 void parametre(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, SDL_Texture *fond, SDL_Rect position_fond)
@@ -76,8 +75,6 @@ void parametre(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
                 {
                     if (SDL_PointInRect(&souris, &rectQuitter))
                     {
-                        printf("Retour ! \n");
-
                         goto Quit;
                     }
                 }
@@ -107,7 +104,6 @@ Quit:
         SDL_DestroyTexture(tGauche);
     if (tEchap != NULL)
         SDL_DestroyTexture(tEchap);
-
     return;
 }
 
@@ -215,7 +211,6 @@ Quit:
         SDL_DestroyTexture(tQuitter);
     if (tCommandes != NULL)
         SDL_DestroyTexture(tCommandes);
-
     return statut;
 }
 
@@ -270,13 +265,11 @@ int menu_game_over(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE
                 {
                     if (SDL_PointInRect(&souris, &rectRecommencer))
                     {
-                        printf("Recommencer ! \n");
                         statut = 1;
                         goto Quit;
                     }
                     if (SDL_PointInRect(&souris, &rectQuitter))
                     {
-                        printf("Quitter ! \n");
                         statut = -1;
                         goto Quit;
                     }
@@ -298,7 +291,6 @@ Quit:
         SDL_DestroyTexture(tQuitter);
     if (tPerdu != NULL)
         SDL_DestroyTexture(tPerdu);
-
     return statut;
 }
 
@@ -369,13 +361,11 @@ int menu_victoire(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE,
                 {
                     if (SDL_PointInRect(&souris, &rectRecommencer))
                     {
-                        printf("Suivant ! \n");
                         statut = 0;
                         goto Quit;
                     }
                     if (SDL_PointInRect(&souris, &rectQuitter))
                     {
-                        printf("Quitter ! \n");
                         statut = -1;
                         goto Quit;
                     }
@@ -403,11 +393,10 @@ Quit:
         SDL_DestroyTexture(tReccompenses);
     if (tPiece != NULL)
         SDL_DestroyTexture(tPiece);
-
     return statut;
 }
 
-int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond, int *niveau, int tab_mort[], int tab_temps[], int *recompenses, int choix_skin)
+int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, int INTERLIGNE, int x, SDL_Texture *fond, SDL_Rect position_fond, int *niveau, int tab_mort[], int tab_temps[], int *recompenses, int choix_skin, int * cpt_musique)
 {
     SDL_RenderClear(renderer);
 
@@ -550,7 +539,7 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
                         //     {
                         //     }
                         // }
-
+                        *cpt_musique = 0;
                         goto Quit;
                     }
                     if (SDL_PointInRect(&souris, &rectJouer2))
@@ -561,7 +550,6 @@ int choix_niveau(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, 
                             // {
                             // }
                         }
-
                         goto Quit;
                     }
                     if (SDL_PointInRect(&souris, &rectRetour))
@@ -622,7 +610,6 @@ Quit:
         SDL_DestroyTexture(tMort_logo);
     if (tMort_logo2 != NULL)
         SDL_DestroyTexture(tMort_logo2);
-
     return statut;
 }
 
@@ -820,7 +807,6 @@ int inventaire(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
             SDL_RenderCopy(renderer, tPiece, NULL, &piece);
             SDL_RenderCopy(renderer, tPrix, NULL, &rectPrix);
         }
-
         SDL_RenderPresent(renderer);
     }
 
