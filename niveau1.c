@@ -294,7 +294,13 @@ int niveau1(SDL_Window *window, SDL_Renderer *renderer, int *morts, int *meilleu
         position_perso_ennemi(astronaute.position, &ennemi.position, &ennemi.sprite_finale, &renderer, 2, 600);
         for (int i = 0; i < 4; i++)
         {
-            SDL_RenderCopy(renderer, Lniv[i].texture, NULL, &Lniv[i].position);
+            if(Lniv[i].position.x+Lniv[i].position.w>0 && Lniv[i].position.x<position.w)
+            {SDL_RenderCopy(renderer, Lniv[i].texture, NULL, &Lniv[i].position);}
+            if(Lniv[i].position.x + Lniv[i].position.w < 0 && Lniv[i].texture!=NULL)
+            {
+                SDL_DestroyTexture(Lniv[i].texture);
+                printf("%d",i);
+            }
         }
         // SDL_RenderCopy(renderer, vaisseau.immobile, NULL, &vaisseau.position);
         
