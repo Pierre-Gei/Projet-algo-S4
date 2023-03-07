@@ -635,6 +635,14 @@ int inventaire(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
     SDL_Texture *aventurier = loadTexturePNG("sprites/aventurier1.png", renderer, &rectAventurier);
     SDL_Rect rectAstronaute;
     SDL_Texture *astronaute = loadTexturePNG("sprites/astronaute1.png", renderer, &rectAstronaute);
+    SDL_Rect checkboxAventurier;
+    SDL_Rect checkboxAstronaute;
+    SDL_Texture *tCheckbox = loadTexturePNG("sprites/checkbox.png", renderer, &checkboxAstronaute);
+    SDL_Texture *tCheckbox_valide = loadTexturePNG("sprites/checkboxV.png", renderer, &checkboxAstronaute);
+    checkboxAventurier.w = 40;
+    checkboxAventurier.h = checkboxAventurier.w * rectAventurier.w / rectAventurier.h;
+    checkboxAstronaute.w = checkboxAventurier.w;
+    checkboxAstronaute.h = checkboxAventurier.h;
     float ratio = rectAventurier.h / rectAventurier.w;
 
     contourAventurier.w = 300;
@@ -644,7 +652,6 @@ int inventaire(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
 
     rectAventurier.x = contourAventurier.x + contourAventurier.w / 2 - rectAventurier.w / 2;
     rectAventurier.y = contourAventurier.y + 50;
-
     contourAstronaute.w = contourAventurier.w;
     contourAstronaute.h = contourAventurier.h;
     contourAstronaute.x = window_width / 2 + 125;
@@ -666,6 +673,7 @@ int inventaire(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
     SDL_Texture *tChoisirAstronaute = NULL;
     SDL_Texture *tPrix = NULL;
     SDL_Texture *tPiece = NULL;
+
     SDL_Rect piece;
 
     SDL_Texture *tRetour = NULL;
@@ -726,6 +734,11 @@ int inventaire(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
     SDL_Rect rectPrix = {piece.x + piece.w + 5, piece.y + (piece.h - texte_surface->h) / 2, texte_surface->w, texte_surface->h};
     SDL_FreeSurface(texte_surface);
 
+    checkboxAstronaute.x = contourAstronaute.x + contourAstronaute.w - checkboxAstronaute.w;
+    checkboxAstronaute.y = contourAstronaute.y;
+    checkboxAventurier.x = contourAventurier.x + contourAventurier.w - checkboxAventurier.w;
+    checkboxAventurier.y = contourAventurier.y;
+
     // retour
     initText(couleurBlanche, &texte_surface, &tRetour, &renderer, TAILLE_POLICE, "Retour");
     SDL_Rect rectRetour = {200, window_height - 100, texte_surface->w, texte_surface->h};
@@ -758,7 +771,7 @@ int inventaire(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
                     {
                         *choix_skin = 1;
                     }
-                    if (SDL_PointInRect(&souris, &rectChoisirAstronaute) && *recompenses >= 250)
+                    if (SDL_PointInRect(&souris, &rectChoisirAstronaute) && (*recompenses >= 250 || *skin_achete == 2))
                     {
                         if (*skin_achete == 1)
                         {
@@ -795,6 +808,7 @@ int inventaire(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
             changement_couleur(50, couleurGrise, &renderer, &tPoidsAstronaute, "Poids : 60 Kg");
             changement_couleur(50, couleurGrise, &renderer, &tChoisirAstronaute, "Choisir");
             SDL_SetTextureColorMod(astronaute, 128, 128, 128);
+
         }
         SDL_RenderDrawRect(renderer, &contourAstronaute);
         SDL_RenderCopy(renderer, tNomAstronaute, NULL, &rectNomAstronaute);
@@ -803,6 +817,30 @@ int inventaire(SDL_Window *window, SDL_Renderer *renderer, int TAILLE_POLICE, in
         SDL_RenderCopy(renderer, tPoidsAstronaute, NULL, &rectPoidsAstronaute);
         SDL_RenderCopy(renderer, tChoisirAstronaute, NULL, &rectChoisirAstronaute);
         SDL_RenderCopy(renderer, tRetour, NULL, &rectRetour);
+        
+
+        if (*choix_skin == 1)
+        {
+            SDL_RenderCopy(renderer, tCheckbox_valide, NULL, &checkboxAventurier);
+            if(*skin_achete == 1)
+            {
+                SDL_SetTextureColorMod(tCheckbox, 128, 128, 128);
+                SDL_RenderCopy(renderer, tCheckbox, NULL, &checkboxAstronaute);
+            }
+            else
+            {
+                SDL_SetTextureColorMod(tCheckbox, 255, 255, 255);
+                SDL_RenderCopy(renderer, tCheckbox, NULL, &checkboxAstronaute);
+            }
+        }
+
+        else if (*choix_skin == 2)
+        {
+            SDL_SetTextureColorMod(tCheckbox, 255, 255, 255);
+            SDL_RenderCopy(renderer, tCheckbox_valide, NULL, &checkboxAstronaute);
+            SDL_RenderCopy(renderer, tCheckbox, NULL, &checkboxAventurier);
+        }
+
         if (*skin_achete < 2)
         {
             SDL_RenderCopy(renderer, tPiece, NULL, &piece);
@@ -842,5 +880,11 @@ Quit:
         SDL_DestroyTexture(tPiece);
     if (tPrix != NULL)
         SDL_DestroyTexture(tPrix);
+    if (tRetour != NULL)
+        SDL_DestroyTexture(tRetour);
+    if (tCheckbox != NULL)
+        SDL_DestroyTexture(tCheckbox);
+    if (tCheckbox_valide != NULL)
+        SDL_DestroyTexture(tCheckbox_valide);
     return statut;
 }
