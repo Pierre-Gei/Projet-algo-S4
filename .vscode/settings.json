@@ -1,5 +1,17 @@
 {
     "files.associations": {
-        "sdl_image.h": "c"
+        "sdl_image.h": "c",
+        "unistd.h": "c",
+        "math.h": "c",
+        "sdl_ttf.h": "c",
+        "niveau1.h": "c",
+        "affichage.h": "c",
+        "string.h": "c",
+        "sdl.h": "c",
+        "stdbool.h": "c",
+        "stdio.h": "c",
+        "stdlib.h": "c",
+        "fonctions.h": "c",
+        "structure.h": "c"
     }
 }
