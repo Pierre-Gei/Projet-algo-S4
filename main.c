@@ -119,7 +119,7 @@ int main()
     rectMort.w = 40;
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    Mix_VolumeMusic(35);
+    // Mix_VolumeMusic(35);
 
     while (jeu)
     {

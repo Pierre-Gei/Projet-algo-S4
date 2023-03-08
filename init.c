@@ -26,6 +26,11 @@ int init(SDL_Window **window, SDL_Renderer **renderer)
         printf("Erreur lors de la creation de la fenetre et du renderer: %s", SDL_GetError());
         return -1;
     }
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) == -1)
+    {
+        printf("Erreur lors de l'initialisation de la SDL_mixer: %s", Mix_GetError());
+        return -1;
+    }
    
     return 0;
 }
